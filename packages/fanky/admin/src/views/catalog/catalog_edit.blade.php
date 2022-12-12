@@ -22,11 +22,6 @@
         <ul class="nav nav-tabs">
             <li class="active"><a href="#tab_1" data-toggle="tab">Параметры</a></li>
             <li><a href="#tab_2" data-toggle="tab">Тексты</a></li>
-
-            @if($catalog->parent_id == 0)
-                {{--                <li><a href="#tab_params" data-toggle="tab">Характеристики</a></li>--}}
-                <li><a href="#tab_3" data-toggle="tab">Фильтры сортировки</a></li>
-            @endif
             @if($catalog->id)
                 <li class="pull-right">
                     <a href="{{ $catalog->url }}" target="_blank">Посмотреть</a>
@@ -66,8 +61,12 @@
                 {!! Form::groupCheckbox('published', 1, $catalog->published, 'Показывать раздел') !!}
 
                 @if($catalog->parent_id == 0)
-                    {!! Form::hidden('on_main_list', 0) !!}
+                    {!! Form::hidden('on_menu', 1) !!}
+                    {!! Form::groupCheckbox('on_menu', 1, $catalog->on_main, 'Показывать в главном меню') !!}
+                    {!! Form::hidden('on_main_list', 1) !!}
                     {!! Form::groupCheckbox('on_main_list', 1, $catalog->on_main_list, 'Показывать в каталоге продукции') !!}
+                    {!! Form::hidden('on_footer_menu', 1) !!}
+                    {!! Form::groupCheckbox('on_footer_menu', 1, $catalog->on_footer_menu, 'Показывать в футере') !!}
                 @endif
 
                 @if($catalog->parent_id !== 0 && count($catalog->public_children))
@@ -92,65 +91,6 @@
             {{--            @if($catalog->parent_id == 0)--}}
             {{--                @include('admin::catalog.tabs.tab_params')--}}
             {{--            @endif--}}
-
-            <div class="tab-pane" id="tab_3">
-                @if(!$catalog->id)
-                    <div>Добавление фильтров доступно только после сохранения каталога</div>
-                @else
-                    <div class="form-group" style="width:400px;">
-                        @foreach($filters as $item)
-                            <div>
-                                <label for="{{ $item->alias }}">
-                                    <input type="checkbox"
-                                           name="filters[]"
-                                           {{ (in_array($item->id, $filters_used)) ? 'checked': '' }}
-                                           value="{{ $item->id }}"/>
-                                    {{ $item->name }}
-                                </label>
-                            </div>
-                        @endforeach
-                    </div>
-                    {{--                    <table class="table table-striped table-v-middle">--}}
-                    {{--                        <thead>--}}
-                    {{--                        <tr>--}}
-                    {{--                            <th width="100">Название</th>--}}
-                    {{--                            <th width="100">Alias</th>--}}
-                    {{--                            <th width="400">Title</th>--}}
-                    {{--                        </tr>--}}
-                    {{--                        </thead>--}}
-                    {{--                        <tbody>--}}
-                    {{--                        @foreach($filters as $item)--}}
-                    {{--                            <tr>--}}
-                    {{--                                <th>--}}
-                    {{--                                    <div>--}}
-                    {{--                                        <label for="{{ $item->alias }}">--}}
-                    {{--                                            <input type="checkbox"--}}
-                    {{--                                                   name="filters[]"--}}
-                    {{--                                                   {{ (in_array($item->id, $filters_used)) ? 'checked': '' }}--}}
-                    {{--                                                   value="{{ $item->id }}"/>--}}
-                    {{--                                            {{ $item->name }}--}}
-                    {{--                                        </label>--}}
-                    {{--                                    </div>--}}
-                    {{--                                </th>--}}
-                    {{--                                <th>{{ $item->alias }}</th>--}}
-                    {{--                                <th>--}}
-                    {{--                                    <form class="input-group input-group-sm"--}}
-                    {{--                                          action="{{ route('admin.catalog.update-filter-title', [$item->id]) }}"--}}
-                    {{--                                          onsubmit="update_filter_title(this, event)">--}}
-                    {{--                                        <input name="title" type="text" class="form-control" value="{{ $item->title }}">--}}
-                    {{--                                        <span class="input-group-btn">--}}
-                    {{--                                            <button class="btn btn-success btn-flat">--}}
-                    {{--                                               <span class="glyphicon glyphicon-ok"></span>--}}
-                    {{--                                            </button>--}}
-                    {{--                                        </span>--}}
-                    {{--                                    </form>--}}
-                    {{--                                </th>--}}
-                    {{--                            </tr>--}}
-                    {{--                        @endforeach--}}
-                    {{--                        </tbody>--}}
-                    {{--                    </table>--}}
-                @endif
-            </div>
         </div>
 
         <div class="box-footer">

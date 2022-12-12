@@ -6,19 +6,17 @@
         <div class="header__container header__container--top container">
             @include('blocks.show_small_region_confirm')
             <div class="header__info">
+                @if($topMenu)
                 <nav class="header__top-nav">
                     <ul class="list-reset">
-                        <li>
-                            <a href="javascript:void(0)">Доставка и оплата</a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0)">О компании</a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0)">Контакты</a>
-                        </li>
+                        @foreach($topMenu as $item)
+                            <li>
+                                <a href="{{ $item->url }}">{{ $item->name }}</a>
+                            </li>
+                        @endforeach
                     </ul>
                 </nav>
+                @endif
                 <button class="header__callback btn-reset" type="button" data-popup data-src="#callback" aria-label="Заказать звонок">
                     <svg width="15" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M15 .975C15 .69 14.812.5 14.531.5H.47C.188.5 0 .69 0 .975v18.05c0 .285.188.475.469.475H14.53c.281 0 .469-.19.469-.475V.975ZM13.125 2.4v12.35H9.469c0 .95-.89 1.9-1.922 1.9-1.031 0-1.922-.95-1.922-1.9h-3.75V2.4h11.25Z" fill="currentColor"
@@ -36,7 +34,7 @@
                         </a>
                     </div>
                 </div>
-                <a class="header__phone" href="tel:+73433517844">+7 (343) 351-78-44</a>
+                <a class="header__phone" href="tel:+{{ preg_replace('/[^\d]+/', '', Settings::get('header_phone')) }}">{{ Settings::get('header_phone') }}</a>
             </div>
         </div>
     </div>
@@ -69,28 +67,17 @@
                             </svg>
 
                         </button>
-                        <nav class="top-nav__nav" itemscope itemtype="https://schema.org/SiteNavigationElement" aria-label="Меню">
-                            <ul class="top-nav__list list-reset" itemprop="about" itemscope itemtype="https://schema.org/ItemList">
-                                <li class="top-nav__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ItemList">
-                                    <a class="top-nav__link" href="javascript:void(0)" itemprop="url">Услуги</a>
-                                </li>
-                                <li class="top-nav__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ItemList">
-                                    <a class="top-nav__link" href="javascript:void(0)" itemprop="url">Трубный прокат</a>
-                                </li>
-                                <li class="top-nav__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ItemList">
-                                    <a class="top-nav__link" href="javascript:void(0)" itemprop="url">Цветной прокат</a>
-                                </li>
-                                <li class="top-nav__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ItemList">
-                                    <a class="top-nav__link" href="javascript:void(0)" itemprop="url">Нержавеющий прокат</a>
-                                </li>
-                                <li class="top-nav__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ItemList">
-                                    <a class="top-nav__link" href="javascript:void(0)" itemprop="url">Сантехарматура</a>
-                                </li>
-                                <li class="top-nav__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ItemList">
-                                    <a class="top-nav__link" href="javascript:void(0)" itemprop="url">Поковки</a>
-                                </li>
-                            </ul>
-                        </nav>
+                        @if($mainMenu)
+                            <nav class="top-nav__nav" itemscope itemtype="https://schema.org/SiteNavigationElement" aria-label="Меню">
+                                <ul class="top-nav__list list-reset" itemprop="about" itemscope itemtype="https://schema.org/ItemList">
+                                    @foreach($mainMenu as $item)
+                                        <li class="top-nav__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ItemList">
+                                            <a class="top-nav__link" href="{{ $item->url }}" itemprop="url">{{ $item->name }}</a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </nav>
+                        @endif
                     </div>
                 </div>
                 <div class="header__actions">

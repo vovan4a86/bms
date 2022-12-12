@@ -35237,7 +35237,7 @@ var utils = function utils() {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! C:\_funky\bms-git\resources\assets\js--sources\main.js */"./resources/assets/js--sources/main.js");
+module.exports = __webpack_require__(/*! /mnt/main/vovan4a/Funky/bms-git/resources/assets/js--sources/main.js */"./resources/assets/js--sources/main.js");
 
 
 /***/ })

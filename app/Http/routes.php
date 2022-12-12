@@ -101,6 +101,11 @@ Route::group(['middleware' => ['redirects', 'regions']], function() {
 
     Route::get('ajax-cities', ['as' => 'ajax-cities', 'uses' => 'PageController@ajaxCities']);
 
+    Route::get('policy', ['as' => 'policy', 'uses' => function() {
+        return view('pages.policy');
+    }]);
+
+
     Route::any('catalog', ['as' => 'catalog.index', 'uses' => 'CatalogController@index']);
     Route::any('catalog/{alias}', ['as' => 'catalog.view', 'uses' => 'CatalogController@view'])
         ->where('alias', '([A-Za-z0-9\-\/_]+)');

@@ -8,21 +8,20 @@
                 <div class="footer__rows">
                     <div class="footer__row">
                         <div class="footer__label">Приходите и приезжайте</div>
-                        <div class="footer__data">ул. Совхозная, 20А,
-                            <br />г. Екатеринбург</div>
+                        <div class="footer__data">{!! Settings::get('footer_address') !!}</div>
                     </div>
                     <div class="footer__row">
                         <div class="footer__label">Звоните</div>
                         <div class="footer__data">
-                            <a href="tel:+73433517844" title="Позвонить нам">+7 (343) 351-78-44</a>
+                            <a href="tel:+{{ preg_replace('/[^\d]+/', '', Settings::get('footer_phone')) }}" title="Позвонить нам">{{ Settings::get('footer_phone') }}</a>
                         </div>
                     </div>
                     <div class="footer__row">
                         <div class="footer__label">Пишите</div>
                         <div class="footer__data">
-                            <a href="mailto:bms-ek@bk.ru" title="Написать нам">bms-ek@bk.ru</a>
+                            <a href="mailto:{{ Settings::get('footer_email') }}" title="Написать нам">{{ Settings::get('footer_email') }}</a>
                         </div>
-                        <div class="footer__label">Пн-Пт с 9:00 до 17:00</div>
+                        <div class="footer__label">{{ Settings::get('footer_work') }}</div>
                     </div>
                     <div class="footer__row">
                         <div class="footer__label">Мессенджеры</div>
@@ -39,7 +38,7 @@
                     </div>
                 </div>
                 <div class="footer__links">
-                    <a class="link-btn link-btn--accent btn-reset" href="javascript:void(0)">
+                    <a class="link-btn link-btn--accent btn-reset" href="{{ route('catalog.index')}}">
                         <svg width="19" height="14" viewBox="0 0 19 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M2.34983 0.464844H17.1505C17.9124 0.464844 18.53 1.08249 18.53 1.84441C18.53 2.60632 17.9124 3.22397 17.1505 3.22397H2.34983C1.58792 3.22397 0.970268 2.60632 0.970268 1.84441C0.970268 1.08249 1.58792 0.464844 2.34983 0.464844Z" fill="currentColor"
                             />
@@ -55,74 +54,37 @@
             <div class="footer__nav">
                 <div class="footer__column">
                     <div class="footer__title">Каталог</div>
-                    <nav class="footer__menu footer-nav" itemscope itemtype="https://schema.org/SiteNavigationElement" aria-label="Меню">
-                        <ul class="footer-nav__list list-reset" itemprop="about" itemscope itemtype="https://schema.org/ItemList">
-                            <li class="footer-nav__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ItemList">
-                                <a class="footer-nav__link" href="javascript:void(0)" itemprop="url">Трубный прокат</a>
-                            </li>
-                            <li class="footer-nav__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ItemList">
-                                <a class="footer-nav__link" href="javascript:void(0)" itemprop="url">Цветной прокат</a>
-                            </li>
-                            <li class="footer-nav__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ItemList">
-                                <a class="footer-nav__link" href="javascript:void(0)" itemprop="url">Сортовой прокат</a>
-                            </li>
-                            <li class="footer-nav__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ItemList">
-                                <a class="footer-nav__link" href="javascript:void(0)" itemprop="url">Нержавеющий прокат</a>
-                            </li>
-                            <li class="footer-nav__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ItemList">
-                                <a class="footer-nav__link" href="javascript:void(0)" itemprop="url">Сантехарматура</a>
-                            </li>
-                            <li class="footer-nav__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ItemList">
-                                <a class="footer-nav__link" href="javascript:void(0)" itemprop="url">Поковки</a>
-                            </li>
-                            <li class="footer-nav__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ItemList">
-                                <a class="footer-nav__link" href="javascript:void(0)" itemprop="url">Сварочные материалы</a>
-                            </li>
-                            <li class="footer-nav__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ItemList">
-                                <a class="footer-nav__link" href="javascript:void(0)" itemprop="url">Асбестоцементные материалы</a>
-                            </li>
-                            <li class="footer-nav__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ItemList">
-                                <a class="footer-nav__link" href="javascript:void(0)" itemprop="url">Листовой прокат</a>
-                            </li>
-                            <li class="footer-nav__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ItemList">
-                                <a class="footer-nav__link" href="javascript:void(0)" itemprop="url">Металлоизделия</a>
-                            </li>
-                            <li class="footer-nav__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ItemList">
-                                <a class="footer-nav__link" href="javascript:void(0)" itemprop="url">Изготовление оборудования</a>
-                            </li>
-                        </ul>
-                    </nav>
+                    @if($footerCatalog)
+                        <nav class="footer__menu footer-nav" itemscope itemtype="https://schema.org/SiteNavigationElement" aria-label="Меню">
+                            <ul class="footer-nav__list list-reset" itemprop="about" itemscope itemtype="https://schema.org/ItemList">
+                                @foreach($footerCatalog as $item)
+                                <li class="footer-nav__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ItemList">
+                                    <a class="footer-nav__link" href="{{ $item->url }}" itemprop="url">{{ $item->name }}</a>
+                                </li>
+                                @endforeach
+                            </ul>
+                        </nav>
+                    @endif
                 </div>
                 <div class="footer__column">
                     <div class="footer__title">Покупателям</div>
+                    @if($footerMenu)
                     <nav class="footer__menu footer-nav" itemscope itemtype="https://schema.org/SiteNavigationElement" aria-label="Меню">
                         <ul class="footer-nav__list list-reset" itemprop="about" itemscope itemtype="https://schema.org/ItemList">
+                            @foreach($footerMenu as $item)
                             <li class="footer-nav__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ItemList">
-                                <a class="footer-nav__link" href="javascript:void(0)" itemprop="url">Услуги</a>
+                                <a class="footer-nav__link" href="{{ $item->url }}" itemprop="url">{{ $item->name }}</a>
                             </li>
-                            <li class="footer-nav__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ItemList">
-                                <a class="footer-nav__link" href="javascript:void(0)" itemprop="url">О компании</a>
-                            </li>
-                            <li class="footer-nav__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ItemList">
-                                <a class="footer-nav__link" href="javascript:void(0)" itemprop="url">Справочник</a>
-                            </li>
-                            <li class="footer-nav__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ItemList">
-                                <a class="footer-nav__link" href="javascript:void(0)" itemprop="url">Новости</a>
-                            </li>
-                            <li class="footer-nav__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ItemList">
-                                <a class="footer-nav__link" href="javascript:void(0)" itemprop="url">Акции и скидки</a>
-                            </li>
-                            <li class="footer-nav__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ItemList">
-                                <a class="footer-nav__link" href="javascript:void(0)" itemprop="url">Доставка и оплата</a>
-                            </li>
+                            @endforeach
                         </ul>
                     </nav>
+                    @endif
                 </div>
             </div>
         </div>
         <div class="footer__bottom">
-            <div class="footer__company">© 2022 ООО «Бизнес-МС»</div>
-            <a class="footer__policy" href="javascript:void(0)" target="_blank">Политика конфиденциальност</a>
+            <div class="footer__company">{{ Settings::get('footer_copy') }}</div>
+            <a class="footer__policy" href="{{ route('policy') }}" target="_blank">Политика конфиденциальности</a>
         </div>
     </div>
 </footer>

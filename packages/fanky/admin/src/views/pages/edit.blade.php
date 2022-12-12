@@ -85,8 +85,8 @@
 				{!! Form::hidden('on_footer_menu', 0) !!}
 				{!! Form::groupCheckbox('published', 1, $page->published, 'Показывать страницу') !!}
 				{!! Form::groupCheckbox('on_top_menu', 1, $page->on_top_menu, 'Показывать в верхнем меню') !!}
-{{--				{!! Form::hidden('on_menu', 0) !!}--}}
-{{--				{!! Form::groupCheckbox('on_menu', 1, $page->on_menu, 'Показывать в главном меню') !!}--}}
+				{!! Form::hidden('on_menu', 0) !!}
+				{!! Form::groupCheckbox('on_menu', 1, $page->on_menu, 'Показывать в главном меню') !!}
 				{!! Form::groupCheckbox('on_footer_menu', 1, $page->on_footer_menu, 'Показывать в футере') !!}
 			</div>
 

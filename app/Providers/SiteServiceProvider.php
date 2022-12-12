@@ -27,35 +27,30 @@ class SiteServiceProvider extends ServiceProvider {
                 ->where('on_top_menu', 1)
                 ->orderBy('order')
                 ->get();
-			$mainMenu = Page::query()
+			$mainMenuPages = Page::query()
                 ->public()
                 ->where('on_menu', 1)
                 ->orderBy('order')
                 ->get();
-			$footerMenu = Page::query()
+            $mainMenuCats = Catalog::query()
                 ->public()
-                ->where('on_footer_menu', 1)
-                ->with('public_children')
+                ->where('on_menu', 1)
                 ->orderBy('order')
-                ->get()
-                ->transform(function($item){
-                    if($item->alias == 'catalog'){
-                        $item->public_children = Catalog::getTopLevel();
-                    }
-//                    if($item->alias == 'about'){
-//                        $item->public_children = $this->getAboutSubMenu();
-//                    }
+                ->get();
+            $mainMenu = collect();
+            $mainMenu = $mainMenu->merge($mainMenuPages)->merge($mainMenuCats);
 
-                    return $item;
-                });
-
-            $catalogTop = Catalog::getTopLevelOnList(); //header && footer
-
-            $aboutLink =  Page::find(19)->url; //ссылка о компании в футере
-            $aboutMenuFooter = Page::find(19)->getPublicChildrenFooter(); //внутренние ссылки о компании
-
-            $directoryLink =  Page::find(12)->url; //справочник
-            $directoryMenuFooter = Page::find(12)->getPublicChildrenFooter(); //справочник внутренние
+            $footerCatalog = Catalog::public()
+                ->where('on_footer_menu', 1)
+                ->orderBy('order')
+                ->get();
+            $footerMenu = Page::query()
+                ->public()
+                ->where('parent_id', 1)
+                ->where('on_footer_menu', 1)
+//                ->with('public_children')
+                ->orderBy('order')
+                ->get();
 
             if (!$city_alias = session('city_alias')) {
                 $current_city = null;
@@ -67,12 +62,8 @@ class SiteServiceProvider extends ServiceProvider {
                 'topMenu',
                 'mainMenu',
                 'footerMenu',
-                'catalogTop',
-                'aboutLink',
-                'aboutMenuFooter',
-                'directoryLink',
-                'directoryMenuFooter',
-                'current_city'
+                'current_city',
+                'footerCatalog'
             ));
 		});
 
@@ -93,13 +84,6 @@ class SiteServiceProvider extends ServiceProvider {
             ]);
         });
 	}
-
-    private function getAboutSubMenu() {
-        return Page::public()
-            ->whereIn('alias', [
-                'news', 'kontakti'
-            ])->get();
-    }
 
 	/**
 	 * Register any application services.
