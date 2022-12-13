@@ -27,10 +27,10 @@
                         <div class="footer__label">Мессенджеры</div>
                         <div class="footer__data footer__data--messenger">
                             <div class="messenger messenger--footer">
-                                <a class="messenger__item" href="javascript:void(0)" title="Написать в Whatsapp">
+                                <a class="messenger__item" href="https://wa.me/{{ preg_replace('/[^\d]+/', '', Settings::get('footer_whatsapp')) }}" title="Написать в Whatsapp">
                                     <span class="lazy" data-bg="static/images/common/ico_wa.svg"></span>
                                 </a>
-                                <a class="messenger__item" href="javascript:void(0)" title="Написать в Telegram">
+                                <a class="messenger__item" href="https://t.me/+{{ preg_replace('/[^\d]+/', '', Settings::get('footer_telegram')) }}" title="Написать в Telegram">
                                     <span class="lazy" data-bg="static/images/common/ico_telegram.svg"></span>
                                 </a>
                             </div>

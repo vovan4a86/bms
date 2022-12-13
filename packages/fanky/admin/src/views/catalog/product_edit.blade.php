@@ -43,10 +43,9 @@
                 {!! Form::groupText('title', $product->title, 'Title') !!}
                 {!! Form::groupText('keywords', $product->keywords, 'keywords') !!}
                 {!! Form::groupText('description', $product->description, 'description') !!}
-                {!! Form::groupText('articul', $product->articul, 'Артикул') !!}
+                {!! Form::groupText('raw_price', $product->raw_price, 'Парсинг-цена', ['disabled']) !!}
                 {!! Form::groupNumber('price', $product->price, 'Цена', ['step' => 1]) !!}
                 {!! Form::groupText('measure', $product->measure, 'Измерение') !!}
-                {!! Form::groupText('factor', $product->factor, 'Вес 1 шт. товара') !!}
 
                 @if(count($add_params))
                     @foreach($add_params as $param)

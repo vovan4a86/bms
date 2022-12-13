@@ -37,7 +37,7 @@
     @endif
 
     <!-- if contactsPage-->
-{{--    @if(Route::getCurrentRoute()->alias == 'contacts')--}}
-{{--        <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" defer></script>--}}
-{{--    @endif--}}
+    @if(Route::getCurrentRoute()->alias == 'contacts')
+        <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" defer></script>
+    @endif
 </head>

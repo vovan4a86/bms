@@ -1,7 +1,9 @@
 <!-- homepage && 'header--home'-->
 <!-- headerIsWhite && 'header--white'-->
 <!-- headerIsBlack && 'header--black'-->
-<header class="header {{ Request::url() == route('main') ? 'header--home' : '' }}">
+<header class="header {{ Request::url() == route('main') ? 'header--home' : null }}
+                      {{ isset($headerIsWhite) ? 'header--white' : null }}
+                      {{ isset($headerIsBlack) ? 'header--black' : null }}">
     <div class="header__top">
         <div class="header__container header__container--top container">
             @include('blocks.show_small_region_confirm')
@@ -26,10 +28,10 @@
                 </button>
                 <div class="header__messengers">
                     <div class="messenger">
-                        <a class="messenger__item" href="javascript:void(0)" title="Написать в Whatsapp">
+                        <a class="messenger__item" href="https://wa.me/{{ preg_replace('/[^\d]+/', '', Settings::get('header_whatsapp')) }}" title="Написать в Whatsapp">
                             <span class="lazy" data-bg="static/images/common/ico_wa.svg"></span>
                         </a>
-                        <a class="messenger__item" href="javascript:void(0)" title="Написать в Telegram">
+                        <a class="messenger__item" href="https://t.me/+{{ preg_replace('/[^\d]+/', '', Settings::get('header_telegram')) }}" title="Написать в Telegram">
                             <span class="lazy" data-bg="static/images/common/ico_telegram.svg"></span>
                         </a>
                     </div>

@@ -19,7 +19,8 @@
 		"phpspec/phpspec": "~6.3",
 		"lavary/laravel-menu": "^1.7",
 		"artesaos/seotools": "~0.18",
-		"laravel/helpers": "^1.2"
+		"laravel/helpers": "^1.2",
+		"meyfa/php-svg": "^0.13.0"
 	},
 	"require-dev": {
 		"filp/whoops": "~2.0",

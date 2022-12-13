@@ -26,9 +26,11 @@
                 <tr>
                     <th width="100"></th>
                     <th>Название</th>
-                    <th width="120">Цена без наценки</th>
-                    <th width="120">Цена с наценкой {{ Settings::get('multiplier') }}%</th>
-                    <th width="120">Сортировка</th>
+                    <th>Размер</th>
+                    <th>Сталь</th>
+                    <th style="color: grey;">Парсинг-цена</th>
+                    <th width="120">Цена</th>
+                    <th width="50">Сортировка</th>
                     <th width="50"></th>
                 </tr>
                 </thead>
@@ -37,12 +39,14 @@
                     <tr data-id="{{ $item->id }}">
                         <td>
                             @if ($item->image)
-                                <img src="{{ $item->thumb(1) }}">
+                                <img src="{{ $item->image }}" height="100" width="100">
                             @endif
                         </td>
                         <td><a href="{{ route('admin.catalog.productEdit', [$item->id]) }}" onclick="return catalogContent(this)" style="{{ $item->published != 1 ? 'text-decoration:line-through;' : '' }}">{{ $item->name }}</a></td>
-                        <td>{{ number_format($item->price, 2, ',', ' ') }}</td>
-                        <td>{{ $item->getFullPrice() }}</td>
+                        <td>{{ $item->size }}</td>
+                        <td>{{ $item->steel }}</td>
+                        <td style="color: grey;">{{ $item->raw_price }}</td>
+                        <td style="font-weight: bold;">{{ $item->price }}</td>
                         <td>
                             <form class="input-group input-group-sm"
                                   action="{{ route('admin.catalog.update-order', [$item->id]) }}"
