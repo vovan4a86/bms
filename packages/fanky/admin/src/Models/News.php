@@ -67,10 +67,11 @@ class News extends Model {
 	protected $guarded = ['id'];
 
 	const UPLOAD_URL = '/uploads/news/';
+    const NO_IMAGE = '/uploads/no_image.png';
 
 	public static $thumbs = [
 		1 => '100x50', //admin
-		2 => '400x190|fit', //news_list
+		2 => '405x241|fit', //news_list
 		3 => '60x44', //main-slider
 	];
 

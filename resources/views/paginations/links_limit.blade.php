@@ -1,7 +1,7 @@
 @if($paginator instanceof \Illuminate\Pagination\LengthAwarePaginator
     && $paginator->hasPages()
     && $paginator->lastPage() > 1)
-        <? /** @var \Illuminate\Pagination\LengthAwarePaginator $paginator */  ?>
+        <? /** @var \Illuminate\Pagination\LengthAwarePaginator $paginator */ ?>
 
         <?php
         // config

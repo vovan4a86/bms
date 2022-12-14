@@ -24,7 +24,8 @@
 				<table class="table table-striped">
 					<thead>
 						<tr>
-							<th width="150">Дата</th>
+							<th width="100">Дата</th>
+							<th width="100">Изображение</th>
 							<th>Название</th>
 							<th width="50"></th>
 						</tr>
@@ -33,6 +34,12 @@
 						@foreach ($news as $item)
 							<tr>
 								<td>{{ $item->dateFormat() }}</td>
+								<td style="text-align: center;">
+									@if($item->image)
+									<img src="{{ $item->thumb(1) }}" alt="{{ $item->name }}"></td>
+								@else
+									<img src="{{ \Fanky\Admin\Models\News::NO_IMAGE }}" alt="Не загружено" title="Не загружено" width="50" height="50"></td>
+								@endif
 								<td><a href="{{ route('admin.news.edit', [$item->id]) }}">{{ $item->name }}</a></td>
 								<td>
 									<a class="glyphicon glyphicon-trash" href="{{ route('admin.news.delete', [$item->id]) }}"

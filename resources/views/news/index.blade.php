@@ -2,17 +2,23 @@
 @section('content')
     @include('blocks.bread')
     <main>
-        <!-- homepage ? '' : 'section--inner'-->
-        <section class="section newses {{ Request::url() === '/' ? '' : 'section--inner' }}">
-            <div class="container">
-                <h2 class="section__title section__title--inner">Новости</h2>
-                <div class="newses__list">
+        <!-- headerIsWhite ? '' : 'page-head--dark'-->
+        <div class="page-head {{ isset($headerIsBlack) ? 'page-head--dark' : null }}">
+            <div class="page-head__container container">
+                <div class="page-head__content">
+                    <div class="page-head__title">{{ $h1 ?? $title }}</div>
+                    <div class="page-head__text"></div>
+                </div>
+            </div>
+        </div>
+        <section class="newses">
+            <div class="newses__container container">
+                <div class="newses__grid">
                     @foreach($items as $item)
                         @include('news.list_item')
                     @endforeach
                 </div>
-                <div class="section__loader">
-                    @include('paginations.default' ,['paginator' => $items])
+                    @include('paginations.with_pages' ,['paginator' => $items])
                 </div>
             </div>
         </section>

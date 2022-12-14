@@ -28,6 +28,8 @@ class NewsController extends Controller {
 		if (!$page)
 			abort(404, 'Страница не найдена');
 		$bread = $this->bread;
+        $page->ogGenerate();
+        $page->setSeo();
         $items = News::orderBy('date', 'desc')
             ->public()->paginate(Settings::get('news_per_page'));
 
@@ -52,8 +54,11 @@ class NewsController extends Controller {
         }
 
         return view('news.index', [
+            'title' => $page->title,
+            'h1'    => $page->getH1(),
             'bread' => $bread,
             'items' => $items,
+            'headerIsBlack' => true,
         ]);
 	}
 
