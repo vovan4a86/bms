@@ -30,7 +30,7 @@
                     <th>Сталь</th>
                     <th style="color: grey;">Парсинг-цена</th>
                     <th width="120">Цена</th>
-                    <th width="50">Сортировка</th>
+                    <th width="100">Сортировка</th>
                     <th width="50"></th>
                 </tr>
                 </thead>
@@ -38,8 +38,8 @@
                 @foreach ($products as $item)
                     <tr data-id="{{ $item->id }}">
                         <td>
-                            @if ($item->image)
-                                <img src="{{ $item->image }}" height="100" width="100">
+                            @if ($item->image()->first())
+                                <img src="{{ $item->image()->first()->image }}" height="100" width="100">
                             @endif
                         </td>
                         <td><a href="{{ route('admin.catalog.productEdit', [$item->id]) }}" onclick="return catalogContent(this)" style="{{ $item->published != 1 ? 'text-decoration:line-through;' : '' }}">{{ $item->name }}</a></td>

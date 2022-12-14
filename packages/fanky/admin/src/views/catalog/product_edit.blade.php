@@ -37,7 +37,6 @@
 
                 {!! Form::groupText('name', $product->name, 'Название') !!}
                 {!! Form::groupText('h1', $product->h1, 'H1') !!}
-                {!! Form::groupText('subtit', $product->subtit, 'Подзаголовок') !!}
                 {!! Form::groupSelect('catalog_id', $catalogs, $product->catalog_id, 'Каталог') !!}
                 {!! Form::groupText('alias', $product->alias, 'Alias') !!}
                 {!! Form::groupText('title', $product->title, 'Title') !!}

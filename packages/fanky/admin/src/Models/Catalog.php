@@ -71,6 +71,7 @@ class Catalog extends Model {
 
         return $result;
     }
+
 	public function delete() {
 		$this->deleteImage();
 		foreach ($this->children as $product) {
@@ -137,10 +138,6 @@ class Catalog extends Model {
 	public function scopeOnMain($query) {
 		return $query->where('on_main', 1);
 	}
-
-//    public function scopeOnMainList($query) {
-//		return $query->where('on_main_list', 1);
-//	}
 
 	public function scopeMainMenu($query) {
 		return $query->public()->where('parent_id', 0)->orderBy('order');
@@ -343,6 +340,7 @@ class Catalog extends Model {
 			return $updated;
 		}
 	}
+
 	public static function updateUrlRecurse(self $category) {
 		$parents = $category->getParents(true, true);
 		$slug_arr = [];
