@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddProductIdToSearchIndices extends Migration
+class CreateCityIdForeignToVacanciesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class AddProductIdToSearchIndices extends Migration
      */
     public function up()
     {
-        Schema::table('search_indices', function (Blueprint $table) {
-            $table->unsignedInteger('product_id')->first();
+        Schema::table('vacancies', function (Blueprint $table) {
+            $table->unsignedInteger('city_id');
+            $table->foreign('city_id')
+                ->references('id')->on('cities');
         });
     }
 
@@ -25,8 +27,8 @@ class AddProductIdToSearchIndices extends Migration
      */
     public function down()
     {
-        Schema::table('search_indices', function (Blueprint $table) {
-            $table->dropColumn('product_id');
+        Schema::table('vacancies', function (Blueprint $table) {
+            $table->dropColumn('city_id');
         });
     }
 }

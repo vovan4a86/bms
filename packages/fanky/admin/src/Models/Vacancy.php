@@ -58,25 +58,16 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|\Fanky\Admin\Models\News whereOgDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Fanky\Admin\Models\News whereOgTitle($value)
  */
-class News extends Model {
+class Vacancy extends Model {
 
 	use HasImage;
 
-	protected $table = 'news';
+	protected $table = 'vacancies';
 
 	protected $guarded = ['id'];
 
-	const UPLOAD_URL = '/uploads/news/';
-    const NO_IMAGE = '/adminlte/no_image.png';
-
-	public static $thumbs = [
-		1 => '100x50', //admin
-		2 => '405x241|fit', //news_list
-		3 => '60x44', //main-slider
-	];
-
-	public function tags() {
-		return $this->belongsToMany(NewsTag::class);
+	public function city() {
+		return $this->belongsTo(City::class);
 	}
 
 	public function scopePublic($query) {
@@ -96,21 +87,11 @@ class News extends Model {
 		return $date;
 	}
 
-	public static function last($count = 2) {
-		$items = self::orderBy('date', 'desc')->public()->limit($count)->get();
-
-		return $items;
-	}
-
 	/**
 	 * @return Carbon
 	 */
 	public function getLastModify() {
 		return $this->updated_at;
 	}
-
-    public static function getMainSliderNews() {
-        return self::where('published',  1)->where('on_main_slider',  1)->get();
-    }
 
 }

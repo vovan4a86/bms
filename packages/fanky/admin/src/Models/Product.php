@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 use Settings;
 use Thumb;
 use Carbon\Carbon;
@@ -108,7 +109,7 @@ class Product extends Model {
     const UPLOAD_PATH = '/public/uploads/products/';
     const UPLOAD_URL  = '/uploads/products/';
 
-    const NO_IMAGE = "/static/images/common/no_image.png";
+    const NO_IMAGE = "//static/images/common/no_image.png";
 
     public function catalog() {
         return $this->belongsTo(Catalog::class);
@@ -295,6 +296,108 @@ class Product extends Model {
         $root_image = $this->getRootImage() ? : self::NO_IMAGE;
         return count($is_item_images) ? \Fanky\Admin\Models\ProductImage::UPLOAD_URL . $is_item_images[0]->image :
             $root_image;
+    }
+
+    private function replaceTemplateVariable($template) {
+        $name_parts = explode(' ', $this->name, 2);
+        $replace = [
+            '{name}'             => $this->name,
+            '{lower_name}'       => Str::lower($this->name),
+            '{gost}'             => $this->gost,
+            '{price}'            => $this->price ?? 0,
+            '{name_part1}'       => array_get($name_parts, 0),
+            '{name_part2}'       => array_get($name_parts, 1),
+            '{size}'             => $this->size,
+            '{wall}'             => $this->wall,
+            '{steel}'            => $this->steel,
+            '{measure}'             => $this->measure,
+            '{manufacturer}'     => $this->manufacturer,
+            '{length}'           => $this->length,
+            '{emails_for_order}' => $this->emails_for_order,
+            '{product_article}'  => $this->product_article,
+        ];
+
+        return str_replace(array_keys($replace), array_values($replace), $template);
+    }
+
+    public function getTitleTemplate($catalog_id = null) {
+        if(!$catalog_id) $catalog_id = $this->catalog_id;
+        $catalog = Catalog::find($catalog_id);
+        if(!$catalog) return null;
+        if(!empty($catalog->product_title_template)) return $catalog->product_title_template;
+        if($catalog->parent_id) return $this->getTitleTemplate($catalog->parent_id);
+
+        return null;
+    }
+
+    public static $defaultTitleTemplate = '{name} купить{city} - БИЗНЕС-МС';
+
+    public function generateTitle() {
+        if(!($template = $this->getTitleTemplate())){
+            if($this->title && $this->title != $this->name){
+                $template = $this->title;
+            } else {
+                $template = self::$defaultTitleTemplate;
+            }
+        }
+
+        if(strpos($template, '{city}') === false) { //если кода city нет - добавляем
+            $template .= '{city}';
+        }
+        $this->title = $this->replaceTemplateVariable($template);
+    }
+
+    public function getDescriptionTemplate($catalog_id = null) {
+        if(!$catalog_id) $catalog_id = $this->catalog_id;
+        $catalog = Catalog::find($catalog_id);
+        if(!$catalog) return null;
+        if(!empty($catalog->product_description_template)) return $catalog->product_description_template;
+        if($catalog->parent_id) return $this->getDescriptionTemplate($catalog->parent_id);
+
+        return null;
+    }
+
+    public function getTextTemplate($catalog_id = null) {
+        if(!$catalog_id) $catalog_id = $this->catalog_id;
+        $catalog = Catalog::find($catalog_id);
+        if(!$catalog) return null;
+        if(!empty($catalog->product_text_template)) return $catalog->product_text_template;
+        if($catalog->parent_id) return $this->getTextTemplate($catalog->parent_id);
+
+        return null;
+    }
+
+    public static $defaultDescriptionTemplate = '{name} купить{city} по цене от {price} руб. | БИЗНЕС-МС';
+
+    public function generateDescription() {
+        if(!($template = $this->getDescriptionTemplate())){
+            if(!$template && $this->description){
+                $template = $this->description;
+            } else {
+                $template = self::$defaultDescriptionTemplate;
+            }
+        }
+
+        if(strpos($template, '{city}') === false) { //если кода city нет - добавляем
+            $template .= '{city}';
+        }
+
+        $this->description = $this->replaceTemplateVariable($template);;
+    }
+
+    public function generateText() {
+        $template = $this->getTextTemplate();
+        if(!$template) {
+            $template = $this->text;
+        }
+
+        $this->text = $this->replaceTemplateVariable($template);
+    }
+
+    public function generateKeywords() {
+        if(!$this->keywords) {
+            $this->keywords = mb_strtolower($this->name . ' цена, ' . $this->name . ' купить, ' . $this->name . '');
+        }
     }
 
 }

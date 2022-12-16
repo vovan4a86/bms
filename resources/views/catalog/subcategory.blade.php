@@ -38,7 +38,7 @@
                         <div class="catalog-list__head">
                             <div class="catalog-list__filter" data-filter-show>
                                 <svg class="svg-sprite-icon icon-option">
-                                    <use xlink:href="/static/images/sprite/symbol/sprite.svg#option"></use>
+                                    <use xlink:href="//static/images/sprite/symbol/sprite.svg#option"></use>
                                 </svg>
                                 <span>Показать фильтр</span>
                             </div>

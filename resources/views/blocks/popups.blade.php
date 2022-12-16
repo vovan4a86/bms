@@ -1,12 +1,12 @@
-<div class="popup" id="request-done" style="display:none">
+<div class="popup" id="request-done" style="display:none; padding: 50px;">
     <div class="popup__complete">
-        <div class="popup__complete-icon lazy" data-bg="static/images/common/ico_done.svg"></div>
+        <div class="popup__complete-icon lazy" data-bg="/static/images/common/ico_done.svg"></div>
         <div class="popup__complete-label">Ваша заявка отправлена. Наши специалисты свяжутся с вами в ближайшее время. Спасибо.</div>
     </div>
 </div>
 <div class="popup" id="order-done" style="display:none">
     <div class="popup__complete">
-        <div class="popup__complete-icon lazy" data-bg="static/images/common/ico_box.svg"></div>
+        <div class="popup__complete-icon lazy" data-bg="/static/images/common/ico_box.svg"></div>
         <div class="popup__complete-label">Ваш заказ отправлен. Наши специалисты свяжутся с вами в ближайшее время. Спасибо.</div>
     </div>
 </div>
@@ -60,7 +60,8 @@
         </div>
     </div>
 </form>
-<form class="popup" id="callback" action="#" style="display:none">
+<form class="popup" id="callback" action="{{ route('ajax.callback') }}"
+      onclick="sendCallback(this,event)" style="display:none">
     <div class="popup__container">
         <div class="popup__title">Заказать звонок</div>
         <div class="popup__subtitle">Введите данные для связи и наш менеджер свяжется с Вами в течении нескольких минут</div>
@@ -83,7 +84,7 @@
                 <input class="checkbox__input" type="checkbox" checked required>
                 <span class="checkbox__box"></span>
                 <span class="checkbox__policy">Даю согласие на обработку персональных данных.
-							<a href="javascript:void(0)" target="_blank">Пользовательское соглашение</a>
+							<a href="{{ route('policy') }}" target="_blank">Пользовательское соглашение</a>
 						</span>
             </label>
         </div>
@@ -134,7 +135,7 @@
                 <input class="checkbox__input" type="checkbox" checked required>
                 <span class="checkbox__box"></span>
                 <span class="checkbox__policy">Даю согласие на обработку персональных данных.
-							<a href="javascript:void(0)" target="_blank">Пользовательское соглашение</a>
+							<a href="{{ route('policy') }}" target="_blank">Пользовательское соглашение</a>
 						</span>
             </label>
             <button class="popup__submit btn-reset" name="submit" aria-label="Отправить">

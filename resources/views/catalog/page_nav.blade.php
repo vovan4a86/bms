@@ -22,7 +22,7 @@
             <li class="pagination__item">
                 <a class="pagination__link" href="{{ $paginator->nextPageUrl() }}" rel="next">
                     <svg class="svg-sprite-icon icon-triangle">
-                        <use xlink:href="/static/images/sprite/symbol/sprite.svg#triangle"></use>
+                        <use xlink:href="//static/images/sprite/symbol/sprite.svg#triangle"></use>
                     </svg>
                 </a>
             </li>
@@ -30,7 +30,7 @@
             <li class="pagination__item disabled">
             <span class="pagination__link">
                 <svg class="svg-sprite-icon icon-triangle">
-                    <use xlink:href="/static/images/sprite/symbol/sprite.svg#triangle"></use>
+                    <use xlink:href="//static/images/sprite/symbol/sprite.svg#triangle"></use>
                 </svg>
             </span>
             </li>

@@ -66,6 +66,10 @@ class City extends Model {
 		return $this->belongsToMany('Fanky\Admin\Models\SxgeoCity');
 	}
 
+	public function vacancies(){
+        return $this->hasMany(Vacancy::class);
+    }
+
 	/** @return City */
 	public static function check_region($alias) {
 		$city = self::whereAlias($alias)->first();

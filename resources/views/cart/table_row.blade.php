@@ -77,7 +77,7 @@
                             data-factorweight="{{ $item['factor_m2_weight'] }}"
                             data-src="#edit-order" aria-label="Изменить">
                         <svg class="svg-sprite-icon icon-pencil">
-                            <use xlink:href="static/images/sprite/symbol/sprite.svg#pencil"></use>
+                            <use xlink:href="/static/images/sprite/symbol/sprite.svg#pencil"></use>
                         </svg>
                     </button>
                     <button class="cart-control cart-control--remove" type="button"

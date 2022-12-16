@@ -30827,7 +30827,7 @@ var initMap = function initMap(id, lat, lon, zoom, text) {
       balloonContent: text
     }, {
       iconLayout: 'default#image',
-      iconImageHref: 'static/images/common/ico_map.svg',
+      iconImageHref: '/static/images/common/ico_map.svg',
       iconImageSize: [84, 106],
       iconImageOffset: [-38, -90]
     });
@@ -35237,7 +35237,7 @@ var utils = function utils() {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /mnt/main/vovan4a/Funky/bms-git/resources/assets/js--sources/main.js */"./resources/assets/js--sources/main.js");
+module.exports = __webpack_require__(/*! C:\_funky\bms-git\resources\assets\js--sources\main.js */"./resources/assets/js--sources/main.js");
 
 
 /***/ })

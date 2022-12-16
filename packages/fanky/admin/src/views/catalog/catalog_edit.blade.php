@@ -42,6 +42,10 @@
                 {!! Form::groupText('description', $catalog->description, 'description') !!}
 
 
+                @if(!$catalog->image && $catalog->section_image)
+                    <img class="img-polaroid" src="{{ $catalog->section_image }}" height="100">
+                @endif
+
                 <div class="form-group">
                     <label for="article-image">Изображение</label>
                     <input id="article-image" type="file" name="image" value=""
@@ -69,18 +73,45 @@
                     {!! Form::groupCheckbox('on_footer_menu', 1, $catalog->on_footer_menu, 'Показывать в футере') !!}
                 @endif
 
-                @if($catalog->parent_id !== 0 && count($catalog->public_children))
-                    <hr>
-                    <p>Отображаемые подразделы:</p>
-                    @foreach($catalog->public_children as $child)
-                        <div>
-                            <input type="checkbox" name="show_cats[]"
-                               {{ (in_array($child->id, $show_catalogs))? 'checked': '' }}
-                               value="{{ $child->id }}"/>
-                            {{ $child->name }}
-                        </div>
-                    @endforeach
-                @endif
+{{--                @if($catalog->parent_id !== 0 && count($catalog->public_children))--}}
+{{--                    <hr>--}}
+{{--                    <p>Отображаемые подразделы:</p>--}}
+{{--                    @foreach($catalog->public_children as $child)--}}
+{{--                        <div>--}}
+{{--                            <input type="checkbox" name="show_cats[]"--}}
+{{--                               {{ (in_array($child->id, $show_catalogs))? 'checked': '' }}--}}
+{{--                               value="{{ $child->id }}"/>--}}
+{{--                            {{ $child->name }}--}}
+{{--                        </div>--}}
+{{--                    @endforeach--}}
+{{--                @endif--}}
+                <div class="box box-primary box-solid">
+                    <div class="box-header with-border">
+                        <span class="box-title">Шаблон автооптимизации для товаров</span>
+                    </div>
+                    <div class="box-body">
+                        {!! Form::groupText('product_title_template', $catalog->product_title_template, 'Шаблон title') !!}
+                        <div class="small">Шаблон по умолчанию</div>
+                        <div class="small">{{ \Fanky\Admin\Models\Product::$defaultTitleTemplate }}</div>
+                        {!! Form::groupText('product_description_template', $catalog->product_description_template, 'Шаблон description') !!}
+                        <div class="small">Шаблон по умолчанию</div>
+                        <div class="small">{{ \Fanky\Admin\Models\Product::$defaultDescriptionTemplate }}</div>
+
+                        {!! Form::groupRichtext('product_text_template', $catalog->product_text_template, 'Шаблон текста') !!}
+                    </div>
+                    <div class="box-footer">
+                        Коды замены:
+                        <ul>
+                            <li>{name} - название товара</li>
+                            <li>{lower_name} - название товара в нижнем регистре</li>
+                            <li>{gost} - поле товара - Гост</li>
+                            <li>{steel} - поле товара - Марка стали</li>
+                            <li>{weight} - поле товара - Вес</li>
+                        </ul>
+                        Перед кодом {city} пробел не нужен. Шаблон применяется ко всем подразделам, если у них нет
+                        своего шаблона
+                    </div>
+                </div>
             </div>
 
             <div class="tab-pane" id="tab_2">

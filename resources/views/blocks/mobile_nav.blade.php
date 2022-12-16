@@ -1043,7 +1043,7 @@
         <li class="mob-nav__item">
             <a class="mob-nav__link mob-nav__link--email" href="mailto:bms-ek@bk.ru">
                 <svg class="svg-sprite-icon icon-email">
-                    <use xlink:href="static/images/sprite/symbol/sprite.svg#email"></use>
+                    <use xlink:href="/static/images/sprite/symbol/sprite.svg#email"></use>
                 </svg>bms-ek@bk.ru</a>
         </li>
         <li class="mob-nav__item">
@@ -1056,14 +1056,14 @@
         <li class="mob-nav__item">
             <a class="_link" href="javascript:void(0)">
                 <svg class="svg-sprite-icon icon-whatsapp">
-                    <use xlink:href="static/images/sprite/symbol/sprite.svg#whatsapp"></use>
+                    <use xlink:href="/static/images/sprite/symbol/sprite.svg#whatsapp"></use>
                 </svg>
             </a>
         </li>
         <li class="mob-nav__item">
             <a class="_link" href="javascript:void(0)">
                 <svg class="svg-sprite-icon icon-telegram">
-                    <use xlink:href="static/images/sprite/symbol/sprite.svg#telegram"></use>
+                    <use xlink:href="/static/images/sprite/symbol/sprite.svg#telegram"></use>
                 </svg>
             </a>
         </li>

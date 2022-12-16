@@ -6,7 +6,7 @@
         <section class="cart-blank section {{ Request::url() === '/' ? '' : 'section--inner' }}">
             @if(count($items) == 0)
                 <div class="cart-blank__container container">
-                    <img class="cart-blank__picture lazy" src="/" data-src="/static/images/common/cart.svg" alt="alt"
+                    <img class="cart-blank__picture lazy" src="/" data-src="//static/images/common/cart.svg" alt="alt"
                          width="165" height="165">
                     <h2 class="cart-blank__title">Ваша корзина пока пуста</h2>
                     <p class="cart-blank__text">Воспользуйтесь поиском или
@@ -22,7 +22,7 @@
                         <h2 class="section__title section__title--cart" data-count="{{ count($items) }}">Корзина</h2>
                         <button class="clear-btn" type="button">
                             <svg class="svg-sprite-icon icon-trash">
-                                <use xlink:href="static/images/sprite/symbol/sprite.svg#trash"></use>
+                                <use xlink:href="/static/images/sprite/symbol/sprite.svg#trash"></use>
                             </svg>
                             <span>Очистить корзину</span>
                         </button>

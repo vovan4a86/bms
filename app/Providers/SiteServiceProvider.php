@@ -42,6 +42,7 @@ class SiteServiceProvider extends ServiceProvider {
 
             $footerCatalog = Catalog::public()
                 ->where('on_footer_menu', 1)
+                ->where('parent_id', 0)
                 ->orderBy('order')
                 ->get();
             $footerMenu = Page::query()

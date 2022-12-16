@@ -5,7 +5,7 @@
         <section class="error">
             <div class="error__container container">
                 <div class="error__title">Страница не найдена</div>
-                <img class="error__pic" src="static/images/common/error.png" width="927" height="444" alt="">
+                <img class="error__pic" src="/static/images/common/error.png" width="927" height="444" alt="">
                 <div class="error__text">Запрашиваемая страница не найдена. Возможно вы сделали опечатку в адресе или страница была перемещена</div>
                 <div class="error__action">
                     <a class="button button--primary" href="{{ route('main') }}" title="На главную">

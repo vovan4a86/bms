@@ -1,8 +1,6 @@
 @if(isset($bread) && count($bread))
     <!-- headerIsBlack && 'breadcrumbs--black'-->
-    <nav class="breadcrumbs
-                {{ isset($headerIsWhite) ? 'breadcrumbs--white' : null }}
-                {{ isset($headerIsBlack) ? 'breadcrumbs--black' : null }}">
+    <nav class="breadcrumbs {{ isset($headerIsBlack) ? 'breadcrumbs--black' : null }}">
         <div class="breadcrumbs__container container">
             <ul class="breadcrumbs__list list-reset" itemscope itemtype="https://schema.org/BreadcrumbList">
                 <li class="breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">

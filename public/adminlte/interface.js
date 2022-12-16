@@ -166,10 +166,6 @@ function urldecode(str) {
    return decodeURIComponent((str+'').replace(/\+/g, '%20'));
 }
 
-// function initTree(container) {
-//
-// }
-
 function postDelete(elem, confirm_msg, parent, e){
     e.preventDefault();
     if (!confirm(confirm_msg)) return false;
@@ -211,30 +207,6 @@ function init_autocomplete(el){
         }
     });
 }
-
-// $('button.card__cart').on('click', function (e) {
-// 	if($(this).is('.btn--added')) return;
-// 	const id = $(this).data('product-id');
-// 	Cart.add(id, 1, function (res) {
-// 		$('.header__cart').replaceWith(res.header_cart);
-// 		$('#cart-dialog').html(res.popup);
-// 		$(this).addClass('btn--added');
-// 		// $(this).text('Добавлено');
-// 	}.bind(this));
-// });
-//
-// $('button.cart-control--remove').on('click', function (e) {
-// 	const id = $(this).data('remove-order');
-// 	const count = $('.section__title.section__title--cart').data('count');
-// 	Cart.remove(id,  function (res) {
-// 		$('#product-' + id).remove();
-// 		$('.header__cart').replaceWith(res.header_cart);
-// 		$('.cart__values').replaceWith(res.cart_values);
-// 		$('.section__title.section__title--cart').attr('data-count', count - 1);
-// 		// $('#cart-dialog').html(res.popup);
-// 		// $(this).text('Добавлено');
-// 	}.bind(this));
-// });
 
 $('button.clear-btn').on('click', function (e) {
 	Cart.purge(function (res) {
@@ -445,6 +417,9 @@ function sendFastRequest(frm, e) {
 	});
 }
 
+const closeBtn =
+	'<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M25 7 7 25M25 25 7 7"/></svg>';
+
 function sendCallback(frm, e) {
 	e.preventDefault();
 	var form = $(frm);
@@ -463,12 +438,12 @@ function sendCallback(frm, e) {
 			form.find('.sending__title').after('<div class="err-msg-block has-error">Заполните, пожалуйста, обязательные поля.</div>');
 		} else {
 			resetForm(form);
-			alert('Заявка на обратный звонок получена! Мы вам перезвоним!');
 			form.find('.is-close').click();
-			// popup('Спасибо, ваш вопрос отправлен. Сообщение об ответе придет на эл. почту.');
-			// Fancybox.show([{ src: '#confirm', type: 'inline' }], {
-			//     mainClass: 'popup--main popup--thanks'
-			// });
+			Fancybox.show([{ src: '#request-done', type: 'inline' }], {
+				mainClass: 'popup--custom popup--complete',
+				template: { closeButton: closeBtn },
+				hideClass: 'fancybox-zoomOut'
+			});
 		}
 	});
 }

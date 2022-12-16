@@ -27,7 +27,7 @@
         <section class="section sending">
             <h2 class="v-hidden">Оставить заявку</h2>
             <div class="container">
-                <div class="sending__content lazy" data-bg="static/images/common/sending-decor.svg">
+                <div class="sending__content lazy" data-bg="/static/images/common/sending-decor.svg">
                     <div class="sending__title">Отправьте заявку в свободной форме и наши менеджеры сформируют предложение по вашему запросу</div>
                     <form class="sending__form form" action="#">
                         <div class="sending__row">

@@ -17,7 +17,7 @@
 									<span class="card-link__label">{{ $cat->name }}</span>
 									<span class="card-link__icon">
 										<svg class="svg-sprite-icon icon-arrow">
-											<use xlink:href="/static/images/sprite/symbol/sprite.svg#arrow"></use>
+											<use xlink:href="//static/images/sprite/symbol/sprite.svg#arrow"></use>
 										</svg>
 									</span>
 								</span>

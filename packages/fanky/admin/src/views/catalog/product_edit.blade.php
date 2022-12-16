@@ -24,7 +24,8 @@
             <li><a href="#tab_4" data-toggle="tab">Изображения</a></li>
             <li><a href="#tab_5" data-toggle="tab">Похожие товары</a></li>
             <li class="pull-right">
-                <a href="{{ route('admin.catalog.products', [$product->catalog_id]) }}" onclick="return catalogContent(this)">К списку товаров</a>
+                <a href="{{ route('admin.catalog.products', [$product->catalog_id]) }}"
+                   onclick="return catalogContent(this)">К списку товаров</a>
             </li>
             @if($product->id)
                 <li class="pull-right">
@@ -42,8 +43,29 @@
                 {!! Form::groupText('title', $product->title, 'Title') !!}
                 {!! Form::groupText('keywords', $product->keywords, 'keywords') !!}
                 {!! Form::groupText('description', $product->description, 'description') !!}
-                {!! Form::groupText('raw_price', $product->raw_price, 'Парсинг-цена', ['disabled']) !!}
-                {!! Form::groupNumber('price', $product->price, 'Цена', ['step' => 1]) !!}
+                <hr>
+                <h4>Харакетеристики:</h4>
+                <div style="display: flex; flex-shrink: 1;">
+                    {!! Form::groupText('size', $product->size, 'Размер') !!}
+                    <div style="margin: 0 10px;">
+                        {!! Form::groupText('wall', $product->wall, 'Стенка') !!}
+                    </div>
+                    {!! Form::groupText('steel', $product->steel, 'Марка стали') !!}
+                </div>
+
+                <hr>
+
+                <h4>Цены:</h4>
+                <div style="display: flex; flex-shrink: 1;">
+                    {!! Form::groupText('raw_price', $product->raw_price, 'Парсинг-цена за т.', ['disabled']) !!}
+                    {!! Form::groupNumber('price', $product->price, 'Цена за т.', ['step' => 1])!!}
+                    <div style="margin: 0 10px;">
+                        {!! Form::groupNumber('price_per_item', $product->price_per_item, 'Цена за шт.', ['step' => 1])!!}
+                    </div>
+                    {!! Form::groupNumber('price_per_metr', $product->price_per_metr, 'Цена за м.', ['step' => 1])!!}
+                </div>
+
+
                 {!! Form::groupText('measure', $product->measure, 'Измерение') !!}
 
                 @if(count($add_params))
@@ -52,11 +74,11 @@
                     @endforeach
                 @endif
                 <hr>
-                {!! Form::groupSelect('in_stock', [0 => 'Временно отсутствует', 1 => 'В наличии', 2 => 'Под заказ' ], $product->in_stock, 'Наличие') !!}
+                {{--                {!! Form::groupSelect('in_stock', [0 => 'Временно отсутствует', 1 => 'В наличии', 2 => 'Под заказ' ], $product->in_stock, 'Наличие') !!}--}}
                 {!! Form::hidden('in_stock', 0) !!}
                 {!! Form::groupCheckbox('published', 1, $product->published, 'Показывать товар') !!}
-{{--                {!! Form::groupCheckbox('in_stock', 1, $product->in_stock, 'В наличии') !!}--}}
-{{--                {!! Form::groupCheckbox('on_main', 1, $product->on_main, 'Показывать на главной') !!}--}}
+                {!! Form::groupCheckbox('in_stock', 1, $product->in_stock, 'В наличии') !!}
+                {{--                {!! Form::groupCheckbox('on_main', 1, $product->on_main, 'Показывать на главной') !!}--}}
 
                 {!! Form::hidden('is_action', 0) !!}
                 {!! Form::groupCheckbox('is_action', 1, $product->is_action, 'Акция') !!}
@@ -65,7 +87,7 @@
 
             </div>
             <div class="tab-pane" id="tab_2">
-{{--                {!! Form::groupRichtext('product__points', $product->product__points, 'Преимущества на странице товара', ['rows' => 3]) !!}--}}
+                {{--                {!! Form::groupRichtext('product__points', $product->product__points, 'Преимущества на странице товара', ['rows' => 3]) !!}--}}
                 {!! Form::groupRichtext('announce_text', $product->announce_text, 'Краткое описание', ['rows' => 3]) !!}
                 {!! Form::groupRichtext('text', $product->text, 'Текст', ['rows' => 3]) !!}
                 {!! Form::groupRichtext('seo_text', $product->seo_text, 'SEO Текст', ['rows' => 3]) !!}
@@ -107,10 +129,10 @@
 
 <script type="text/javascript">
     $(".images_list").sortable({
-        update: function(event, ui) {
+        update: function (event, ui) {
             var url = "{{ route('admin.catalog.productImageOrder') }}";
             var data = {};
-            data.sorted = $('.images_list').sortable("toArray", {attribute: 'data-id'} );
+            data.sorted = $('.images_list').sortable("toArray", {attribute: 'data-id'});
             sendAjax(url, data);
             //console.log(data);
         },

@@ -225,6 +225,23 @@ Route::group(['namespace' => 'Fanky\Admin\Controllers', 'prefix' => 'admin', 'as
 			->name('.delete-image');
 	});
 
+    Route::group(['as' => '.vacancies', 'prefix' => 'vacancies'], function () {
+        $controller = 'AdminVacanciesController@';
+        Route::get('/', $controller . 'getIndex');
+
+        Route::get('edit/{id?}', $controller . 'getEdit')
+            ->name('.edit');
+
+        Route::post('save', $controller . 'postSave')
+            ->name('.save');
+
+        Route::post('delete/{id}', $controller . 'postDelete')
+            ->name('.delete');
+
+        Route::post('delete-image/{id}', $controller . 'postDeleteImage')
+            ->name('.delete-image');
+    });
+
     Route::group(['as' => '.offers', 'prefix' => 'offers'], function () {
 		$controller = 'AdminOffersController@';
 		Route::get('/', $controller . 'getIndex');

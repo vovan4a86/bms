@@ -10,13 +10,13 @@
 {{--                            $file_name = stristr(Settings::fileSrc($slide['main_slider_image']), '.', true);--}}
 {{--                        @endphp--}}
                         <picture>
-        {{--                    <source media="(max-width: 768px)" srcset="/static/images/common/hero-slide--768.webp" type="image/webp">--}}
+        {{--                    <source media="(max-width: 768px)" srcset="//static/images/common/hero-slide--768.webp" type="image/webp">--}}
 {{--                            <source media="(max-width: 768px)" srcset="{{ $file_name }}--768.jpg">--}}
-        {{--                    <source media="(max-width: 1024px)" srcset="/static/images/common/hero-slide--1024.webp" type="image/webp">--}}
+        {{--                    <source media="(max-width: 1024px)" srcset="//static/images/common/hero-slide--1024.webp" type="image/webp">--}}
 {{--                            <source media="(max-width: 1024px)" srcset="{{ $file_name }}--1024.jpg">--}}
-        {{--                    <source media="(max-width: 1600px)" srcset="/static/images/common/hero-slide--1600.webp" type="image/webp">--}}
+        {{--                    <source media="(max-width: 1600px)" srcset="//static/images/common/hero-slide--1600.webp" type="image/webp">--}}
 {{--                            <source media="(max-width: 1600px)" srcset="{{ $file_name }}--1600.jpg">--}}
-        {{--                    <source srcset="/static/images/common/hero-slide.webp" type="image/webp">--}}
+        {{--                    <source srcset="//static/images/common/hero-slide.webp" type="image/webp">--}}
                             <img class="hero__picture swiper-lazy" src="{{ Settings::fileSrc($slide['main_slider_image']) }}" data-src="{{ Settings::fileSrc($slide['main_slider_image']) }}" alt="picture">
                         </picture>
                     </div>
@@ -30,7 +30,7 @@
                                 <a class="btn btn--white" href="{{ $slide['main_slider_link'] }}">
                                     <span>{{ $slide['main_slider_button'] }}</span>
                                     <svg class="svg-sprite-icon icon-arrow">
-                                        <use xlink:href="/static/images/sprite/symbol/sprite.svg#arrow"></use>
+                                        <use xlink:href="//static/images/sprite/symbol/sprite.svg#arrow"></use>
                                     </svg>
                                 </a>
                             </div>

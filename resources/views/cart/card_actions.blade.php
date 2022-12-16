@@ -19,7 +19,7 @@
     <button class="card__cart {{ $in_cart ? 'btn--added' : ''}}" {{ $in_cart ? 'disabled' : '' }} type="button"
             aria-label="Добавить в корзину" data-product-id="{{ $product->id }}">
         <svg class="svg-sprite-icon icon-cart">
-            <use xlink:href="/static/images/sprite/symbol/sprite.svg#cart"></use>
+            <use xlink:href="//static/images/sprite/symbol/sprite.svg#cart"></use>
         </svg>
     </button>
 </div>

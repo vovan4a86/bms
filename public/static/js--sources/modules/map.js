@@ -19,7 +19,7 @@ export const initMap = (id, lat, lon, zoom, text) => {
         },
         {
           iconLayout: 'default#image',
-          iconImageHref: 'static/images/common/ico_map.svg',
+          iconImageHref: '/static/images/common/ico_map.svg',
           iconImageSize: [84, 106],
           iconImageOffset: [-38, -90]
         }

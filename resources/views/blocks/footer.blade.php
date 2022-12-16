@@ -1,10 +1,10 @@
 <!-- data-background="dark"-->
 <!-- class=(homepage && 'swiper-slide')-->
-<footer class="footer lazy swiper-slide" data-background="dark" data-bg="static/images/common/footer-bg.jpg">
+<footer class="footer lazy swiper-slide" data-background="dark" data-bg="/static/images/common/footer-bg.jpg">
     <div class="footer__container container">
         <div class="footer__grid">
             <div class="footer__info">
-                <a class="footer__logo logo lazy" href="{{ route('main') }}" data-bg="static/images/common/logo.svg"></a>
+                <a class="footer__logo logo lazy" href="{{ route('main') }}" data-bg="/static/images/common/logo.svg"></a>
                 <div class="footer__rows">
                     <div class="footer__row">
                         <div class="footer__label">Приходите и приезжайте</div>
@@ -28,10 +28,10 @@
                         <div class="footer__data footer__data--messenger">
                             <div class="messenger messenger--footer">
                                 <a class="messenger__item" href="https://wa.me/{{ preg_replace('/[^\d]+/', '', Settings::get('footer_whatsapp')) }}" title="Написать в Whatsapp">
-                                    <span class="lazy" data-bg="static/images/common/ico_wa.svg"></span>
+                                    <span class="lazy" data-bg="/static/images/common/ico_wa.svg"></span>
                                 </a>
                                 <a class="messenger__item" href="https://t.me/+{{ preg_replace('/[^\d]+/', '', Settings::get('footer_telegram')) }}" title="Написать в Telegram">
-                                    <span class="lazy" data-bg="static/images/common/ico_telegram.svg"></span>
+                                    <span class="lazy" data-bg="/static/images/common/ico_telegram.svg"></span>
                                 </a>
                             </div>
                         </div>

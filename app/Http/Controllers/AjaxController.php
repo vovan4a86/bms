@@ -205,7 +205,7 @@ class AjaxController extends Controller
     //заказать звонок
     public function postCallback(Request $request)
     {
-        $data = $request->only(['name', 'phone', 'time']);
+        $data = $request->only(['name', 'phone']);
         $valid = Validator::make($data, [
             'name' => 'required',
             'phone' => 'required',
@@ -223,7 +223,7 @@ class AjaxController extends Controller
             ];
             $feedback = Feedback::create($feedback_data);
             Mail::send('mail.feedback', ['feedback' => $feedback], function ($message) use ($feedback) {
-                $title = $feedback->id . ' | Заказать звонок | Stal-Service';
+                $title = $feedback->id . ' | Заказать звонок | БМС>';
                 $message->from($this->fromMail, $this->fromName)
                     ->to(Settings::get('feedback_email'))
                     ->subject($title);

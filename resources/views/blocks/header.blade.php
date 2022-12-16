@@ -29,10 +29,10 @@
                 <div class="header__messengers">
                     <div class="messenger">
                         <a class="messenger__item" href="https://wa.me/{{ preg_replace('/[^\d]+/', '', Settings::get('header_whatsapp')) }}" title="Написать в Whatsapp">
-                            <span class="lazy" data-bg="static/images/common/ico_wa.svg"></span>
+                            <span class="lazy" data-bg="/static/images/common/ico_wa.svg"></span>
                         </a>
                         <a class="messenger__item" href="https://t.me/+{{ preg_replace('/[^\d]+/', '', Settings::get('header_telegram')) }}" title="Написать в Telegram">
-                            <span class="lazy" data-bg="static/images/common/ico_telegram.svg"></span>
+                            <span class="lazy" data-bg="/static/images/common/ico_telegram.svg"></span>
                         </a>
                     </div>
                 </div>
@@ -44,7 +44,12 @@
         <div class="header__container header__container--bottom container">
             <div class="header__grid">
                 <!-- if homepage-->
-                <a class="header__logo logo lazy" href="{{ route('main') }}" data-bg="static/images/common/logo.svg" data-white="static/images/common/logo.svg" data-dark="static/images/common/logo--accent.svg"></a>
+                @if(Request::url() == route('main'))
+                    <a class="header__logo logo lazy" href="{{ route('main') }}" data-bg="/static/images/common/logo.svg" data-white="/static/images/common/logo.svg" data-dark="/static/images/common/logo--accent.svg"></a>
+                @endif
+                @if(isset($headerIsWhite))
+                    <a class="header__logo logo lazy" href="{{ route('main') }}" data-bg="/static/images/common/logo--accent.svg"></a>
+                @endif
                 <div class="header__nav">
                     <div class="top-nav">
                         <button class="top-nav__catalog btn-reset" type="button" data-open-catalog aria-label="Каталог товаров">
@@ -109,101 +114,101 @@
                     <div class="overlay-nav__navigation">
                         <div class="overlay-nav__link tab-core__nav is-active" data-open="Сортовой прокат">
                             <div class="overlay-nav__label">
-                                <div class="overlay-nav__icon lazy" data-bg="static/images/common/ico_beam.svg"></div>
+                                <div class="overlay-nav__icon lazy" data-bg="/static/images/common/ico_beam.svg"></div>
                                 <span>Сортовой прокат</span>
                             </div>
                             <svg class="svg-sprite-icon icon-right">
-                                <use xlink:href="static/images/sprite/symbol/sprite.svg#right"></use>
+                                <use xlink:href="/static/images/sprite/symbol/sprite.svg#right"></use>
                             </svg>
                         </div>
                         <div class="overlay-nav__link tab-core__nav" data-open="Трубный прокат">
                             <div class="overlay-nav__label">
-                                <div class="overlay-nav__icon lazy" data-bg="static/images/common/ico_tubes.svg"></div>
+                                <div class="overlay-nav__icon lazy" data-bg="/static/images/common/ico_tubes.svg"></div>
                                 <span>Трубный прокат</span>
                             </div>
                             <svg class="svg-sprite-icon icon-right">
-                                <use xlink:href="static/images/sprite/symbol/sprite.svg#right"></use>
+                                <use xlink:href="/static/images/sprite/symbol/sprite.svg#right"></use>
                             </svg>
                         </div>
                         <div class="overlay-nav__link tab-core__nav" data-open="Цветной прокат">
                             <div class="overlay-nav__label">
-                                <div class="overlay-nav__icon lazy" data-bg="static/images/common/ico_ingot.svg"></div>
+                                <div class="overlay-nav__icon lazy" data-bg="/static/images/common/ico_ingot.svg"></div>
                                 <span>Цветной прокат</span>
                             </div>
                             <svg class="svg-sprite-icon icon-right">
-                                <use xlink:href="static/images/sprite/symbol/sprite.svg#right"></use>
+                                <use xlink:href="/static/images/sprite/symbol/sprite.svg#right"></use>
                             </svg>
                         </div>
                         <div class="overlay-nav__link tab-core__nav" data-open="Нержавеющий прокат">
                             <div class="overlay-nav__label">
-                                <div class="overlay-nav__icon lazy" data-bg="static/images/common/ico_steel.svg"></div>
+                                <div class="overlay-nav__icon lazy" data-bg="/static/images/common/ico_steel.svg"></div>
                                 <span>Нержавеющий прокат</span>
                             </div>
                             <svg class="svg-sprite-icon icon-right">
-                                <use xlink:href="static/images/sprite/symbol/sprite.svg#right"></use>
+                                <use xlink:href="/static/images/sprite/symbol/sprite.svg#right"></use>
                             </svg>
                         </div>
                         <div class="overlay-nav__link tab-core__nav" data-open="Сантехарматура">
                             <div class="overlay-nav__label">
-                                <div class="overlay-nav__icon lazy" data-bg="static/images/common/ico_pipeline.svg"></div>
+                                <div class="overlay-nav__icon lazy" data-bg="/static/images/common/ico_pipeline.svg"></div>
                                 <span>Сантехарматура</span>
                             </div>
                             <svg class="svg-sprite-icon icon-right">
-                                <use xlink:href="static/images/sprite/symbol/sprite.svg#right"></use>
+                                <use xlink:href="/static/images/sprite/symbol/sprite.svg#right"></use>
                             </svg>
                         </div>
                         <div class="overlay-nav__link tab-core__nav" data-open="Поковки">
                             <div class="overlay-nav__label">
-                                <div class="overlay-nav__icon lazy" data-bg="static/images/common/ico_pipe.svg"></div>
+                                <div class="overlay-nav__icon lazy" data-bg="/static/images/common/ico_pipe.svg"></div>
                                 <span>Поковки</span>
                             </div>
                             <svg class="svg-sprite-icon icon-right">
-                                <use xlink:href="static/images/sprite/symbol/sprite.svg#right"></use>
+                                <use xlink:href="/static/images/sprite/symbol/sprite.svg#right"></use>
                             </svg>
                         </div>
                         <div class="overlay-nav__link tab-core__nav" data-open="Сварочные материалы">
                             <div class="overlay-nav__label">
-                                <div class="overlay-nav__icon lazy" data-bg="static/images/common/ico_mask.svg"></div>
+                                <div class="overlay-nav__icon lazy" data-bg="/static/images/common/ico_mask.svg"></div>
                                 <span>Сварочные материалы</span>
                             </div>
                             <svg class="svg-sprite-icon icon-right">
-                                <use xlink:href="static/images/sprite/symbol/sprite.svg#right"></use>
+                                <use xlink:href="/static/images/sprite/symbol/sprite.svg#right"></use>
                             </svg>
                         </div>
                         <div class="overlay-nav__link tab-core__nav" data-open="Асбестоцементные материалы">
                             <div class="overlay-nav__label">
-                                <div class="overlay-nav__icon lazy" data-bg="static/images/common/ico_tube.svg"></div>
+                                <div class="overlay-nav__icon lazy" data-bg="/static/images/common/ico_tube.svg"></div>
                                 <span>Асбестоцементные материалы</span>
                             </div>
                             <svg class="svg-sprite-icon icon-right">
-                                <use xlink:href="static/images/sprite/symbol/sprite.svg#right"></use>
+                                <use xlink:href="/static/images/sprite/symbol/sprite.svg#right"></use>
                             </svg>
                         </div>
                         <div class="overlay-nav__link tab-core__nav" data-open="Листовой прокат">
                             <div class="overlay-nav__label">
-                                <div class="overlay-nav__icon lazy" data-bg="static/images/common/ico_fraction.svg"></div>
+                                <div class="overlay-nav__icon lazy" data-bg="/static/images/common/ico_fraction.svg"></div>
                                 <span>Листовой прокат</span>
                             </div>
                             <svg class="svg-sprite-icon icon-right">
-                                <use xlink:href="static/images/sprite/symbol/sprite.svg#right"></use>
+                                <use xlink:href="/static/images/sprite/symbol/sprite.svg#right"></use>
                             </svg>
                         </div>
                         <div class="overlay-nav__link tab-core__nav" data-open="Металлоизделия">
                             <div class="overlay-nav__label">
-                                <div class="overlay-nav__icon lazy" data-bg="static/images/common/ico_metal.svg"></div>
+                                <div class="overlay-nav__icon lazy" data-bg="/static/images/common/ico_metal.svg"></div>
                                 <span>Металлоизделия</span>
                             </div>
                             <svg class="svg-sprite-icon icon-right">
-                                <use xlink:href="static/images/sprite/symbol/sprite.svg#right"></use>
+                                <use xlink:href="/static/images/sprite/symbol/sprite.svg#right"></use>
                             </svg>
                         </div>
                         <div class="overlay-nav__link tab-core__nav" data-open="Кровельные и фасадные материалы">
                             <div class="overlay-nav__label">
-                                <div class="overlay-nav__icon lazy" data-bg="static/images/common/ico_material.svg"></div>
+                                <div class="overlay-nav__icon lazy" data-bg="/static/images/common/ico_material.svg"></div>
                                 <span>Кровельные и фасадные материалы</span>
                             </div>
                             <svg class="svg-sprite-icon icon-right">
-                                <use xlink:href="static/images/sprite/symbol/sprite.svg#right"></use>
+                                <use xlink:href="/static/images/sprite/symbol/sprite.svg#right"></use>
                             </svg>
                         </div>
                     </div>
@@ -325,14 +330,14 @@
                             </div>
                             <div class="overlay-nav__actions">
                                 <a class="action-link action-link--green" href="javascript:void(0)" title="Латунный квадрат">
-                                    <img class="action-link__picture lazy" src="/" data-src="static/images/common/action-1.png" alt="" width="153" height="161" />
+                                    <img class="action-link__picture lazy" src="/" data-src="/static/images/common/action-1.png" alt="" width="153" height="161" />
                                     <span class="action-link__title">Латунный квадрат</span>
                                     <span class="action-link__subtitle">ЛС59-1 КВ 14 L=3000</span>
                                     <span class="action-link__price">от&nbsp;
 												<span class="action-link__current">587</span>&nbsp;₽/кг</span>
                                 </a>
                                 <a class="action-link action-link--blue" href="javascript:void(0)" title="Лист медный">
-                                    <img class="action-link__picture lazy" src="/" data-src="static/images/common/action-2.png" alt="" width="166" height="174" />
+                                    <img class="action-link__picture lazy" src="/" data-src="/static/images/common/action-2.png" alt="" width="166" height="174" />
                                     <span class="action-link__title">Лист медный</span>
                                     <span class="action-link__subtitle">10х600х1500 М1 мягкий</span>
                                     <span class="action-link__price">от&nbsp;
@@ -355,13 +360,13 @@
 {{--        <div class="container header__container">--}}
 {{--            <div class="header__column">--}}
 {{--                <a class="header__logo logo" href="{{ route('main') }}" title="Сталь Сервис">--}}
-{{--                    <img class="lazy" data-src="/static/images/common/logo.svg" src="/" alt="Сталь Сервис" width="409" height="49">--}}
+{{--                    <img class="lazy" data-src="//static/images/common/logo.svg" src="/" alt="Сталь Сервис" width="409" height="49">--}}
 {{--                </a>--}}
 {{--                <div class="header__city city">--}}
 {{--                    <a class="city__label" href="{{ route('ajax.show-popup-cities') }}" data-fancybox data-type="ajax">--}}
 {{--                        @if(isset($current_city) && $current_city)г. {{ $current_city->name }}@else Екатеринбург@endif--}}
 {{--                        <svg class="svg-sprite-icon icon-dropdown">--}}
-{{--                            <use xlink:href="/static/images/sprite/symbol/sprite.svg#dropdown"></use>--}}
+{{--                            <use xlink:href="//static/images/sprite/symbol/sprite.svg#dropdown"></use>--}}
 {{--                        </svg>--}}
 {{--                    </a>--}}
 {{--                    @include('blocks.show_small_region_confirm')--}}
@@ -370,13 +375,13 @@
 {{--            <div class="header__column">--}}
 {{--                <a class="header__send" href="#message" data-popup title="Написать нам">--}}
 {{--                    <svg class="svg-sprite-icon icon-email">--}}
-{{--                        <use xlink:href="/static/images/sprite/symbol/sprite.svg#email"></use>--}}
+{{--                        <use xlink:href="//static/images/sprite/symbol/sprite.svg#email"></use>--}}
 {{--                    </svg>--}}
 {{--                    <span>Написать нам</span>--}}
 {{--                </a>--}}
 {{--                <a class="header__send" href="#callback" data-popup title="Заказать звонок">--}}
 {{--                    <svg class="svg-sprite-icon icon-phone">--}}
-{{--                        <use xlink:href="/static/images/sprite/symbol/sprite.svg#phone"></use>--}}
+{{--                        <use xlink:href="//static/images/sprite/symbol/sprite.svg#phone"></use>--}}
 {{--                    </svg>--}}
 {{--                    <span>Заказать звонок</span>--}}
 {{--                </a>--}}
@@ -394,7 +399,7 @@
 {{--            <div class="header__column">--}}
 {{--                <div class="header__catalog" title="Каталог продукции" aria-label="Каталог продукции">--}}
 {{--                    <svg class="svg-sprite-icon icon-list">--}}
-{{--                        <use xlink:href="/static/images/sprite/symbol/sprite.svg#list"></use>--}}
+{{--                        <use xlink:href="//static/images/sprite/symbol/sprite.svg#list"></use>--}}
 {{--                    </svg>--}}
 {{--                    <span>Каталог продукции</span>--}}
 {{--                    <div class="catalog-header" tabindex="-1">--}}
@@ -408,7 +413,7 @@
 {{--                                        <span>{{ $topItem->name }}</span>--}}
 {{--                                        @if(count($topItem->getAllPublicChildren()))--}}
 {{--                                            <svg class="svg-sprite-icon icon-caret">--}}
-{{--                                                <use xlink:href="/static/images/sprite/symbol/sprite.svg#caret"></use>--}}
+{{--                                                <use xlink:href="//static/images/sprite/symbol/sprite.svg#caret"></use>--}}
 {{--                                            </svg>--}}
 {{--                                        @endif--}}
 {{--                                    </a>--}}
@@ -455,7 +460,7 @@
 {{--                           placeholder="Поиск" aria-label="Поиск по сайту" required>--}}
 {{--                    <button class="search-header__button">--}}
 {{--                        <svg class="svg-sprite-icon icon-search">--}}
-{{--                            <use xlink:href="/static/images/sprite/symbol/sprite.svg#search"></use>--}}
+{{--                            <use xlink:href="//static/images/sprite/symbol/sprite.svg#search"></use>--}}
 {{--                        </svg>--}}
 {{--                    </button>--}}
 {{--                </form>--}}

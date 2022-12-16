@@ -8,7 +8,7 @@
             <span class="link-offer__label">Подробнее</span>
             <span class="link-offer__icon">
                 <svg class="svg-sprite-icon icon-arrow">
-                    <use xlink:href="/static/images/sprite/symbol/sprite.svg#arrow"></use>
+                    <use xlink:href="//static/images/sprite/symbol/sprite.svg#arrow"></use>
                 </svg>
             </span>
         </a>

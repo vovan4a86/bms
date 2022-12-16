@@ -20,6 +20,6 @@
 </div>
 <div class="scrolltop" aria-label="В начало страницы" tabindex="1">
     <svg class="svg-sprite-icon icon-up">
-        <use xlink:href="static/images/sprite/symbol/sprite.svg#up"></use>
+        <use xlink:href="/static/images/sprite/symbol/sprite.svg#up"></use>
     </svg>
 </div>

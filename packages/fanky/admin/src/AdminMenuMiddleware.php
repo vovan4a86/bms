@@ -41,6 +41,10 @@ class AdminMenuMiddleware {
 
 			$menu->add('Новости', ['route' => 'admin.news', 'icon' => 'fa-calendar'])
 				->active('/admin/news/*');
+
+			$menu->add('Вакансии', ['route' => 'admin.vacancies', 'icon' => 'fa-calendar'])
+				->active('/admin/vacancies/*');
+
 			$menu->add('Статьи', ['route' => 'admin.publications', 'icon' => 'fa-calendar'])
 				->active('/admin/publications/*');
 

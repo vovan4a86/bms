@@ -56,6 +56,11 @@ class PageController extends Controller {
             $sitemap = Page::find(1)->getPublicChildren();
         }
 
+        if($page->alias = 'about') {
+            $about_image = Page::UPLOAD_URL . $page->image;
+            $headerIsBlack = true;
+        }
+
 		return response()->view($view, [
 			'page'        => $page,
 			'h1'          => $page->h1,
@@ -64,6 +69,8 @@ class PageController extends Controller {
 			'children'    => $children,
             'sitemap'     => $sitemap ?? null,
             'catalog' => $catalog ?? null,
+            'about_image' => $about_image ?? null,
+            'headerIsBlack' => $headerIsBlack ?? null,
 		]);
 	}
 

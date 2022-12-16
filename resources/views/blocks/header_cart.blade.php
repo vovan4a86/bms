@@ -2,7 +2,7 @@
     @if(count($items))
         <div class="cart-header__link">
             <svg class="svg-sprite-icon icon-cart">
-                <use xlink:href="/static/images/sprite/symbol/sprite.svg#cart"></use>
+                <use xlink:href="//static/images/sprite/symbol/sprite.svg#cart"></use>
             </svg>
             <span class="cart-header__badge">{{ count($items) }}</span>
         </div>
@@ -13,7 +13,7 @@
     @else
         <div class="cart-header__link">
             <svg class="svg-sprite-icon icon-cart">
-                <use xlink:href="/static/images/sprite/symbol/sprite.svg#cart"></use>
+                <use xlink:href="//static/images/sprite/symbol/sprite.svg#cart"></use>
             </svg>
             <span class="cart-header__badge">0</span>
         </div>

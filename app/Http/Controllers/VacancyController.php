@@ -30,25 +30,7 @@ class VacancyController extends Controller {
         if (!$page)
 			abort(404, 'Страница не найдена');
 		$bread = $this->bread;
-//        $items = News::orderBy('date', 'desc')
-//            ->public()->paginate(Settings::get('news_per_page'));
         $items = null;
-
-        //обработка ajax-обращений, в routes добавить POST метод(!)
-//        if ($request->ajax()) {
-//            $view_items = [];
-//            foreach ($items as $item) {
-//                //добавляем новые элементы
-//                $view_items[] = view('news.list_item', [
-//                    'item' => $item,
-//                ])->render();
-//            }
-//
-//            return [
-//                'items'      => $view_items,
-//                'paginate' => view('paginations.links_limit', ['paginator' => $items])->render()
-//            ];
-//        }
 
         if (count($request->query())) {
             View::share('canonical', $this->vacancy_page->alias);
@@ -57,7 +39,10 @@ class VacancyController extends Controller {
         return view('vacancy.index', [
             'bread' => $bread,
             'items' => $items,
+            'h1' => $page->h1,
+            'title' => $page->title,
             'text' => $page->text,
+            'headerIsBlack' => true,
         ]);
 	}
 

@@ -270,13 +270,14 @@ class Catalog extends Model {
     }
 
 	public function getRecurseProductsCount() {
-		$count = Cache::remember('product_count_' . $this->id, env('CACHE_TIME'), function () {
-			$ids = $this->getRecurseChildrenIds();
+//		$count = Cache::remember('product_count_' . $this->id, env('CACHE_TIME'), function () {
+//			$ids = $this->getRecurseChildrenIds();
+//			return Product::whereIn('catalog_id', $ids)->public()->count();
+//		});
+//		return $count;
 
-			return Product::whereIn('catalog_id', $ids)->public()->count();
-		});
-
-		return $count;
+        $ids = $this->getRecurseChildrenIds();
+        return Product::whereIn('catalog_id', $ids)->public()->count();
 	}
 
 	public function getH1() {
