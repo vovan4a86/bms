@@ -1,4 +1,6 @@
 var newsImage = null;
+var fileGost = null;
+
 function newsImageAttache(elem, e){
     $.each(e.target.files, function(key, file)
     {
@@ -15,10 +17,24 @@ function newsImageAttache(elem, e){
     $(elem).val('');
 }
 
+function fileAttache(elem, e){
+    $.each(e.target.files, function(key, file)
+    {
+        if(file['size'] > max_file_size){
+            alert('Слишком большой размер файла. Максимальный размер 2Мб');
+        } else {
+            fileGost = file;
+            renderImage(file, function (imgSrc) {
+                var item = '<img class="img-polaroid" src="' + '/static/images/common/ico_pdf.svg' + '" height="40" data-image="' + '/static/images/common/ico_pdf.svg' + '" ' +'>';
+                $('#file-block').html(item);
+            });
+        }
+    });
+}
+
 function pageContent(url) {
     sendAjax(url, {}, function(html){
         $('#page-content').html(html);
-        window.history.pushState(null,'Админка',url);
     }, 'html');
     return false;
 }
@@ -62,7 +78,7 @@ function pageSave(form, e) {
                     $('#pages-tree li[data-id=' + parent + '] > ul').append(item);
                 }
             }
-            console.log('id = ' + id + ', parent = ' + parent + ', cur_parent = ' + cur_parent);
+            // console.log('id = ' + id + ', parent = ' + parent + ', cur_parent = ' + cur_parent);
         }
         if (typeof json.success != 'undefined' && json.success == true) {
             settingFiles = {};
@@ -83,6 +99,55 @@ function pageDel(elem) {
         }
     });
     return false;
+}
+
+function addGostFile(elem, e) {
+    e.preventDefault();
+    var name = $('input[name=file_name]');
+    var description = $('input[name=file_description]');
+    var formData = new FormData();
+    formData.append('file_name', name.val());
+    formData.append('file_description', description.val());
+    if (fileGost) {
+        formData.append('file', fileGost);
+    }
+    var url = $(elem).attr('href');
+
+    sendAjaxWithFile(url, formData, function(json){
+        if(typeof json.row != 'undefined'){
+            $('#file_list tbody').append(json.row);
+            name.val('');
+            description.val('');
+            $('#gost-file').val('');
+            $('#file-block').empty();
+            fileGost = null
+        }
+    });
+}
+
+function updateGostFileOrder(elem, e) {
+    e.preventDefault();
+    var url = $(elem).attr('href');
+    var order = $('input[name=file_order]').val()
+    var data = {
+        order: order,
+    }
+    sendAjax(url, data, function(json){
+        if (json.msg) $('button[type=submit]').after(autoHideMsg('green', urldecode(json.msg)));
+    });
+}
+
+function delGostFile(elem, e) {
+    e.preventDefault();
+    if(!confirm('Точно удалить этот файл?')) return;
+    var url = $(elem).attr('href');
+    var row = $(elem).closest('tr');
+
+    sendAjax(url, {}, function(json){
+        if(typeof json.success != 'undefined'){
+            $(row).fadeOut(300, function(){ $(this).remove(); });
+        }
+    });
 }
 
 $(document).ready(function () {
@@ -155,5 +220,3 @@ $(document).ready(function () {
         }
     });
 });
-
-

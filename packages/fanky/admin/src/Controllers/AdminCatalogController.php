@@ -153,9 +153,11 @@ class AdminCatalogController extends AdminController {
     }
 
     public function postCatalogReorder(): array {
-        // изменеие родителя
+        // изменение родителя
         $id = Request::input('id');
         $parent = Request::input('parent');
+        \Debugbar::log($id);
+        \Debugbar::log($parent);
         DB::table('catalogs')->where('id', $id)->update(array('parent_id' => $parent));
         // сортировка
         $sorted = Request::input('sorted', []);
@@ -458,21 +460,4 @@ class AdminCatalogController extends AdminController {
         return view('admin::catalog.param_row', ['param' => $param])->render();
     }
 
-    public function postUpdateFilterTitle($filter_id) {
-        $param = Param::findOrFail($filter_id);
-        $data = Request::all();
-        $data = array_map('trim', $data);
-        $valid = Validator::make($data, [
-            'title'  => 'required',
-        ]);
-
-        if(!$valid->fails()) {
-            $param->fill($data);
-            $param->save();
-            return ['success' => true];
-        } else {
-            return ['success' => false];
-        }
-
-    }
 }

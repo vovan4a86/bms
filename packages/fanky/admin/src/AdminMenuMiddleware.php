@@ -20,10 +20,8 @@ class AdminMenuMiddleware {
 				->active('/admin/pages/*');
 			$menu->add('Каталог', ['route' => 'admin.catalog', 'icon' => 'fa-list'])
 				->active('/admin/catalog/*');
-            $menu->add('Иконки преимуществ', ['route' => 'admin.product-icons', 'icon' => 'fa-list'])
-                ->active('/admin/product-icons/*');
 
-			$menu->add('Акции', ['route' => 'admin.actions', 'icon' => 'fa-list'])
+			$menu->add('Акции', ['route' => 'admin.actions', 'icon' => 'fa-percent'])
 				->active('/admin/actions/*');
 
             $menu->add('Спецпредложения', ['route' => 'admin.offers', 'icon' => 'fa-star'])
@@ -42,11 +40,17 @@ class AdminMenuMiddleware {
 			$menu->add('Новости', ['route' => 'admin.news', 'icon' => 'fa-calendar'])
 				->active('/admin/news/*');
 
-			$menu->add('Вакансии', ['route' => 'admin.vacancies', 'icon' => 'fa-calendar'])
+			$menu->add('Вакансии', ['route' => 'admin.vacancies', 'icon' => 'fa-user-circle'])
 				->active('/admin/vacancies/*');
 
-			$menu->add('Статьи', ['route' => 'admin.publications', 'icon' => 'fa-calendar'])
-				->active('/admin/publications/*');
+			$menu->add('Партнеры', ['route' => 'admin.partners', 'icon' => 'fa-handshake-o'])
+				->active('/admin/partners/*');
+
+			$menu->add('Способы доставки', ['route' => 'admin.delivery', 'icon' => 'fa-truck'])
+				->active('/admin/delivery/*');
+
+//			$menu->add('Статьи', ['route' => 'admin.publications', 'icon' => 'fa-calendar'])
+//				->active('/admin/publications/*');
 
 			$menu->add('Настройки', ['icon' => 'fa-cogs'])
 				->nickname('settings');

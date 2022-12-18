@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="/adminlte/bower_components/font-awesome/css/font-awesome.min.css">
     <!-- Ionicons -->
     <link rel="stylesheet" href="/adminlte/bower_components/Ionicons/css/ionicons.min.css">
-    <link rel="shortcut icon" href="//static/images/favicon/favicon.ico">
+    <link rel="shortcut icon" href="/static/images/favicon/favicon.ico">
     <!-- Theme style -->
     <link rel="stylesheet" href="/adminlte/dist/css/AdminLTE.min.css">
     <!-- AdminLTE Skins. Choose a skin from the css/skins

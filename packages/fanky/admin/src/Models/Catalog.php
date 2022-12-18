@@ -62,6 +62,7 @@ class Catalog extends Model {
 			}
 		});
 	}
+
     public static function getCatalogList($parent_id = 0, $lvl = 0) {
         $result = [];
         foreach (self::whereParentId($parent_id)->orderBy('order')->get() as $item) {

@@ -1,6 +1,8 @@
 <?php namespace Fanky\Admin\Models;
 
+use App\Traits\HasFile;
 use App\Traits\HasImage;
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
 use Thumb;
 
@@ -8,32 +10,32 @@ use Thumb;
  * Fanky\Admin\Models\ProductImage
  *
  * @property int        $id
- * @property int        $product_id
- * @property string     $image
+ * @property int        $gost_id
+ * @property string     $name
+ * @property string     $description
+ * @property string     $file
  * @property int        $order
- * @property-read mixed $src
  * @method static \Illuminate\Database\Eloquent\Builder|\Fanky\Admin\Models\ProductImage whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Fanky\Admin\Models\ProductImage whereImage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Fanky\Admin\Models\ProductImage whereFile($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Fanky\Admin\Models\ProductImage whereOrder($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Fanky\Admin\Models\ProductImage whereProductId($value)
- * @mixin \Eloquent
- * @property-read mixed $image_src
+ * @method static \Illuminate\Database\Eloquent\Builder|\Fanky\Admin\Models\ProductImage whereGostId($value)
+ * @mixin Eloquent
  * @method static \Illuminate\Database\Eloquent\Builder|\Fanky\Admin\Models\ProductImage newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\Fanky\Admin\Models\ProductImage newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\Fanky\Admin\Models\ProductImage query()
  */
-class ProductIcon extends Model {
+class GostFile extends Model {
 
-	use HasImage;
-	protected $table = 'product_icons';
+    use HasFile;
 
-	protected $fillable = ['name', 'image', 'order'];
+	protected $guarded = ['id'];
 
 	public $timestamps = false;
 
-	const UPLOAD_URL = '/uploads/product_icons/';
+	const UPLOAD_URL = '/uploads/gost_files/';
 
-	public static $thumbs = [
-		1 => '42x42|fit', //admin product
-	];
+    public function gost() {
+        return $this->belongsTo(Page::class);
+    }
+
 }

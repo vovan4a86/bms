@@ -70,10 +70,6 @@ Route::group(['middleware' => ['redirects', 'regions']], function() {
     Route::get('services/{alias}', ['as' => 'services.item', 'uses' => 'ServiceController@view'])
         ->where('alias', '([A-Za-z0-9\-\/_]+)');
 
-    Route::any('actions', ['as' => 'actions.index', 'uses' => 'ActionController@index']);
-    Route::get('action/{alias}', ['as' => 'action.item', 'uses' => 'ActionController@view'])
-        ->where('alias', '([A-Za-z0-9\-\/_]+)');
-
     Route::any('publications', ['as' => 'publications', 'uses' => 'PublicationController@index']);
     Route::get('publications/{alias}', ['as' => 'publications.item', 'uses' => 'PublicationController@item']);
 
@@ -88,13 +84,14 @@ Route::group(['middleware' => ['redirects', 'regions']], function() {
 
     Route::any('suppliers', ['as' => 'suppliers', 'uses' => 'SuppliersController@index']);
 
+    Route::any('directory', ['as' => 'directory', 'uses' => 'DirectoryController@index']);
+
     Route::any('gosts', ['as' => 'gosts', 'uses' => 'GostsController@index']);
 
-    Route::any('answers', ['as' => 'answers', 'uses' => 'AnswersController@index']);
+    Route::any('faq', ['as' => 'faq', 'uses' => 'FaqController@index']);
 
     Route::any('search', ['as' => 'search', 'uses' => 'PageController@search']);
 
-    Route::any('faq', ['as' => 'faq', 'uses' => 'FaqController@index']);
 
     Route::get('cart', ['as' => 'cart', 'uses' => 'CartController@getIndex']);
     Route::get('order-success/{id?}', ['as' => 'order-success', 'uses' => 'CartController@showSuccess']);

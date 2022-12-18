@@ -92,6 +92,6 @@
             </div>
         </section>
         @include('blocks.callback_form')
-        @include('blocks.payments')
+        @include('catalog.blocks.payments')
     </main>
 @endsection

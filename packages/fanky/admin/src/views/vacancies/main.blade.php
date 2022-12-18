@@ -1,7 +1,7 @@
 @extends('admin::template')
 
 @section('scripts')
-	<script type="text/javascript" src="/adminlte/interface_news.js"></script>
+	<script type="text/javascript" src="/adminlte/interface_vacancies.js"></script>
 @stop
 
 @section('page_name')
@@ -27,6 +27,7 @@
 							<th width="100">Дата</th>
 							<th>Город</th>
 							<th>Название</th>
+							<th>Название</th>
 							<th width="50"></th>
 						</tr>
 					</thead>
@@ -34,11 +35,12 @@
 						@foreach ($vacancies as $item)
 							<tr>
 								<td>{{ $item->dateFormat() }}</td>
-								<td><a href="{{ route('admin.vacancies.edit', [$item->id]) }}">{{ $item->city() }}</a></td>
+								<td><a href="{{ route('admin.vacancies.edit', [$item->id]) }}">{{ $item->city->name }}</a></td>
 								<td><a href="{{ route('admin.vacancies.edit', [$item->id]) }}">{{ $item->name }}</a></td>
+								<td>{{ $item->price }}</td>
 								<td>
 									<a class="glyphicon glyphicon-trash" href="{{ route('admin.vacancies.delete', [$item->id]) }}"
-									   style="font-size:20px; color:red;" title="Удалить" onclick="return newsDel(this)"></a>
+									   style="font-size:20px; color:red;" title="Удалить" onclick="return vacancyDel(this)"></a>
 								</td>
 							</tr>
 						@endforeach

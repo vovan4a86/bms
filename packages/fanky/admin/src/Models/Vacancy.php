@@ -12,11 +12,12 @@ use Carbon\Carbon;
  *
  * @property int                 $id
  * @property int                 $published
+ * @property int                 $city_id
  * @property string|null         $date
  * @property string              $name
+ * @property int                 $price
  * @property string|null         $announce
  * @property string|null         $text
- * @property string              $image
  * @property string              $alias
  * @property string              $title
  * @property string              $keywords
@@ -24,7 +25,6 @@ use Carbon\Carbon;
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @property string|null         $deleted_at
- * @property-read mixed          $image_src
  * @property-read mixed          $url
  * @method static bool|null forceDelete()
  * @method static \Illuminate\Database\Query\Builder|\Fanky\Admin\Models\News onlyTrashed()
@@ -86,6 +86,10 @@ class Vacancy extends Model {
 
 		return $date;
 	}
+
+    public function getPriceFormatAttribute() {
+        return number_format($this->price, 0, '', ' ');
+    }
 
 	/**
 	 * @return Carbon

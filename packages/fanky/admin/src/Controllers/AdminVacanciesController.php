@@ -1,5 +1,6 @@
 <?php namespace Fanky\Admin\Controllers;
 
+use Fanky\Admin\Models\City;
 use Fanky\Admin\Models\VacancyTag;
 use Fanky\Admin\Settings;
 use Illuminate\Support\Str;
@@ -15,7 +16,7 @@ class AdminVacanciesController extends AdminController {
 	public function getIndex() {
 		$vacancies = Vacancy::orderBy('date', 'desc')->paginate(100);
 
-		return view('admin::vacancies.main', ['vacancies' => $vacancies]);
+		return view('admin::vacancies.main', compact('vacancies'));
 	}
 
 	public function getEdit($id = null) {
@@ -24,17 +25,17 @@ class AdminVacanciesController extends AdminController {
 			$article->date = date('Y-m-d');
 			$article->published = 1;
 		}
+        $cities = City::orderBy('name')->get();
 
-		return view('admin::vacancies.edit', ['article' => $article]);
+		return view('admin::vacancies.edit', compact('article', 'cities'));
 	}
 
 	public function postSave() {
 		$id = Request::input('id');
-		$data = Request::only(['date', 'name', 'announce', 'text', 'published', 'alias', 'title', 'keywords', 'description', 'on_main_slider']);
-//		$tags = Request::get('tags', []);
-		$image = Request::file('image');
+		$data = Request::only(['date', 'name', 'city_id', 'price', 'text', 'published', 'alias', 'title', 'keywords', 'description']);
+        $cityName = City::find($data['city_id'])->first();
 
-		if (!array_get($data, 'alias')) $data['alias'] = Text::translit($data['name']);
+		if (!array_get($data, 'alias')) $data['alias'] = Text::translit($data['name'] . '-' . $cityName->name );
 		if (!array_get($data, 'title')) $data['title'] = $data['name'];
 		if (!array_get($data, 'published')) $data['published'] = 0;
 
@@ -48,12 +49,6 @@ class AdminVacanciesController extends AdminController {
 			return ['errors' => $validator->messages()];
 		}
 
-		// Загружаем изображение
-		if ($image) {
-			$file_name = Vacancy::uploadImage($image);
-			$data['image'] = $file_name;
-		}
-
 		// сохраняем страницу
 		$article = Vacancy::find($id);
 		$redirect = false;
@@ -61,12 +56,8 @@ class AdminVacanciesController extends AdminController {
 			$article = Vacancy::create($data);
 			$redirect = true;
 		} else {
-			if ($article->image && isset($data['image'])) {
-				$article->deleteImage();
-			}
 			$article->update($data);
 		}
-//		$article->tags()->sync($tags);
 
 		if($redirect){
 			return ['redirect' => route('admin.vacancies.edit', [$article->id])];

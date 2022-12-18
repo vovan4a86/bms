@@ -11,26 +11,28 @@ use SiteHelper;
 use URL;
 
 class Page extends Model {
-	use HasImage, OgGenerate, HasSeo, HasH1;
-	const UPLOAD_URL = '/uploads/pages/';
-	private $_disableEventUpdateSlug;
-	private $_disableEventUpdatePublished;
+    use HasImage, OgGenerate, HasSeo, HasH1;
 
-	public static $thumbs = [
+    protected $guarded = ['id'];
+
+    const UPLOAD_URL = '/uploads/pages/';
+
+    private $_disableEventUpdateSlug;
+    private $_disableEventUpdatePublished;
+
+    public static $thumbs = [
 		1 => '100x100', //admin
 		2 => '410x255', //service catalog
 	];
+    protected $table = 'pages';
+    protected $_parents = [];
+    private $_url;
 
-	public static $page_classes = [
-		24	=> 'btn--ico-w',
-	];
-
-	protected $table = 'pages';
-	protected $_parents = [];
-	private $_url;
+    public static $excludePageText = ['about', 'partners'];
+    public static $excludePageImage = ['partners', 'directory'];
 
     //страницы без региональности
-	public static $excludeRegionAlias = [
+    public static $excludeRegionAlias = [
 		'ajax',
 		'reviews',
         'about',
@@ -51,16 +53,19 @@ class Page extends Model {
         'faq',
 	];
 
-	private $regionPage = [
+    private $regionPage = [
 		'2', //catalog
 	];
 
-	//региональность пока только для каталога
-	public static $regionAliases = [
+    //региональность пока только для каталога
+    public static $regionAliases = [
 		'catalog'
 	];
 
-	protected $guarded = ['id'];
+    public function gostFiles() {
+        return $this->hasMany(GostFile::class, 'gost_id');
+    }
+
 	public static function boot() {
 		parent::boot();
 
@@ -77,6 +82,7 @@ class Page extends Model {
 			}
 		});
 	}
+
 	public static function updateUrlRecurse(self $category) {
 		$parents = $category->getParents(true, true);
 		$slug_arr = [];
@@ -99,6 +105,7 @@ class Page extends Model {
 			self::updateUrlRecurse($child);
 		}
 	}
+
 	public function parent() {
 		return $this->belongsTo('Fanky\Admin\Models\Page', 'parent_id');
 	}
@@ -129,7 +136,7 @@ class Page extends Model {
 		return $query->where('published', 1);
 	}
 
-	public function scopeMain($query) {
+    public function scopeMain($query) {
 		return $query->where('parent_id', 1);
 	}
 
@@ -272,6 +279,33 @@ class Page extends Model {
 	public function getPublicChildren() {
 		return $this->children()->public()->orderBy('order')->get();
 	}
+
+    public function getPublicChildrenIds() {
+        return $this->children()->public()->orderBy('order')->pluck('id')->all();
+    }
+
+    public function getRecurseChildrenIds(self $parent = null) {
+        if (!$parent) $parent = $this;
+        $ids = self::query()->where('slug', 'like', $parent->slug . '%')
+            ->pluck('id')->all();
+
+        return $ids;
+    }
+
+    public static function getRecursePages($parent_id) {
+        $pages = Page::whereParentId($parent_id)->pluck('id')->all();
+        if (!count($pages))
+            return [];
+        $result = $pages;
+        foreach ($pages as $id) {
+            $children = self::getRecursePages($id);
+            if (count($children)) {
+                $result = array_merge($result, $children);
+            }
+        }
+
+        return $result;
+    }
 
     public function getPublicChildrenFooter() {
 		return $this->children()->public()->where('on_footer_menu', 1)->orderBy('order')->get();

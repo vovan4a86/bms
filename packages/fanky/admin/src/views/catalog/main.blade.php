@@ -24,7 +24,8 @@
 		<div class="col-md-3">
 			<div class="box box-solid">
 				<div id="catalog-tree" class="box-body">
-					<a href="{{ route('admin.catalog.catalogEdit') }}" onclick="return catalogContent(this)">Добавить раздел</a>
+					<a href="{{ route('admin.catalog.catalogEdit') }}"
+					   onclick="return catalogContent(this)">Добавить раздел</a>
 					<br><br>
                     <div id="pages-tree"></div>
 				</div>

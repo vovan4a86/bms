@@ -61,6 +61,7 @@ function catalogSave(form, e){
         if (typeof json.msg != 'undefined') $(form).find('[type=submit]').after(autoHideMsg('green', urldecode(json.msg)));
         if (typeof json.success != 'undefined' && json.success == true) {
             newsImage = null;
+            fileGost = null;
         }
     });
     return false;
@@ -313,17 +314,4 @@ function saveParam(form, e) {
         popupClose();
         $('tr#param'+id).replaceWith(html);
     }, 'html');
-}
-
-function update_filter_title(form, e) {
-    e.preventDefault();
-    var button = $(form).find('[type="submit"]');
-    button.attr('disabled', 'disabled');
-    var url = $(form).attr('action');
-    var data = $(form).serialize();
-    sendAjax(url, data, function(json){
-        if(json.success == true) {
-            button.removeAttr('disabled');
-        }
-    });
 }

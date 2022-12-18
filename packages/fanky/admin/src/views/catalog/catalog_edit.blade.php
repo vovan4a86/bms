@@ -73,18 +73,6 @@
                     {!! Form::groupCheckbox('on_footer_menu', 1, $catalog->on_footer_menu, 'Показывать в футере') !!}
                 @endif
 
-{{--                @if($catalog->parent_id !== 0 && count($catalog->public_children))--}}
-{{--                    <hr>--}}
-{{--                    <p>Отображаемые подразделы:</p>--}}
-{{--                    @foreach($catalog->public_children as $child)--}}
-{{--                        <div>--}}
-{{--                            <input type="checkbox" name="show_cats[]"--}}
-{{--                               {{ (in_array($child->id, $show_catalogs))? 'checked': '' }}--}}
-{{--                               value="{{ $child->id }}"/>--}}
-{{--                            {{ $child->name }}--}}
-{{--                        </div>--}}
-{{--                    @endforeach--}}
-{{--                @endif--}}
                 <div class="box box-primary box-solid">
                     <div class="box-header with-border">
                         <span class="box-title">Шаблон автооптимизации для товаров</span>
@@ -119,9 +107,6 @@
                 {!! Form::groupRichtext('text', $catalog->text, 'Основной текст', ['rows' => 3]) !!}
             </div>
 
-            {{--            @if($catalog->parent_id == 0)--}}
-            {{--                @include('admin::catalog.tabs.tab_params')--}}
-            {{--            @endif--}}
         </div>
 
         <div class="box-footer">
