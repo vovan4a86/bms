@@ -71,7 +71,7 @@ class ParseCvetnoj extends Command {
         ]);
     }
 
-    private $userAgents = [
+    public $userAgents = [
         "Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.101 Safari/537.36",
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36",
         "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36",
@@ -119,7 +119,7 @@ class ParseCvetnoj extends Command {
      * @return mixed
      */
     public function handle() {
-        $this->parseCategory( 'Алюминий, дюраль', 'https://mc.ru/metalloprokat/alyuminy_dyural');
+        $this->parseCategory( 'Алюминий, дюраль', 'https://mc.ru/metalloprokat/alyuminy_dyural', null);
         exit();
 
         foreach ($this->categoryList() as $categoryName => $categoryUrl) {
@@ -145,19 +145,20 @@ class ParseCvetnoj extends Command {
 
         $catalog = Catalog::whereName($categoryName)->first();
 
-        if(!$parentId) $parentId = 2;
-        if(!$catalog) {
+        if(!$parentId) {
+            $catalog = $this->getCatalogByName($categoryName, 2);
+        } else {
             $catalog = $this->getCatalogByName($categoryName, $parentId);
         }
 
         $catalogItemList = $crawler->filter('.gr_spis>ul>li');
 
         //парсим список подразделов
-        $catalogItemList->each(function ($subcatItem) use ($categoryName, $catalog) {
+        $catalogItemList->each(function ($subcatItem) use ($categoryName, $catalog, $parentId) {
             $subcatName = trim($subcatItem->filter('a')->first()->text());
             $subcatUrl = $this->baseUrl . $subcatItem->filter('a')->first()->attr('href');
 
-            $this->parseCategory($subcatName, $subcatUrl, $catalog->parent_id);
+            $this->parseCategory($subcatName, $subcatUrl, $catalog->id);
 
 //            if($subcatName == 'Общестроительный профиль алюминиевый') {
 //                $this->parseCategoryAlProfile($subcatName, $subcatUrl, $categoryName);
