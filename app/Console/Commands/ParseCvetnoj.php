@@ -136,7 +136,7 @@ class ParseCvetnoj extends Command {
         ];
     }
 
-    public function parseCategory($categoryName, $categoryUrl, $parentId = 2) {//цветной прокат
+    public function parseCategory($categoryName, $categoryUrl, $parentId) {//цветной прокат
         $this->info('parse categoryName: ' . $categoryName);
         $this->info('parse url: ' . $categoryUrl);
         $res = $this->client->get($categoryUrl);
@@ -145,6 +145,7 @@ class ParseCvetnoj extends Command {
 
         $catalog = Catalog::whereName($categoryName)->first();
 
+        if(!$parentId) $parentId = 2;
         if(!$catalog) {
             $catalog = $this->getCatalogByName($categoryName, $parentId);
         }
