@@ -16,10 +16,8 @@ class Kernel extends ConsoleKernel {
 	protected $commands = [
 		'App\Console\Commands\Inspire',
 		'App\Console\Commands\Test',
-        'App\Console\Commands\ParseAllProducts',
-        'App\Console\Commands\ParseProfnastil',
         'App\Console\Commands\ParseTruba',
-        'App\Console\Commands\ParseList',
+        'App\Console\Commands\ParseCvetnoj',
 		Commands\ImportOld::class,
 	];
 

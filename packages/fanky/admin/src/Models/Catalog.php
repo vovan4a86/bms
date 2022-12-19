@@ -19,8 +19,9 @@ use URL;
 
 /**
  * @property HasMany|Collection $public_children
- * @property bool              $published
- * @property int              $id
+ * @property bool               $published
+ * @property int                $id
+ * @property string             $name
  * @mixin \Eloquent
  * @method static whereParentId(int|mixed $id)
  */
