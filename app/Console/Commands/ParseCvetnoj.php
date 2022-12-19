@@ -136,16 +136,16 @@ class ParseCvetnoj extends Command {
         ];
     }
 
-    public function parseCategory($categoryName, $categoryUrl, $parentId = null) {//цветной прокат
+    public function parseCategory($categoryName, $categoryUrl, $parentId = 2) {//цветной прокат
         $this->info('parse categoryName: ' . $categoryName);
         $this->info('parse url: ' . $categoryUrl);
         $res = $this->client->get($categoryUrl);
         $html = $res->getBody()->getContents();
         $crawler = new Crawler($html); //page from url
 
-        if(!$parentId) {
-            $catalog = $this->getCatalogByName($categoryName, 2);
-        } else {
+        $catalog = Catalog::whereName($categoryName)->first();
+
+        if(!$catalog) {
             $catalog = $this->getCatalogByName($categoryName, $parentId);
         }
 
@@ -156,7 +156,7 @@ class ParseCvetnoj extends Command {
             $subcatName = trim($subcatItem->filter('a')->first()->text());
             $subcatUrl = $this->baseUrl . $subcatItem->filter('a')->first()->attr('href');
 
-            $this->parseCategory($subcatName, $subcatUrl, $catalog->id);
+            $this->parseCategory($subcatName, $subcatUrl, $catalog->parent_id);
 
 //            if($subcatName == 'Общестроительный профиль алюминиевый') {
 //                $this->parseCategoryAlProfile($subcatName, $subcatUrl, $categoryName);
