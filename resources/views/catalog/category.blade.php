@@ -91,12 +91,10 @@
                                     <div class="t-catalog__col-label">Цена, руб</div>
                                 </div>
                             </div>
-                            @foreach($items as $item)
-                                @include('catalog.product_item', compact($item))
-                            @endforeach
+                            @each('catalog.product_item', $items, 'item')
                         </div>
                         <div class="s-subcatalog__content text-block">
-                            {!! $category->text !!}
+                            {!! $category->getSectionText() !!}
                         </div>
                     </section>
                 </main>

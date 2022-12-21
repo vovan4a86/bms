@@ -55,6 +55,7 @@ class NewsController extends Controller {
 
         return view('news.index', [
             'title' => $page->title,
+            'text' => $page->text,
             'h1'    => $page->getH1(),
             'bread' => $bread,
             'items' => $items,

@@ -53,7 +53,7 @@
                     <div id="article-image-block">
                         @if ($catalog->image)
                             <img class="img-polaroid" src="{{ $catalog->thumb(1) }}" height="100"
-                                 data-image="{{ $catalog->image_src }}"
+                                 data-image="{{ $catalog->thumb(1) }}"
                                  onclick="return popupImage($(this).data('image'))">
                         @else
                             <p class="text-yellow">Изображение не загружено.</p>
@@ -65,6 +65,8 @@
                 {!! Form::groupCheckbox('published', 1, $catalog->published, 'Показывать раздел') !!}
 
                 @if($catalog->parent_id == 0)
+                    {!! Form::hidden('on_main', 1) !!}
+                    {!! Form::groupCheckbox('on_main', 1, $catalog->on_main, 'Показывать на главной странице') !!}
                     {!! Form::hidden('on_menu', 1) !!}
                     {!! Form::groupCheckbox('on_menu', 1, $catalog->on_main, 'Показывать в главном меню') !!}
                     {!! Form::hidden('on_main_list', 1) !!}
@@ -105,6 +107,31 @@
             <div class="tab-pane" id="tab_2">
                 {!! Form::groupRichtext('announce', $catalog->announce, 'Вводный текст', ['rows' => 3]) !!}
                 {!! Form::groupRichtext('text', $catalog->text, 'Основной текст', ['rows' => 3]) !!}
+            </div>
+
+
+            <input type="checkbox" id="is_action" name="is_action" value="1" {{ $catalog->is_action ? 'checked' : null }}
+                   onchange="showHidden(this)">
+            <label for="is_action">Применить акцию к категории(только на главной)</label>
+
+            <div class="form-group action-hidden" style="{{ $catalog->is_action ? '' : 'display: none;' }}">
+                {!! Form::groupText('action_text', $catalog->action_text, 'Текст') !!}
+                {!! Form::groupText('action_old_price', $catalog->action_old_price, 'Старая цена') !!}
+                {!! Form::groupText('action_new_price', $catalog->action_new_price, 'Новая цена') !!}
+                <div class="form-group">
+                    <label for="action-image">Изображение</label>
+                    <input id="action-image" type="file" name="aimage" value=""
+                           onchange="return actionImageAttache(this, event)">
+                    <div id="action-image-block">
+                        @if ($catalog->action_image)
+                            <img class="img-polaroid" src="{{ $catalog->getActionImage() }}" height="100"
+                                 data-image="{{ $catalog->getActionImage() }}"
+                                 onclick="return popupImage($(this).data('image'))">
+                        @else
+                            <p class="text-yellow">Изображение не загружено.</p>
+                        @endif
+                    </div>
+                </div>
             </div>
 
         </div>

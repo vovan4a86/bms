@@ -13,13 +13,13 @@
     </div>
     <div class="t-catalog__col t-catalog__col--wide" data-caption="Цена, руб">
         <div class="t-catalog__row">
-            @if($item->price)
-                <div class="t-catalog__value">{{ $item->price }} ₽</div>
+            @if($item->getAnyPrice())
+                <div class="t-catalog__value">{{ $item->getAnyPrice() }} ₽</div>
             @else
                 <div class="t-catalog__value">Под заказ</div>
             @endif
             <div class="t-catalog__cart">
-                <button class="cart-btn btn-reset" type="button"
+                <button class="cart-btn btn-reset {{ $item->getAnyPrice() ? null : 'disabled'}}" type="button"
                         aria-label="Добавить в корзину">
                     <svg class="svg-sprite-icon icon-cart">
                         <use xlink:href="/static/images/sprite/symbol/sprite.svg#cart"></use>

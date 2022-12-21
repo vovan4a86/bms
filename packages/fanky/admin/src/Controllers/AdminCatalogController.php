@@ -95,17 +95,19 @@ class AdminCatalogController extends AdminController {
         if(!array_get($data, 'alias')) $data['alias'] = Text::translit($data['name']);
         if(!array_get($data, 'title')) $data['title'] = $data['name'];
         if(!array_get($data, 'h1')) $data['h1'] = $data['name'];
+        if(!array_get($data, 'is_action')) $data['is_action'] = 0;
         $image = Request::file('image');
-        $filters = Request::get('filters', []);
-        $checked_subcatalogs = Request::get('show_cats', []);
+        $actionImage = Request::file('aimage');
+//        $filters = Request::get('filters', []);
+//        $checked_subcatalogs = Request::get('show_cats', []);
 
+
+        \Debugbar::log($data);
         // валидация данных
         $validator = Validator::make(
-            $data,
-            [
+            $data, [
                 'name' => 'required',
-            ]
-        );
+            ]);
         if($validator->fails()) {
             return ['errors' => $validator->messages()];
         }
@@ -113,6 +115,10 @@ class AdminCatalogController extends AdminController {
         if($image) {
             $file_name = Catalog::uploadImage($image);
             $data['image'] = $file_name;
+        }
+        if($actionImage) {
+            $file_name = Catalog::uploadActionImage($actionImage);
+            $data['action_image'] = $file_name;
         }
         // сохраняем страницу
         $catalog = Catalog::find($id);
@@ -124,30 +130,30 @@ class AdminCatalogController extends AdminController {
 
         } else {
             //проверяем какие подкаталоги отмечены для вывода
-            $show_catalogs = $catalog->public_children()->pluck('id')->all();
-            foreach ($show_catalogs as $id) {
-                if(in_array($id, $checked_subcatalogs)) {
-                    $item = CatalogSubShow::where('catalog_id', $catalog->id)->where('catalog_sub_show_id', $id)->first();
-                    if(!$item) {
-                        CatalogSubShow::create([
-                            'catalog_id' => $catalog->id,
-                            'catalog_sub_show_id' => $id
-                        ]);
-                    }
-                } else {
-                    //удаляем, если у подкаталога убрана галочка
-                    $item = CatalogSubShow::where('catalog_id', $catalog->id)->where('catalog_sub_show_id', $id)->first();
-                    if($item) $item->delete();
-                }
-            }
-
+//            $show_catalogs = $catalog->public_children()->pluck('id')->all();
+//            foreach ($show_catalogs as $id) {
+//                if(in_array($id, $checked_subcatalogs)) {
+//                    $item = CatalogSubShow::where('catalog_id', $catalog->id)->where('catalog_sub_show_id', $id)->first();
+//                    if(!$item) {
+//                        CatalogSubShow::create([
+//                            'catalog_id' => $catalog->id,
+//                            'catalog_sub_show_id' => $id
+//                        ]);
+//                    }
+//                } else {
+//                    //удаляем, если у подкаталога убрана галочка
+//                    $item = CatalogSubShow::where('catalog_id', $catalog->id)->where('catalog_sub_show_id', $id)->first();
+//                    if($item) $item->delete();
+//                }
+//            }
+//
             $catalog->update($data);
         }
 
         if($redirect) {
             return ['redirect' => route('admin.catalog.catalogEdit', [$catalog->id])];
         } else {
-            $catalog->catalog_filters()->sync($filters);
+//            $catalog->catalog_filters()->sync($filters);
             return ['success' => true, 'msg' => 'Изменения сохранены'];
         }
     }

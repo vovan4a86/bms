@@ -18,7 +18,7 @@ use Symfony\Component\DomCrawler\Crawler;
 use SVG\SVG;
 use App\Traits\ParseFunctions;
 
-class ParseTruba extends Command {
+class ParseNerzhav extends Command {
 
     use ParseFunctions;
 
@@ -27,8 +27,8 @@ class ParseTruba extends Command {
      *
      * @var string
      */
-    protected $signature = 'parse:truba';
-    private $basePath = ProductImage::UPLOAD_URL . 'trubi/';
+    protected $signature = 'parse:nerzhav';
+    private $basePath = ProductImage::UPLOAD_URL . 'nerzhaveyuschy/';
     public $client;
     public $catalogItemListTagElement = '.catalogItemList>ul>li';//где искать список подразделов
 
@@ -37,7 +37,7 @@ class ParseTruba extends Command {
      *
      * @var string
      */
-    protected $description = 'Парсим трубу';
+    protected $description = 'Парсим нержавейку';
 
     /**
      * Create a new command instance.
@@ -55,36 +55,27 @@ class ParseTruba extends Command {
     //      0          1          2          3         4           5              6  [3,4,5]       7           8[1-30x2, 2-30x20x2]
     //[1 колонка, 2 колонка, 3 колонка, 5 колонка, 6 колонка, 7 колонка, по какой цене=inStock, measure, искать стенку]
     public $priceMap = [
-        'Трубы г/д' => ['size', 'steel', 'length', '', 'price', '', 4, '0;т;0', 1],
-        'Трубы х/д' => ['size', 'steel', 'length', '', 'price', '', 4, '0;т;0', 1],
+        'Круг нержавеющий безникелевый жаропрочный' => ['size', 'steel', 'length', '', 'price_per_metr', 'price', 5, '0;м;т', 0],
+        'Круг нержавеющий никельсодержащий' => ['size', 'steel', 'length', '', 'price_per_metr', 'price', 5, '0;м;т', 0],
+        'Квадрат нержавеющий никельсодержащий' => ['size', 'steel', 'length', '', 'price_per_metr', 'price', 5, '0;м;т', 0],
+        'Шестигранник нержавеющий безникелевый жаропрочный' => ['size', 'steel', 'length', '', 'price_per_metr', 'price', 5, '0;м;т', 0],
+        'Шестигранник нержавеющий никельсодержащий' => ['size', 'steel', 'length', '', 'price_per_metr', 'price', 5, '0;м;т', 0],
 
-        'Трубы ВГП' => ['size', 'steel', 'length', '', 'price', '', 4, '0;т;0', 1],
-        'Трубы ВГП оцинкованные ГОСТ 3262-75' => ['size', 'steel', 'length', '', 'price', '', 4, '0;т;0', 1],
-        'Трубы электросварные круглые' => ['size', 'steel', 'length', '', 'price', '', 4, '0;т;0', 1],
-        'Трубы электросварные квадратные' => ['size', 'steel', 'length', '', 'price', '', 4, '0;т;0', 1],
-        'Трубы электросварные прямоугольные' => ['size', 'steel', 'length', '', 'price', '', 4, '0;т;0', 2], //стенку искать в другом месте
-        'Трубы электросварные в изоляции ППУ' => ['size', 'steel', 'length', '', 'price', '', 4, '0;т;0', 1],
-        'Трубы круглые оцинкованные' => ['size', 'steel', 'length', '', 'price', '', 4, '0;т;0', 1],
-        'Трубы квадратные оцинкованные' => ['size', 'steel', 'length', '', 'price', '', 4, '0;т;0', 1],
-        'Трубы прямоугольные оцинкованные' => ['size', 'steel', 'length', '', 'price', '', 4, '0;т;0', 2], //стенку искать в другом месте
+        'Полоса нержавеющая никельсодержащая' => ['size', 'steel', 'length', '', 'price_per_metr', 'price', 5, '0;м;т', 1],
+        'Уголок нержавеющий никельсодержащий' => ['size', 'steel', 'length', 'price_per_item', 'price_per_metr', 'price', 5, 'шт;м;т', 1],
 
-        'Трубы электросварные низколегированные круглые' => ['size', 'steel', 'length', '', 'price', '', 4, '0;т;0', 1],
-        'Трубы электросварные низколегированные квадратные' => ['size', 'steel', 'length', '', 'price', '', 4, '0;т;0', 1],
-        'Трубы электросварные низколегированные прямоугольные' => ['size', 'steel', 'length', '', 'price', '', 4, '0;т;0', 2], //стенку искать в другом месте
+        'Лист нержавеющий без никеля' => ['size', 'steel', 'length', '', 'price_per_item', 'price', 5, '0;шт;т', 0],
+        'Лист нержавеющий  никельсодержащий' => ['size', 'steel', 'length', '', 'price_per_item', 'price', 5, '0;шт;т', 0],
+        'Лист нержавеющий ПВЛ' => ['size', 'steel', 'length', '', 'price_per_item', 'price', 5, '0;шт;т', 0],
 
-        'Трубы оцинкованные круглые' => ['size', 'steel', 'length', '', 'price', '', 4, '0;т;0', 1],
-        'Трубы оцинкованные квадратные' => ['size', 'steel', 'length', '', 'price', '', 4, '0;т;0', 1],
-        'Трубы оцинкованные прямоугольные' => ['size', 'steel', 'length', '', 'price', '', 4, '0;т;0', 2], //стенку искать в другом месте
+        'Электроды нержавеющие' => ['size', 'steel', 'length', '', 'price', '', 4, '0;т;0', 0],
+        'Проволока нержавеющая' => ['size', 'steel', 'length', '', 'price', '', 4, '0;т;0', 0],
 
-        'Трубы нержавеющие электросварные' => ['size', 'steel', 'length', 'price_per_item', 'price', '', 4, 'шт;т;0', 1],
-        'Трубы нержавеющие электросварные AISI' => ['size', 'steel', 'length', 'price_per_item', 'price', '', 4, 'шт;т;0', 1],
-        'Трубы нержавеющие электросварные AISI квадратные' => ['size', 'steel', 'length', '', 'price', '', 4, '0;т;0', 1],
-        'Трубы нержавеющие электросварные AISI прямоугольные' => ['size', 'steel', 'length', '', 'price', '', 4, '0;т;0', 2], //стенку искать в другом месте
-        'Трубы нержавеющие бесшовные' => ['size', 'steel', 'length', '', 'price_per_metr', 'price', 5, '0;м;т', 1],
-
-        'Сваи винтовые' => ['size', 'steel', 'length', '', 'price', '', 4, '0;т;0', 1],
-        'Трубы чугунные' => ['size', 'steel', 'length', '', '', 'price_per_item', 5, '0;0;шт', 0],
-
+        'Отводы нержавеющие' => ['size', 'steel', 'length', '', '', 'price_per_item', 5, '0;0;шт', 1],
+        'Переходы нержавеющие' => ['size', 'steel', 'length', '', '', 'price_per_item', 5, '0;0;шт', 1],
+        'Тройники нержавеющие' => ['size', 'steel', 'length', '', '', 'price_per_item', 5, '0;0;шт', 1],
+        'Фланцы нержавеющие воротниковые' => ['size', 'steel', 'length', '', '', 'price_per_item', 5, '0;0;шт', 1],
+        'Фланцы нержавеющие плоские' => ['size', 'steel', 'length', '', '', 'price_per_item', 5, '0;0;шт', 1],
     ];
 
     /**
@@ -117,27 +108,26 @@ class ParseTruba extends Command {
 //        }
 
         foreach ($this->categoryList() as $categoryName => $categoryUrl) {
-            $this->parseCategory($categoryName, $categoryUrl, 1);
+            $this->parseCategory($categoryName, $categoryUrl, 3);
         }
         $this->info('The command was successful!');
     }
 
     public function categoryList(): array {
         return [
-            'Трубы г/д' => 'https://mc.ru/metalloprokat/truby_g_d',
-            'Трубы х/д' => 'https://mc.ru/metalloprokat/truby_h_d',
-            'ВГП, электросварные трубы' => 'https://mc.ru/metalloprokat/vgp_elektrosvarnye_truby',
-            'Трубы электросварные низколегированные' => 'https://mc.ru/metalloprokat/truby_elektrosvarnye_nizkolegirovannye',
-            'Трубы оцинкованные' => 'https://mc.ru/metalloprokat/truby_ocinkovannye',
-            'Трубы нержавеющие' => 'https://mc.ru/metalloprokat/truby_nerzhavejka_a',
-            'Сваи винтовые' => 'https://mc.ru/metalloprokat/svai_vintovye',
-            'Трубы чугунные' => 'https://mc.ru/metalloprokat/truby_chugun_sml',
+            'Круг, квадрат, шестигранник' => 'https://mc.ru/metalloprokat/krug_kvadrat_shestigrannik_nerzhavejka',
+            'Полоса, уголок' => 'https://mc.ru/metalloprokat/polosa_ugolok_nerzhavejka',
+//            'Трубы нержавейка' => 'https://mc.ru/metalloprokat/truby_nerzhavejka', //уже есть
+            'Лист нержавеющий' => 'https://mc.ru/metalloprokat/list_nerzhavejka',
+            'Нержавеющие метизы' => 'https://mc.ru/metalloprokat/nerzhaveyuschie_metizy',
+//            'Комплектующие для лестничных ограждений' => 'https://mc.ru/metalloprokat/kompl_lest_ogr', //нужно ????
+            'Детали трубопровода' => 'https://mc.ru/metalloprokat/detali_truboprovoda',
         ];
     }
 
     //парсим список товаров
     public function parseListProducts($catalog, $categoryUrl, $subcatName, $priceMap) {
-        $this->info('Parse one product from: ' . $catalog->name);
+        $this->info('[section] ' . $catalog->name);
         $res = $this->client->get($categoryUrl);
         $html = $res->getBody()->getContents();
         $crawler = new Crawler($html); //page from url
@@ -257,5 +247,4 @@ class ParseTruba extends Command {
 //            $this->parseListProducts($categoryName, $nextUrl, $subcatname);
 //        }
     }
-
 }

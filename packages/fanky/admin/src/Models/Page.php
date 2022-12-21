@@ -7,9 +7,35 @@ use App\Traits\OgGenerate;
 use Cache;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 use SiteHelper;
 use URL;
 
+/**
+ * @property HasMany|Collection $public_children
+ * @property int                $id
+ * @property int                $parent_id
+ * @property string             $name
+ * @property string             $h1
+ * @property string             $keywords
+ * @property string             $description
+ * @property string             $og_title
+ * @property string             $og_description
+ * @property string             $image
+ * @property string             $text
+ * @property string             $alias
+ * @property string             $slug
+ * @property string             $title
+ * @property int                $order
+ * @property bool               $published
+ * @property bool               $on_main
+ * @property bool               $on_menu
+ * @property bool               $on_main_list
+ * @property bool               $on_footer_menu
+ * @mixin \Eloquent
+ * @method static whereParentId(int|mixed $id)
+ */
 class Page extends Model {
     use HasImage, OgGenerate, HasSeo, HasH1;
 
@@ -42,6 +68,7 @@ class Page extends Model {
 		'cart',
 		'search',
         'services',
+        'delivery',
         'actions',
         'contacts',
         'partners',
@@ -49,6 +76,7 @@ class Page extends Model {
         'vacancy',
         'suppliers',
         'gosts',
+        'directory',
         'answers',
         'faq',
 	];

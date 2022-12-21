@@ -1,30 +1,26 @@
-<div class="search-page__item card">
-    @if($item->is_action)
-        <div class="card__badge">%</div>
-    @endif
-    <a class="card__preview" href="{{ $item->url }}" title="{{ $item->name }}">
-        <img class="card__picture" src="{{ $item->image ?? $item->showCategoryImage($item->catalog_id) }}"
-             data-src="{{ $item->image ?? $item->showCategoryImage($item->catalog_id) }}" alt="{{ $item->name }}">
-    </a>
-    <div class="card__status">
-        @if($item->in_stock)
-            <div class="product-status product-status--instock">
-                В наличи
-                <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M8.4375 2.81274L4.0625 7.18755L1.875 5.00024" stroke="#52AA52" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
+<div class="t-catalog__grid t-catalog__grid--body">
+    <div class="t-catalog__col t-catalog__col--wide" data-caption="Наименование">
+        <a class="t-catalog__link" href="{{ $item->url }}">{{ $item->name }}</a>
+    </div>
+    <div class="t-catalog__col" data-caption="Размер">
+        <div class="t-catalog__value">{{ $item->size }}</div>
+    </div>
+    <div class="t-catalog__col t-catalog__col--wide" data-caption="Марка">
+        <div class="t-catalog__value">{{ $item->steel }}</div>
+    </div>
+    <div class="t-catalog__col" data-caption="Длина">
+        <div class="t-catalog__value">{{ $item->length }}</div>
+    </div>
+    <div class="t-catalog__col t-catalog__col--wide" data-caption="Цена, руб">
+        <div class="t-catalog__row">
+            <div class="t-catalog__value">{{ $item->price ? : 'Под заказ' }}</div>
+            <div class="t-catalog__cart">
+                <button class="cart-btn btn-reset {{ $item->price ? null : 'disabled' }}" type="button" aria-label="Добавить в корзину">
+                    <svg class="svg-sprite-icon icon-cart">
+                        <use xlink:href="static/images/sprite/symbol/sprite.svg#cart"></use>
+                    </svg>
+                </button>
             </div>
-        @else
-            <div class="product-status product-status--out-stock">Под заказ</div>
-        @endif
+        </div>
     </div>
-    <h3 class="card__title">
-        <a href="{{ $item->url }}">{{ $item->name }}</a>
-    </h3>
-    <div class="card__price price-card">
-        <span class="price-card__label">Цена:</span>
-        <span class="price-card__value">{{ $item->price ? $item->getFullPrice() . ' ₽' : 'по запросу' }}</span>
-        <span class="price-card__counts">{{ $item->price ? '/ ' . $item->measure : '' }}</span>
-    </div>
-    @include('search.search_card_actions')
 </div>

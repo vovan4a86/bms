@@ -17,25 +17,13 @@ class WelcomeController extends Controller {
         $page = Page::find(1);
         $page->ogGenerate();
         $page->setSeo();
-//        $categories = Catalog::getTopLevelOnList();
-//        $main_catalog = Catalog::find(1)->getTopLevelOnList();
-
-//        $action_products = Product::getActionProducts();
-//        $popular_products = Product::getPopularProducts();
-//        $slider_news = News::getMainSliderNews();
-        $offers = Offer::orderBy('date', 'desc')
-            ->public()->paginate(Settings::get('offers_per_main'));
+        $categories = Catalog::getTopOnMain();
 
         return response()->view('pages.index', [
-            'page'       => $page,
-            'text'       => $page->text,
-            'h1'         => $page->getH1(),
-//            'categories' => $categories,
-//            'main_catalog' => $main_catalog,
-//            'action_products' => $action_products,
-//            'popular_products' => $popular_products,
-//            'slider_news' => $slider_news,
-            'offers' => $offers ?? null,
+            'page' => $page,
+            'text' => $page->text,
+            'h1' => $page->getH1(),
+            'categories' => $categories,
         ]);
     }
 }

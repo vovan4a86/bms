@@ -2,6 +2,7 @@
 
 use Fanky\Admin\Models\Page;
 use Fanky\Admin\Models\Product;
+use Fanky\Admin\Models\SearchIndex;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Request as Request;
 use Illuminate\Mail\Message;
@@ -13,24 +14,56 @@ use Response;
 
 class SearchController extends Controller {
 
-	public function getIndex(Request $request) {
-        $data = $request->find;
+    public $bread = [];
 
-        if(!$data) {
-            abort(404, 'Страница не найдена');
+    public function __construct() {
+        $this->bread[] = [
+            'url'  => route('search'),
+            'name' => 'Результаты поиска'
+        ];
+    }
+
+	public function getIndex(Request $request) {
+        \View::share('canonical', route('search'));
+        $q = $request->get('q', '');
+
+        if (!$q) {
+            $items_ids = [];
+        } else {
+            $items_ids = SearchIndex::orWhere('name', 'LIKE', '%' . $q . '%')
+                ->orderByDesc('updated_at')
+                ->pluck('product_id')->all();
+        }
+        $items = Product::whereIn('id', $items_ids)
+            ->paginate(Settings::get('search_per_page') ?? 10)
+            ->appends(['q' => $q]); //Добавить параметры в строку запроса можно через метод appends().
+
+        if ($request->ajax()) {
+            $view_items = [];
+            foreach ($items as $item) {
+                $view_items[] = view('search.search_item', [
+                    'item' => $item,
+                ])->render();
+            }
+
+            return response()->json([
+                'items'      => $view_items,
+                'paginate'   => view('paginations.with_pages', [
+                    'paginator' => $items
+                ])->render()
+            ]);
         }
 
-        $items = Product::public()->where('name', 'LIKE', "%{$data}%")
-                    ->get();
-
-        $page = Page::getByPath(['search']);
-        $bread = $page->getBread();
-
         return view('search.index', [
-            'bread' => $bread,
-            'items' => $items,
-            'data' => $data,
-		]);
+            'items'       => $items,
+            'title'       => 'Результат поиска «' . $q . '»',
+            'query'       =>  $q,
+            'bread'       => $this->bread,
+            'name'        => 'Поиск ' . $q,
+            'keywords'    => 'Поиск',
+            'description' => 'Поиск',
+            'headerIsWhite' => true,
+        ]);
 	}
 
 }

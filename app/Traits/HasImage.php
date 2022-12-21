@@ -71,6 +71,12 @@ trait HasImage{
 		Thumb::make(self::UPLOAD_URL . $file_name, self::$thumbs);
 		return $file_name;
 	}
+    public static function uploadActionImage($image) {
+        $file_name = md5(uniqid(rand(), true)) . '_' . time() . '.' . Str::lower($image->getClientOriginalExtension());
+        $image->move(public_path(self::UPLOAD_URL), $file_name);
+        return $file_name;
+    }
+
 
     public static function uploadIcon($image) {
 		$file_name = md5(uniqid(rand(), true)) . '_' . time() . '.' . Str::lower($image->getClientOriginalExtension());

@@ -1,46 +1,78 @@
-@if($slides = Settings::get('main_slider'))
-    <section class="hero swiper" data-main-slider>
-        <div class="hero__wrapper swiper-wrapper">
-            <!-- slide-->
-            @foreach($slides as $slide)
-                <div class="hero__slide swiper-slide">
-                @if($slide['main_slider_image'])
-                <div class="hero__bg">
-{{--                        @php--}}
-{{--                            $file_name = stristr(Settings::fileSrc($slide['main_slider_image']), '.', true);--}}
-{{--                        @endphp--}}
-                        <picture>
-        {{--                    <source media="(max-width: 768px)" srcset="//static/images/common/hero-slide--768.webp" type="image/webp">--}}
-{{--                            <source media="(max-width: 768px)" srcset="{{ $file_name }}--768.jpg">--}}
-        {{--                    <source media="(max-width: 1024px)" srcset="//static/images/common/hero-slide--1024.webp" type="image/webp">--}}
-{{--                            <source media="(max-width: 1024px)" srcset="{{ $file_name }}--1024.jpg">--}}
-        {{--                    <source media="(max-width: 1600px)" srcset="//static/images/common/hero-slide--1600.webp" type="image/webp">--}}
-{{--                            <source media="(max-width: 1600px)" srcset="{{ $file_name }}--1600.jpg">--}}
-        {{--                    <source srcset="//static/images/common/hero-slide.webp" type="image/webp">--}}
-                            <img class="hero__picture swiper-lazy" src="{{ Settings::fileSrc($slide['main_slider_image']) }}" data-src="{{ Settings::fileSrc($slide['main_slider_image']) }}" alt="picture">
-                        </picture>
+<!-- data-background="dark"-->
+@if($slider = Settings::get('main_slider'))
+    <section class="hero swiper-slide" data-background="dark">
+        <div class="hero__slider swiper" data-main-slider>
+            <div class="hero__wrapper swiper-wrapper">
+                @foreach($slider as $slide)
+                    <div class="hero__slide swiper-slide">
+                        <div class="hero__content container">
+                            <div class="hero__title">{{ $slide['main_slider_title'] ?? '' }}</div>
+                            <div class="hero__text">{{ $slide['main_slider_text'] ?? '' }}</div>
+                            <div class="hero__action">
+                                @if($slide['main_slider_button'])
+                                    <a class="button button--primary"
+                                       href="{{ $slide['main_slider_link'] ?? route('main') }}"
+                                       title="{{ $slide['main_slider_button']}} ">
+                                        <span>{{ $slide['main_slider_button'] ?? '' }}</span>
+                                        <svg width="20" height="10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M20 5 13 .959V9.04L20 5ZM0 5.7h13.7V4.3H0v1.4Z" fill="#fff"/>
+                                        </svg>
+                                    </a>
+                                @endif
+                            </div>
+                            @if($features = explode(';', $slide['main_slider_features']))
+                                <div class="hero__features">
+                                    <div class="features-list">
+                                        @foreach($features as $feat)
+                                            <div class="features-list__item">
+                                                <div class="features-list__icon">
+                                                    <svg class="svg-sprite-icon icon-accepted">
+                                                        <use xlink:href="/static/images/sprite/symbol/sprite.svg#accepted"></use>
+                                                    </svg>
+                                                </div>
+                                                <div class="features-list__label">{!! $feat !!}</div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+                        <div class="hero__background">
+                            @if($slide['main_slider_video'])
+                                <video src="{{ Settings::fileSrc($slide['main_slider_video']) }}"
+                                       poster="{{ Settings::fileSrc($slide['main_slider_image']) }}" autoplay muted loop
+                                       playsinline></video>
+                            @elseif(!$slide['main_slider_video'] && $slide['main_slider_image'])
+                                <picture>
+                                    <img class="swiper-lazy" src="/"
+                                         data-src="{{ Settings::fileSrc($slide['main_slider_image']) }}" alt="">
+                                </picture>
+                            @endif
+                        </div>
+                    </div>
+                @endforeach
+                <div class="hero__pagination swiper-pagination"></div>
+                @if(count($slider) > 1)
+                    <div class="hero__nav">
+                        <div class="slider-nav">
+                            <button class="slider-nav__btn slider-nav__btn--left btn-reset" type="button"
+                                    data-hero-prev>
+                                <svg width="19" height="19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M11.868 3.58 5.948 9.5l5.92 5.92" stroke="#fff" stroke-width="1.5"
+                                          stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                            <button class="slider-nav__btn slider-nav__btn--right btn-reset" type="button"
+                                    data-hero-next>
+                                <svg width="19" height="19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="m7.132 3.58 5.92 5.92-5.92 5.92" stroke="#fff" stroke-width="1.5"
+                                          stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                 @endif
-                <div class="container hero__container">
-                    <div class="hero__content">
-                        <h2 class="hero__title">{{ $slide['main_slider_title'] }}</h2>
-                        <p class="hero__description">{{ $slide['main_slider_text'] }}</p>
-                        @if($slide['main_slider_button'])
-                            <div class="hero__action">
-                                <a class="btn btn--white" href="{{ $slide['main_slider_link'] }}">
-                                    <span>{{ $slide['main_slider_button'] }}</span>
-                                    <svg class="svg-sprite-icon icon-arrow">
-                                        <use xlink:href="//static/images/sprite/symbol/sprite.svg#arrow"></use>
-                                    </svg>
-                                </a>
-                            </div>
-                        @endif
-                        @include('blocks.fast_order')
-                    </div>
-                    <div class="hero__pagination"></div>
-                </div>
             </div>
-            @endforeach
         </div>
     </section>
 @endif

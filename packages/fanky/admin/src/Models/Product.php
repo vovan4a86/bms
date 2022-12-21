@@ -19,8 +19,12 @@ use Carbon\Carbon;
  * @property int                                                                              $catalog_id
  * @property string                                                                           $name
  * @property string|null                                                                      $text
- * @property float                                                                            $price
- * @property string                                                                            $formatedPrice
+ * @property int                                                                              $price
+ * @property int                                                                              $raw_price
+ * @property int                                                                              $price_per_item
+ * @property int                                                                              $price_per_metr
+ * @property int                                                                              $price_per_kilo
+ * @property int                                                                              $price_per_m2
  * @property string                                                                           $image
  * @property int                                                                              $published
  * @property boolean                                                                          $on_main
@@ -397,6 +401,22 @@ class Product extends Model {
     public function generateKeywords() {
         if(!$this->keywords) {
             $this->keywords = mb_strtolower($this->name . ' цена, ' . $this->name . ' купить, ' . $this->name . '');
+        }
+    }
+
+    public function getAnyPrice() {
+        if($this->price) {
+            return number_format($this->price, '0', '',' ');
+        } elseif($this->price_per_item) {
+            return number_format($this->price_per_item, '0', '',' ');
+        } elseif($this->price_per_kilo) {
+            return number_format($this->price_per_kilo, '0', '',' ');
+        } elseif($this->price_per_metr) {
+            return number_format($this->price_per_metr, '0', '',' ');
+        } elseif($this->price_per_m2) {
+            return number_format($this->price_per_m2, '0', '',' ');
+        } else {
+            return null;
         }
     }
 

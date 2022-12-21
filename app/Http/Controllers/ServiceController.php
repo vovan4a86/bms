@@ -22,8 +22,10 @@ class ServiceController extends Controller {
         return view('services.index', [
             'h1'         => $page->h1,
             'text'       => $page->text,
+            'title'      => $page->title,
             'bread'      => $bread,
             'categories' => $categories,
+            'headerIsWhite' => true,
         ]);
     }
 

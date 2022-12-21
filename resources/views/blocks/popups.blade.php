@@ -10,10 +10,10 @@
         <div class="popup__complete-label">Ваш заказ отправлен. Наши специалисты свяжутся с вами в ближайшее время. Спасибо.</div>
     </div>
 </div>
-<form class="popup" id="search" action="#" style="display:none">
+<form class="popup" id="search" action="{{ route('search') }}" style="display:none">
     <div class="popup__search-field">
         <div class="field field--promo">
-            <input class="field__input" type="search" name="search" required>
+            <input class="field__input" type="search" name="q" value="{{ Request::get('q') }}" required>
             <span class="field__highlight"></span>
             <span class="field__bar"></span>
             <label class="field__label">Найти</label>

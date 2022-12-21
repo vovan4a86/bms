@@ -47,6 +47,7 @@ class CatalogController extends Controller {
         return view('catalog.index', [
             'h1'         => $page->h1,
             'text'       => $page->text,
+            'title'      => $page->title,
             'bread'      => $bread,
             'categories' => $categories,
             'headerIsWhite' => true,
@@ -105,7 +106,8 @@ class CatalogController extends Controller {
         }
 
         $items = Product::public()->whereIn('catalog_id', $ids)
-            ->orderBy('name')->paginate($per_page);
+            ->orderBy('catalog_id')->paginate($per_page);
+//        dd($items->pluck('name')->all());
 
 //        $filters = $root->filters()->get();
 

@@ -19,10 +19,39 @@ use URL;
 
 /**
  * @property HasMany|Collection $public_children
- * @property bool               $published
  * @property int                $id
+ * @property int                $parent_id
  * @property string             $name
+ * @property string             $h1
+ * @property string             $keywords
+ * @property string             $description
+ * @property string             $og_title
+ * @property string             $og_description
+ * @property string             $image
+ * @property string             $action_image
+ * @property string             $icon_image
+ * @property string             $section_image
+ * @property string             $announce
+ * @property string             $text
+ * @property string             $alias
+ * @property string             $slug
+ * @property string             $title
+ * @property bool               $is_action
+ * @property string             $action_text
+ * @property int                $action_old_price
+ * @property int                $action_new_price
+ * @property string             $product_description_template
+ * @property string             $product_title_template
+ * @property string             $product_text_template
+ * @property int                $order
+ * @property bool               $published
+ * @property bool               $on_main
+ * @property bool               $on_menu
+ * @property bool               $on_main_list
+ * @property bool               $on_footer_menu
+ * @property bool               $on_drop_down
  * @mixin \Eloquent
+ * @method static whereId(int|mixed $id)
  * @method static whereParentId(int|mixed $id)
  */
 class Catalog extends Model {
@@ -375,6 +404,10 @@ class Catalog extends Model {
         return self::public()->whereParentId(0)->whereOnMainList(1)->orderBy('order')->get();
     }
 
+    public static function getTopOnMain() {
+        return self::public()->whereParentId(0)->whereOnMain(1)->orderBy('order')->get();
+    }
+
     public function getProducts() {
         return $this->products()
             ->orderBy('order')
@@ -391,4 +424,23 @@ class Catalog extends Model {
             return $this->products();
         }
     }
+
+    public function getImageUrl(): string {
+	    return  self::UPLOAD_URL . $this->image;
+    }
+
+    public function getActionImage(): string {
+	    return  self::UPLOAD_URL . $this->action_image;
+    }
+
+    public function getSectionText($id = null) {
+	    if($id === null) $id = $this->id;
+        $cat = Catalog::find($id);
+	    if($cat->text == '' && $cat->parent_id !== 0) {
+	        $this->getSectionText($cat->parent_id);
+        } else {
+	        return $cat->text;
+        }
+    }
+
 }

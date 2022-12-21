@@ -1,23 +1,28 @@
 @extends('template')
 @section('content')
     @include('blocks.bread')
-    <!-- homepage ? '' : 'section--inner'-->
-    <section class="section search-page {{ Request::url() === '/' ? '' : 'section--inner' }}">
-        <div class="container">
-            <h2 class="section__title section__title--inner">{{ $title }}</h2>
-            @if(count($items))
-                <div class="search-page__list">
-                    @foreach($items as $item)
-                      @include('search.search_item', compact($item))
-                    @endforeach
+    <title>{{ $title }}</title>
+    <main>
+        <section class="search-page">
+            <div class="search-page__container container">
+                <div class="search-page__title">
+                    Результат поиска&nbsp;
+                    <span>«{{ $query }}»</span>
                 </div>
-                <div class="section__loader">
-                    @include('search.ajax_pagination' ,['paginator' => $items])
+                @if(count($items))
+                <div class="search-page__output">
+                    <div class="t-catalog">
+                        @include('catalog.blocks.catalog_grid_head')
+                        @foreach($items as $item)
+                            @include('search.search_item', [compact($item)])
+                        @endforeach
+                    </div>
                 </div>
-            @else
-                <h4>По вашему запросу ничего не найдено</h4>
-            @endif
-        </div>
-    </section>
+               @include('paginations.with_pages', ['paginator' => $items])
+                @else
+                    <h4>По вашему запросу ничего не найдено</h4>
+                @endif
+            </div>
+        </section>
     </main>
 @endsection

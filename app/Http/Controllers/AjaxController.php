@@ -439,8 +439,7 @@ class AjaxController extends Controller
     }
 
     //РАБОТА С ГОРОДАМИ
-    public function postSetCity()
-    {
+    public function postSetCity($id) {
         $city_id = Request::get('city_id');
         $city = City::find($city_id);
         session(['change_city' => true]);
@@ -525,6 +524,29 @@ class AjaxController extends Controller
             'curUrl' => $curUrl,
             'current_city' => $current_city,
         ]);
+    }
+
+    public function setCity() {
+        $id = Request::get('id');
+        $city = City::findOrFail($id);
+        if($city) {
+            session(['current_city' => $city]);
+        } else {
+            session(['current_city' => null]);
+        }
+        return ['success' => true, 'city' => $city->name];
+    }
+
+    public function confirmCity() {
+        session(['confirm_city' => true]);
+
+        return ['success' => true];
+    }
+
+    public function unConfirmCity() {
+        session(['confirm_city' => null]);
+
+        return ['success' => true];
     }
 
     public function search(Request $request)

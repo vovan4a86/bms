@@ -65,6 +65,7 @@ class PageController extends Controller {
 			'page'        => $page,
 			'h1'          => $page->h1,
 			'text'        => $page->text,
+			'title'        => $page->title,
 			'bread'       => $bread,
 			'children'    => $children,
             'sitemap'     => $sitemap ?? null,
@@ -86,7 +87,7 @@ class PageController extends Controller {
                 ->pluck('product_id')->all();
         }
         $items = Product::whereIn('id', $items_ids)
-            ->paginate(12)
+            ->paginate(10)
             ->appends(['q' => $q]); //Добавить параметры в строку запроса можно через метод appends().
 
         if (Request::ajax()) {
@@ -99,7 +100,7 @@ class PageController extends Controller {
 
             return response()->json([
                 'items'      => $view_items,
-                'paginate'   => view('search.ajax_pagination', [
+                'paginate'   => view('paginations.with_pages', [
                                             'paginator' => $items
                                 ])->render()
             ]);
@@ -108,9 +109,11 @@ class PageController extends Controller {
         return view('search.index', [
             'items'       => $items,
             'title'       => 'Результат поиска «' . $q . '»',
+            'query'       =>  $q,
             'name'        => 'Поиск ' . $q,
             'keywords'    => 'Поиск ',
             'description' => 'Поиск ',
+            'headerIsWhite' => true,
         ]);
     }
 

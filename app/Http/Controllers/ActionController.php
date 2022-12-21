@@ -28,6 +28,7 @@ class ActionController extends Controller {
         return view('actions.index', [
             'h1'         => $page->h1,
             'text'       => $page->text,
+            'title'      => $page->title,
             'bread'      => $bread,
             'actions' => $actions,
             'bgcolor'    => $bgcolor,

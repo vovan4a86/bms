@@ -29,9 +29,12 @@
                     <th>Размер</th>
                     <th>Стенка</th>
                     <th>Сталь</th>
-                    <th style="color: grey;">Парсинг-цена</th>
-                    <th width="120">Цена</th>
-                    <th width="100">Сортировка</th>
+                    <th width="120">Цена за шт.</th>
+                    <th width="120">Цена за м.</th>
+                    <th width="120">Цена за кг.</th>
+                    <th width="120">Цена за м2.</th>
+                    <th width="120">Цена за т.</th>
+                    <th width="130">Сортировка</th>
                     <th width="50"></th>
                 </tr>
                 </thead>
@@ -46,11 +49,14 @@
                             @endif
                         </td>
                         <td><a href="{{ route('admin.catalog.productEdit', [$item->id]) }}" onclick="return catalogContent(this)" style="{{ $item->published != 1 ? 'text-decoration:line-through;' : '' }}">{{ $item->name }}</a></td>
-                        <td>{{ $item->size }}</td>
-                        <td>{{ $item->wall }}</td>
-                        <td>{{ $item->steel }}</td>
-                        <td style="color: grey;">{{ $item->raw_price }}</td>
-                        <td style="font-weight: bold;">{{ $item->price }}</td>
+                        <td style="text-align: center">{{ $item->size ?? '-'}}</td>
+                        <td style="text-align: center">{{ $item->wall ?? '-' }}</td>
+                        <td style="text-align: center">{{ $item->steel ?? '-'}}</td>
+                        <td style="text-align: center">{{ $item->price_per_item ?? '-' }}</td>
+                        <td style="text-align: center">{{ $item->price_per_metr ?? '-' }}</td>
+                        <td style="text-align: center">{{ $item->price_per_kilo ?? '-' }}</td>
+                        <td style="text-align: center">{{ $item->price_per_m2 ?? '-' }}</td>
+                        <td style="text-align: center">{{ $item->price ?? '-' }}</td>
                         <td>
                             <form class="input-group input-group-sm"
                                   action="{{ route('admin.catalog.update-order', [$item->id]) }}"

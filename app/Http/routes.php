@@ -28,7 +28,10 @@ Route::group(['prefix' => 'ajax', 'as' => 'ajax.'], function () {
 	Route::post('writeback', 'AjaxController@postWriteback')->name('writeback');
 	Route::post('contact-us', 'AjaxController@postContactUs')->name('contact-us');
 	Route::post('callback', 'AjaxController@postCallback')->name('callback');
-    Route::post('set-city', 'AjaxController@postSetCity')->name('set-city');
+//    Route::post('set-city', 'AjaxController@postSetCity')->name('set-city');
+    Route::post('set-city', 'AjaxController@setCity')->name('set-city');
+    Route::post('confirm-city', 'AjaxController@confirmCity')->name('confirm-city');
+    Route::post('unconfirm-city', 'AjaxController@unConfirmCity')->name('unconfirm-city');
     Route::post('get-correct-region-link', 'AjaxController@postGetCorrectRegionLink')->name('get-correct-region-link');
     Route::get('show-popup-cities', [AjaxController::class, 'showCitiesPopup'])
         ->name('show-popup-cities');
@@ -90,10 +93,10 @@ Route::group(['middleware' => ['redirects', 'regions']], function() {
 
     Route::any('faq', ['as' => 'faq', 'uses' => 'FaqController@index']);
 
-    Route::any('search', ['as' => 'search', 'uses' => 'PageController@search']);
-
+    Route::any('search', ['as' => 'search', 'uses' => 'SearchController@getIndex']);
 
     Route::get('cart', ['as' => 'cart', 'uses' => 'CartController@getIndex']);
+
     Route::get('order-success/{id?}', ['as' => 'order-success', 'uses' => 'CartController@showSuccess']);
 
     Route::get('ajax-cities', ['as' => 'ajax-cities', 'uses' => 'PageController@ajaxCities']);

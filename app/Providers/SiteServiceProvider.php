@@ -22,6 +22,21 @@ class SiteServiceProvider extends ServiceProvider {
 	public function boot() {
 		// пререндер для шаблона
 		View::composer(['template'], function (\Illuminate\View\View $view) {
+            $overlayNavigationIcons = [
+                'Сортовой прокат' => '/static/images/common/ico_beam.svg',
+                'Трубный прокат' => '/static/images/common/ico_tubes.svg',
+                'Цветной прокат' => '/static/images/common/ico_ingot.svg',
+                'Нержавеющий прокат' => '/static/images/common/ico_steel.svg',
+                'Сантехарматура' => '/static/images/common/ico_pipeline.svg',
+                'Поковки' => '/static/images/common/ico_pipe.svg',
+                'Сварочные материалы' => '/static/images/common/ico_mask.svg',
+                'Асбестоцементные материалы' => '/static/images/common/ico_tube.svg',
+                'Листовой прокат' => '/static/images/common/ico_fraction.svg',
+                'Металлоизделия' => '/static/images/common/ico_metal.svg',
+                'Кровельные и фасадные материалы' => '/static/images/common/ico_material.svg',
+            ];
+		    $overlayNavigation = Catalog::getTopLevel();
+
 			$topMenu = Page::query()
                 ->public()
                 ->where('on_top_menu', 1)
@@ -53,18 +68,26 @@ class SiteServiceProvider extends ServiceProvider {
                 ->orderBy('order')
                 ->get();
 
-            if (!$city_alias = session('city_alias')) {
-                $current_city = null;
+            $cities = City::query()->orderBy('name')
+                ->get(['id', 'alias', 'name', DB::raw('LEFT(name,1) as letter')]);
+
+            if($alias = session('city_alias')) {
+                $city = City::whereAlias($alias)->first();
+                $current_city = $city->name;
             } else {
-                $current_city = City::whereAlias($city_alias)->first();
+                $current_city = null;
             }
+
 
 			$view->with(compact(
                 'topMenu',
                 'mainMenu',
                 'footerMenu',
+                'footerCatalog',
+                'cities',
                 'current_city',
-                'footerCatalog'
+                'overlayNavigation',
+                'overlayNavigationIcons'
             ));
 		});
 

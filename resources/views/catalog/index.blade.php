@@ -30,7 +30,7 @@
                         <div class="p-catalog__update">
                             <div class="c-update">
                                 <div class="c-update__title">Каталог обновлён:</div>
-                                <div class="c-update__date">16.10.2022</div>
+                                <div class="c-update__date"></div>
                             </div>
                         </div>
                         <div class="p-catalog__togglers">
@@ -64,7 +64,7 @@
                                     </span>
                                     <span class="card-link__title">{{ $item->name }}</span>
                                     <img class="card-link__pic lazy" src="/"
-                                         data-src="{{ \Fanky\Admin\Models\Catalog::UPLOAD_URL . $item->image }}"
+                                         data-src="{{ $item->getImageUrl() }}"
                                          width="305" height="280" alt=""/>
                                 </a>
                             </div>

@@ -15,6 +15,23 @@ function newsImageAttache(elem, e){
     $(elem).val('');
 }
 
+var actionImage = null;
+function actionImageAttache(elem, e){
+    $.each(e.target.files, function(key, file)
+    {
+        if(file['size'] > max_file_size){
+            alert('Слишком большой размер файла. Максимальный размер 2Мб');
+        } else {
+            actionImage = file;
+            renderImage(file, function (imgSrc) {
+                var item = '<img class="img-polaroid" src="' + imgSrc + '" height="100" data-image="' + imgSrc + '" onclick="return popupImage($(this).data(\'image\'))">';
+                $('#action-image-block').html(item);
+            });
+        }
+    });
+    // $(elem).val('');
+}
+
 function update_order(form, e) {
     e.preventDefault();
     var button = $(form).find('[type="submit"]');
@@ -42,7 +59,10 @@ function catalogSave(form, e){
     });
     if (newsImage) {
         data.append('image', newsImage);
-    };
+    }
+    if (actionImage) {
+        data.append('aimage', actionImage);
+    }
     sendFiles(url, data, function(json){
         if (typeof json.row != 'undefined') {
             if ($('#users-list tr[data-id='+json.id+']').length) {
@@ -62,6 +82,7 @@ function catalogSave(form, e){
         if (typeof json.success != 'undefined' && json.success == true) {
             newsImage = null;
             fileGost = null;
+            actionImage = null;
         }
     });
     return false;
@@ -314,4 +335,13 @@ function saveParam(form, e) {
         popupClose();
         $('tr#param'+id).replaceWith(html);
     }, 'html');
+}
+
+function showHidden(elem) {
+    let hidden = $('.action-hidden');
+    if(elem.checked) {
+        hidden.slideDown(300);
+    } else {
+        hidden.slideUp(300);
+    }
 }
