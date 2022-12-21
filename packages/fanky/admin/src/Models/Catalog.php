@@ -433,14 +433,22 @@ class Catalog extends Model {
 	    return  self::UPLOAD_URL . $this->action_image;
     }
 
-    public function getSectionText($id = null) {
-	    if($id === null) $id = $this->id;
-        $cat = Catalog::find($id);
-	    if($cat->text == '' && $cat->parent_id !== 0) {
-	        $this->getSectionText($cat->parent_id);
-        } else {
-	        return $cat->text;
-        }
-    }
+//    public function getSectionText($id = null) {
+//	    if($id === null) $id = $this->id;
+//        $cat = Catalog::find($id);
+//	    if($cat->text == '' && $cat->parent_id !== 0) {
+//	        $this->getSectionText($cat->parent_id);
+//        } else {
+//            return $cat->text;
+//        }
+//    }
+
+//    public function getSectionText() {
+//        if($this->text == null) {
+//            $cat = $this->findRootCategory($this->id);
+//            return $cat->text;
+//        }
+//        return $this->text;
+//    }
 
 }

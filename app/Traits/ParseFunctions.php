@@ -79,9 +79,9 @@ trait ParseFunctions {
             //если нет подразделов, парсим товары
             try {
                 //1 товар парсим?
-                $this->parseOneProductFromList($catalog, $categoryUrl, $categoryName, $this->priceMap[$catalog->name]);
+//          $this->parseOneProductFromList($catalog, $categoryUrl, $categoryName, $this->priceMap[$catalog->name]);
                 //или все?
-//            $this->parseListProducts($catalog, $categoryUrl, $categoryName, $this->priceMap[$catalog->name]);
+            $this->parseListProducts($catalog, $categoryUrl, $categoryName, $this->priceMap[$catalog->name]);
             } catch(\Exception $e) {
                 $this->info('Error Parse From List: ' . $e->getMessage());
                 $this->info('Check priceMap values for '. $categoryName);

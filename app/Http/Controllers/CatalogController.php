@@ -105,8 +105,13 @@ class CatalogController extends Controller {
             $ids = $category->getRecurseChildrenIdsInner();
         }
 
+        $filterSizes = Product::public()->whereIn('catalog_id', $ids)->distinct()->pluck( 'size')->all();
+        $filterNames = Product::public()->whereIn('catalog_id', $ids)->distinct()->pluck( 'name')->all();
+
+
         $items = Product::public()->whereIn('catalog_id', $ids)
             ->orderBy('catalog_id')->paginate($per_page);
+//        dd($items);
 //        dd($items->pluck('name')->all());
 
 //        $filters = $root->filters()->get();
@@ -146,6 +151,8 @@ class CatalogController extends Controller {
             'h1'       => $category->getH1(),
             'updated' => $items[0]->updated_at ?? null,
             'items' => $items,
+            'filterSizes' => $filterSizes,
+            'filterNames' => $filterNames,
             'root' => $root ?? null,
             'headerIsWhite' => true,
         ];
