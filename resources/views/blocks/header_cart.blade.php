@@ -1,25 +1,12 @@
-<a class="header__cart cart-header" href="{{ route('cart') }}" title="В корзину">
-    @if(count($items))
-        <div class="cart-header__link">
-            <svg class="svg-sprite-icon icon-cart">
-                <use xlink:href="//static/images/sprite/symbol/sprite.svg#cart"></use>
-            </svg>
-            <span class="cart-header__badge">{{ count($items) }}</span>
-        </div>
-        <div class="cart-header__value">
-            <div class="cart-header__count">{{ $count }}</div>
-            <div class="cart-header__price" data-end="₽">{{ \Fanky\Admin\Cart::sum() }}</div>
-        </div>
-    @else
-        <div class="cart-header__link">
-            <svg class="svg-sprite-icon icon-cart">
-                <use xlink:href="//static/images/sprite/symbol/sprite.svg#cart"></use>
-            </svg>
-            <span class="cart-header__badge">0</span>
-        </div>
-        <div class="cart-header__value">
-            <div class="cart-header__count">Пусто</div>
-            <div class="cart-header__price" data-end="₽">0</div>
-        </div>
-    @endif
+<a class="basket" href="{{ route('cart') }}" title="Перейти в корзину">
+    <svg width="23" height="22" viewBox="0 0 23 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd"
+              d="M2.6838 3.16377H0.0300293V0.801758H4.29171L5.26419 4.34478H22.03L18.6533 16.1548H6.24958L2.6838 3.16377ZM5.91252 6.70679L7.85749 13.7928H17.0645L19.0905 6.70679H5.91252Z"
+              fill="currentColor"></path>
+        <path d="M8.67434 21.4694C9.74851 21.4694 10.6193 20.5176 10.6193 19.3436C10.6193 18.1695 9.74851 17.2178 8.67434 17.2178C7.60017 17.2178 6.72937 18.1695 6.72937 19.3436C6.72937 20.5176 7.60017 21.4694 8.67434 21.4694Z"
+              fill="currentColor"></path>
+        <path d="M16.2382 21.4694C17.3123 21.4694 18.1832 20.5176 18.1832 19.3436C18.1832 18.1695 17.3123 17.2178 16.2382 17.2178C15.164 17.2178 14.2932 18.1695 14.2932 19.3436C14.2932 20.5176 15.164 21.4694 16.2382 21.4694Z"
+              fill="currentColor"></path>
+    </svg>
+    <span class="basket__count" data-count="{{ count($items) }}"></span>
 </a>

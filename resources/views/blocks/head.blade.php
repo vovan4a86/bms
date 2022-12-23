@@ -24,7 +24,6 @@
     <link href="/static/fonts/Montserrat-Bold.woff2" rel="preload" as="font" type="font/woff2" crossorigin="anonymous">
 
     <link rel="stylesheet" type="text/css" href="{{ mix('static/css/all.css') }}" media="all">
-    <script type="text/javascript" defer="" src="{{ mix('static/js/all.js') }}"></script>
     <!-- jQuery 3 -->
     <script src="/adminlte/bower_components/jquery/dist/jquery.min.js"></script>
     <!-- jQuery UI 1.11.4 -->

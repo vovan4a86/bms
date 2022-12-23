@@ -249,16 +249,16 @@ $('button.clear-btn').on('click', function (e) {
 });
 
 let Cart = {
-	add: function (id, count_per_tonn, count_weight = 1, callback) {
+	add: function (id, size, weight, callback) {
 		sendAjax('/ajax/add-to-cart',
-			{id: id, count_per_tonn: count_per_tonn, count_weight: count_weight}, (result) => {
+			{id, size, weight}, (result) => {
 				if (typeof callback == 'function') {
 					callback(result);
 				}
 			});
 	},
 
-	update: function (id, count, weight, callback) {
+	update: function (id, size, weight, callback) {
 		sendAjax('/ajax/update-to-cart',
 			{id: id, count: count, weight: weight}, (result) => {
 				if (typeof callback == 'function') {
@@ -267,7 +267,7 @@ let Cart = {
 			});
 	},
 
-	edit:  function (id, count, callback) {
+	edit:  function (id, weight, callback) {
 		sendAjax('/ajax/edit-cart-product',
 			{id: id, count: count}, (result) => {
 				if (typeof callback == 'function') {
@@ -528,30 +528,6 @@ function sendContactUs(frm, e) {
 			// });
 		}
 	});
-}
-
-function sendOrder(form, e) {
-	e.preventDefault();
-	var data = $(form).serialize();
-	var url = $(form).attr('action');
-	sendAjax(url, data, function (json) {
-		if (typeof json.errors != 'undefined') {
-			// validForm($(form), json.errors);
-			var errMsg = [];
-			for (var key in json.errors) {
-				errMsg.push(json.errors[key]);
-			}
-			var strError = errMsg.join('<br />');
-			$(form).find('[type="submit"]').after('<div class="err-msg-block">' + strError + '</div>');
-		}
-		if(json.success == true) {
-			location.href = json.redirect;
-		} else {
-			console.log('Ошибка');
-			// resetForm(form);
-			// popup('Спасибо за заявку, в ближайшее время мы вам ответим!');
-		}
-	})
 }
 
 function search(frm, e) {

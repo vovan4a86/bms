@@ -27,7 +27,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4 text-bold">Тип</div>
-                        <div class="col-md-8">{{ array_get(\Fanky\Admin\Models\Order::$user_type, $order->user)  }}</div>
+                        <div class="col-md-8">{{ array_get(\Fanky\Admin\Models\Order::$payer_type, $order->payer_type)  }}</div>
                     </div>
                     <div class="row">
                         <div class="col-md-4 text-bold">Email</div>
@@ -45,7 +45,11 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4 text-bold">Способ доставки</div>
-                        <div class="col-md-8">{{ array_get(\Fanky\Admin\Models\Order::$delivery_method, $order->delivery_method)}}</div>
+                        <div class="col-md-8">{{ $order->delivery_method->name }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 text-bold">Способ оплаты</div>
+                        <div class="col-md-8">{{ array_get(\Fanky\Admin\Models\Order::$payment, $order->payment) }}</div>
                     </div>
                     <div class="row">
                         <div class="col-md-4 text-bold">Сумма заказа</div>

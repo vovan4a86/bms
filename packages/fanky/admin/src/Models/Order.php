@@ -13,21 +13,14 @@ class Order extends Model {
     const UPLOAD_PATH = '/public/uploads/orders/';
     const UPLOAD_URL  = '/uploads/orders/';
 
-    public static $user_type = [
-        0	=> 'Юридическое лицо',
-        1	=> 'Частное лицо'
+    public static $payer_type = [
+        1	=> 'Частное лицо',
+        2	=> 'Юридическое лицо',
     ];
 
-    public static $delivery_method = [
-        0	=> 'Доставка',
-        1	=> 'Самовывоз'
-    ];
-
-    public static $payment_method = [
-        2	=> 'Безналичным платежом (по счёту)',
-        0	=> 'По карте через терминалы салонов города',
-        1	=> 'Наличными на месте оформления покупки',
-        3   => 'По карте на сайте (тестовый режим)'
+    public static $payment = [
+        1   => 'Наличный расчет',
+        2	=> 'Безналичным расчет',
     ];
 
 //    public function payment_order() {
@@ -45,6 +38,10 @@ class Order extends Model {
         return date($format, strtotime($this->created_at));
     }
 
+    public function delivery_method() {
+        return $this->hasOne(DeliveryItem::class, 'id');
+    }
+
 //    public function getPaymentId($query) {
 //        return $query->whereNew(1);
 //    }
@@ -57,10 +54,4 @@ class Order extends Model {
         return $query->whereNew(1);
     }
 
-    public function getDeliveryAttribute(){
-        return self::$delivery_method[$this->delivery_method];
-    }
-    public function getPaymentAttribute(){
-        return self::$payment_method[$this->payment_method];
-    }
 }

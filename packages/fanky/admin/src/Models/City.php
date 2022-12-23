@@ -137,8 +137,10 @@ class City extends Model {
 
     public static function current($city_alias = null, $remember = true) {
         $detect_city = SxgeoCity::detect();
-        $first_visit = (Cookie::has('city_id')) ? false : true;
-        $federal_link = $city_alias ? false : true;
+        if(!$detect_city) $detect_city = City::whereAlias('ekb')->first();
+//        $first_visit = (Cookie::has('city_id')) ? false : true;
+        $first_visit = !session('city_alias');
+        $federal_link = !$city_alias;
         $city = null;
         //Проверка на главную страницу
         if (Request::path() == '/') {
@@ -176,9 +178,9 @@ class City extends Model {
 
         if ($first_visit) {
             if ($federal_link) {
-                if($remember){
-                    session(['city_alias' => null]);
-                }
+//                if($remember){
+                    session(['city_alias' => 'ekb']);
+//                }
 
             } else {
                 View::share('show_small_region_confirm', true); //ПОказать маленькое окно в шапке

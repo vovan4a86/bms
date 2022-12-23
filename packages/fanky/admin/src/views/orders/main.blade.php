@@ -25,29 +25,28 @@
                         <th width="150">Дата</th>
                         <th>Заказчик</th>
                         <th>Тип</th>
+                        <th>Способ доставки</th>
+                        <th>Способ оплаты</th>
                         <th>Телефон</th>
                         <th>Email</th>
+                        <th>Вес</th>
                         <th>Сумма</th>
-                        <th>Способ доставки</th>
-{{--                        <th>ID платежа</th>--}}
-{{--                        <th>Статус платежа</th>--}}
                         <th width="50"></th>
                     </tr>
                     </thead>
                     <tbody>
                     @foreach ($orders as $item)
                         <tr>
-                            <td>{{ $item->dateFormat() }}
-                            @if($item->new)<span class="label label-danger">NEW</span>@endif
-                            </td>
+                            <td>{{ $item->dateFormat() }} @if($item->new)<span class="label label-danger">NEW</span>@endif</td>
                             <td><a href="{{ route('admin.orders.view', [$item->id]) }}">{{ $item->name }}</a></td>
-                            <td><a href="{{ route('admin.orders.view', [$item->id]) }}">{{ array_get(\Fanky\Admin\Models\Order::$user_type, $item->user) }}</a></td>
+                            <td><a href="{{ route('admin.orders.view', [$item->id]) }}">{{ array_get(\Fanky\Admin\Models\Order::$payer_type, $item->payer_type) }}</a></td>
+                            <td><a href="{{ route('admin.orders.view', [$item->id]) }}">{{ $item->delivery_method->name }}</a></td>
+                            <td><a href="{{ route('admin.orders.view', [$item->id]) }}">{{ array_get(\Fanky\Admin\Models\Order::$payment, $item->payment) }}</a></td>
                             <td><a href="{{ route('admin.orders.view', [$item->id]) }}">{{ $item->phone }}</a></td>
                             <td><a href="{{ route('admin.orders.view', [$item->id]) }}">{{ $item->email }}</a></td>
+                            <td><a href="{{ route('admin.orders.view', [$item->id]) }}">{{ $item->total_weight }}</a></td>
                             <td><a href="{{ route('admin.orders.view', [$item->id]) }}">{{ $item->summ }}</a></td>
-                            <td><a href="{{ route('admin.orders.view', [$item->id]) }}">{{ array_get(\Fanky\Admin\Models\Order::$delivery_method, $item->delivery_method) }}</a></td>
-
-                            {{--                            <td><a href="{{ route('admin.orders.view', [$item->id]) }}">{{ $item->payment_order()->payment_id }}</a></td>--}}
+{{--                            <td><a href="{{ route('admin.orders.view', [$item->id]) }}">{{ $item->payment_order()->payment_id }}</a></td>--}}
 {{--                            <td><a href="{{ route('admin.orders.view', [$item->id]) }}">{{ array_get(\Fanky\Admin\Models\PaymentOrder::$statuses, $item->payment_order()->status_id) }}</a></td>--}}
                             <td>
                                 <a class="glyphicon glyphicon-trash" href="{{ route('admin.orders.del', [$item->id]) }}" style="font-size:20px; color:red;" title="Удалить" onclick="return orderDel(this)"></a>

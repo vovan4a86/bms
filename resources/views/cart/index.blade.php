@@ -2,200 +2,49 @@
 @section('content')
     @include('blocks.bread')
     <main>
-        <!-- homepage ? '' : 'section--inner'-->
-        <section class="cart-blank section {{ Request::url() === '/' ? '' : 'section--inner' }}">
-            @if(count($items) == 0)
-                <div class="cart-blank__container container">
-                    <img class="cart-blank__picture lazy" src="/" data-src="//static/images/common/cart.svg" alt="alt"
-                         width="165" height="165">
-                    <h2 class="cart-blank__title">Ваша корзина пока пуста</h2>
-                    <p class="cart-blank__text">Воспользуйтесь поиском или
-                        <a href="{{ route('catalog.index') }}">каталогом</a>, чтобы найти всё что нужно.</p>
-                </div>
-            @else
-                <form class="cart__container container" action="{{ route('ajax.order') }}"
-                      onsubmit="sendOrder(this, event)">
-                    @csrf
-                    <input type="hidden" name="summ" value="{{ \Fanky\Admin\Cart::sum() }}">
-                    <input type="hidden" name="total_weight" value="{{ \Fanky\Admin\Cart::total_weight() }}">
-                    <div class="section__links">
-                        <h2 class="section__title section__title--cart" data-count="{{ count($items) }}">Корзина</h2>
-                        <button class="clear-btn" type="button">
-                            <svg class="svg-sprite-icon icon-trash">
-                                <use xlink:href="/static/images/sprite/symbol/sprite.svg#trash"></use>
+        <section class="cart">
+            <div class="cart__container container">
+                <div class="cart__layout">
+                    <div class="cart__head">
+                        <div class="cart__title">Корзина</div>
+                        <button class="trash-btn btn-reset" type="button" aria-label="Очистить корзину" onclick="purgeCart()">
+                            <svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12.1207 6.88379C11.875 6.88379 11.6758 7.08298 11.6758 7.32875V15.7386C11.6758 15.9842 11.875 16.1835 12.1207 16.1835C12.3665 16.1835 12.5657 15.9842 12.5657 15.7386V7.32875C12.5657 7.08298 12.3665 6.88379 12.1207 6.88379Z" fill="currentColor"
+                                />
+                                <path d="M6.87074 6.88379C6.62497 6.88379 6.42578 7.08298 6.42578 7.32875V15.7386C6.42578 15.9842 6.62497 16.1835 6.87074 16.1835C7.11652 16.1835 7.31571 15.9842 7.31571 15.7386V7.32875C7.31571 7.08298 7.11652 6.88379 6.87074 6.88379Z" fill="currentColor"
+                                />
+                                <path d="M3.04307 5.65648V16.6194C3.04307 17.2674 3.28067 17.8759 3.69574 18.3126C4.10889 18.7504 4.68387 18.999 5.28561 19H13.7045C14.3064 18.999 14.8814 18.7504 15.2943 18.3126C15.7094 17.8759 15.947 17.2674 15.947 16.6194V5.65648C16.7721 5.43748 17.3068 4.64037 17.1964 3.79372C17.0858 2.94725 16.3647 2.31404 15.5109 2.31387H13.2327V1.75766C13.2353 1.28993 13.0504 0.840796 12.7193 0.510376C12.3882 0.18013 11.9383 -0.00376544 11.4706 5.84646e-05H7.51947C7.05173 -0.00376544 6.6019 0.18013 6.27079 0.510376C5.93967 0.840796 5.75474 1.28993 5.75734 1.75766V2.31387H3.47916C2.62539 2.31404 1.90424 2.94725 1.79369 3.79372C1.68332 4.64037 2.21797 5.43748 3.04307 5.65648ZM13.7045 18.1101H5.28561C4.52483 18.1101 3.93299 17.4565 3.93299 16.6194V5.69559H15.0571V16.6194C15.0571 17.4565 14.4652 18.1101 13.7045 18.1101ZM6.64727 1.75766C6.64432 1.52597 6.73539 1.30297 6.89982 1.13941C7.06408 0.97585 7.2876 0.885988 7.51947 0.889986H11.4706C11.7025 0.885988 11.926 0.97585 12.0903 1.13941C12.2547 1.30279 12.3458 1.52597 12.3428 1.75766V2.31387H6.64727V1.75766ZM3.47916 3.2038H15.5109C15.9533 3.2038 16.3118 3.56237 16.3118 4.00473C16.3118 4.44709 15.9533 4.80566 15.5109 4.80566H3.47916C3.03681 4.80566 2.67823 4.44709 2.67823 4.00473C2.67823 3.56237 3.03681 3.2038 3.47916 3.2038Z"
+                                      fill="currentColor" />
+                                <path d="M9.49574 6.88379C9.24997 6.88379 9.05078 7.08298 9.05078 7.32875V15.7386C9.05078 15.9842 9.24997 16.1835 9.49574 16.1835C9.74152 16.1835 9.94071 15.9842 9.94071 15.7386V7.32875C9.94071 7.08298 9.74152 6.88379 9.49574 6.88379Z" fill="currentColor"
+                                />
                             </svg>
                             <span>Очистить корзину</span>
                         </button>
                     </div>
-                    <div class="cart__head">
-                        <div class="cart__body">
-                            <div class="cart-table">
-                                <div class="cart-table__head">
-                                    <div class="cart-table__grid">
-                                        <div class="cart-table__column cart-table__column--size-4">
-                                            <div class="cart-table__label">Товар</div>
-                                        </div>
-                                        <div class="cart-table__column cart-table__column--size-2">
-                                            <div class="cart-table__label">Цена</div>
-                                        </div>
-                                        <div class="cart-table__column cart-table__column--size-2">
-                                            <div class="cart-table__label">Кол-во.</div>
-                                        </div>
-                                        <div class="cart-table__column cart-table__column--size-2">
-                                            <div class="cart-table__label">Ед. изм.</div>
-                                        </div>
-                                        <div class="cart-table__column cart-table__column--size-3">
-                                            <div class="cart-table__label">Итого с НДС</div>
-                                        </div>
-                                    </div>
+                </div>
+                <div class="cart__layout">
+                    <div class="cart__body">
+                        <div class="cart-table">
+                            <div class="cart-table__row cart-table__row--head">
+                                <div class="cart-table__col cart-table__col--wide">
+                                    <div class="cart-table__label">Товар</div>
                                 </div>
-                                <!-- row-->
-                                @foreach($items as $item)
-                                    @include('cart.table_row')
-                                @endforeach
-                            </div>
-                        </div>
-                        @include('blocks.cart_values')
-                    </div>
-                    <div class="cart__hidden is-hidden" data-cart-hidden>
-                        <!-- data-->
-                        <div class="cart__data">
-                            <div class="cart__title">Доставка и оплата</div>
-                            <div class="cart__radios radios radios--row">
-                                <div class="radios__button">
-                                    <input id="legal" type="radio" name="user" value="0" checked>
-                                    <label for="legal" data-radio="show">Юридическое лицо</label>
+                                <div class="cart-table__col">
+                                    <div class="cart-table__label">Цена</div>
                                 </div>
-                                <div class="radios__button">
-                                    <input id="private" type="radio" name="user" value="1">
-                                    <label for="private" data-radio="hide">Частное лицо</label>
+                                <div class="cart-table__col">
+                                    <div class="cart-table__label">Кол-во</div>
+                                </div>
+                                <div class="cart-table__col">
+                                    <div class="cart-table__label">Сумма</div>
                                 </div>
                             </div>
-                            <div class="cart__row">
-                                <div class="cart__subtitle">Контактные данные</div>
-                                <div class="cart__fields">
-                                    <div class="cart__field">
-                                        <label class="cart__label">Имя *
-                                            <input class="cart__input" type="text" name="name"
-                                                   placeholder="Представьтесь пожалуйста" autocomplete="off" required>
-                                        </label>
-                                    </div>
-                                    <div class="cart__field">
-                                        <label class="cart__label">Телефон *
-                                            <input class="cart__input" type="tel" name="phone"
-                                                   placeholder="+7 (___) ___-__-__" autocomplete="off" required>
-                                        </label>
-                                    </div>
-                                    <div class="cart__field">
-                                        <label class="cart__label">Email
-                                            <input class="cart__input" type="text" name="email"
-                                                   placeholder="Введите Email" autocomplete="off">
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div data-hide-content>
-                                <div class="cart__row">
-                                    <div class="cart__subtitle">Реквизиты компании</div>
-                                    <div class="cart__fields">
-                                        <div class="cart__field">
-                                            <label class="cart__label">ИНН *
-                                                <input class="cart__input" type="text" name="inn"
-                                                       placeholder="00 0000 0000" autocomplete="off" required>
-                                            </label>
-                                        </div>
-                                        <div class="cart__field">
-                                            <label class="cart__label">Наименование *
-                                                <input class="cart__input" type="text" name="company"
-                                                       placeholder="Название компании" autocomplete="off" required>
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="cart__upload">
-                                    <h4>Карточка компании</h4>
-                                    <div class="cart__upload-trigger">
-                                        <label class="upload">
-                                            <span class="upload__name">Прикрепить файл</span>
-                                            <input class="v-hidden" type="file" name="file"
-                                                   accept=".jpg, .jpeg, .png, .pdf, .doc, .docs, .xls, .xlsx">
-                                        </label>
-                                        <span class="upload__status">Размер файла не более 2 мб</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- data-->
-                        <div class="cart__data">
-                            <div class="cart__title">Способ доставки</div>
-                            <div class="cart__radios radios radios--row">
-                                <div class="radios__button">
-                                    <input id="delivery" type="radio" name="delivery_method" value="0" checked>
-                                    <label for="delivery" data-radio="show">Доставка</label>
-                                </div>
-                                <div class="radios__button">
-                                    <input id="self" type="radio" name="delivery_method" value="1">
-                                    <label for="self" data-radio="hide">Самовывоз</label>
-                                </div>
-                            </div>
-                            <div class="cart__row">
-                                <div class="cart__grids" data-hide-content>
-                                    <div class="cart__delivery">
-                                        <label class="cart__label">Адрес доставки *
-                                            <input class="cart__input" type="text" name="address"
-                                                   placeholder="Для расчёта стоимости доставки" autocomplete="off"
-                                                   required>
-                                        </label>
-                                    </div>
-                                    <div class="cart__timing">
-                                        <label class="cart__label">Период доставки
-                                            <select class="select" name="timing">
-                                                <option value="В течение дня" selected>В течение дня</option>
-                                                <option value="c 09:00 до 13:00">c 09:00 до 13:00</option>
-                                                <option value="c 13:00 до 18:00">c 13:00 до 18:00</option>
-                                            </select>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="cart__comment">
-                                <label class="cart__label">Комментарий
-                                    <textarea class="cart__input" rows="4" name="text"
-                                              placeholder="Расскажите, как быстрее добраться к вам, укажите информацию, которая может пригодиться "
-                                              autocomplete="off"></textarea>
-                                </label>
-                            </div>
-                            <div class="cart__requires">
-                                <div class="cart__require" data-start="*">обязательные поля для заполнения</div>
-                                <div class="cart__policy">
-                                    <label class="checkbox checkbox--small">
-                                        <input class="checkbox__input" type="checkbox" name="policy" checked required>
-                                        <span class="checkbox__box"></span>
-                                        <span class="checkbox__policy">Согласен на
-                                                <a href="_ajax-policy.html" data-fancybox data-type="ajax">обработку персональных данных</a>
-                                            </span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="cart__confirm">
-                                <button class="btn btn--content btn--cart" type="submit">
-                                    <span>Оформить заказ</span>
-                                </button>
-                            </div>
-                            @if ($errors->any())
-                                <div class="alert alert-danger">
-                                    <ul>
-                                        @foreach ($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            @endif
+                            @each('cart.table_row', $items, 'item')
                         </div>
                     </div>
-                </form>
-            @endif
+                   @include('cart.blocks.order_total')
+                </div>
+            </div>
         </section>
-
     </main>
 @endsection

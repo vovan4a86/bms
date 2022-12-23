@@ -14,7 +14,7 @@
                     <div class="t-catalog">
                         @include('catalog.blocks.catalog_grid_head')
                         @foreach($items as $item)
-                            @include('search.search_item', [compact($item)])
+                            @include('catalog.product_item', [compact($item)])
                         @endforeach
                     </div>
                 </div>

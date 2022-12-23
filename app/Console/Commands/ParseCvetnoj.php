@@ -35,41 +35,42 @@ class ParseCvetnoj extends Command {
     //      0          1          2          3         4           5              6  [3,4,5]       7           8
     //[1 колонка, 2 колонка, 3 колонка, 5 колонка, 6 колонка, 7 колонка, по какой цене=inStock, measure, искать стенку]
     public $priceMap = [
-        'Круг алюминиевый (пруток)' => ['size', 'steel', 'length', 'price_per_item', 'price_per_metr', 'price_per_kilo', 5, 'шт;м;кг', 0],
-        'Круг дюралевый (пруток)' => ['size', 'steel', 'length', 'price_per_item', 'price_per_metr', 'price_per_kilo', 5, 'шт;м;кг', 0],
-        'Лента алюминиевая' => ['size', 'steel', 'length', '', 'price_per_kilo', 'price', 5, '0;кг;т', 0],
-        'Лист алюминиевый' => ['size', 'steel', 'length', 'price_per_m2', 'price_per_item', 'price_per_kilo', 5, 'м2;шт;кг', 0],
-        'Лист алюминиевый рифленый' => ['size', 'steel', 'riffl', 'price_per_m2', 'price_per_item', 'price_per_kilo', 5, 'м2;шт;кг', 0],
-        'Лист дюралевый' => ['size', 'steel', 'length', 'price_per_m2', 'price_per_item', 'price_per_kilo', 5, 'м2;шт;кг', 0],
-        'Плита алюминиевая' => ['size', 'steel', 'length', 'price_per_item', 'price_per_m2', 'price_per_kilo', 5, 'шт;м2;кг', 0],
-        'Плита дюралевая' => ['size', 'steel', 'length', 'price_per_item', 'price_per_m2', 'price_per_kilo', 5, 'шт;м2;кг', 0],
-        'Проволока алюминиевая' => ['size', 'steel', 'length', '', 'price_per_kilo', 'price', 5, '0;кг;т', 0],
-        'Труба алюминиевая' => ['size', 'steel', 'length', 'price_per_item', 'price_per_metr', 'price_per_kilo', 5, 'шт;м;кг', 1],
-        'Труба дюралевая' => ['size', 'steel', 'length', 'price_per_item', 'price_per_metr', 'price_per_kilo', 5, 'шт;м;кг', 1],
-        'Уголок алюминиевый' => ['size', 'steel', 'length', 'price_per_item', 'price_per_metr', 'price_per_kilo', 5, 'шт;м;кг', 1],
-        'Чушка алюминиевая' => ['size', 'steel', 'length', '', 'price_per_kilo', 'price', 5, '0;кг;т', 0],
-        'Швеллер алюминиевый' => ['size', 'steel', 'length', 'price_per_item', 'price_per_metr', 'price_per_kilo', 5, 'шт;м;кг', 0],
-        'Шестигранник дюралевый' => ['size', 'steel', 'length', 'price_per_item', 'price_per_metr', 'price_per_kilo', 5, 'шт;м;кг', 0],
-        'Шина алюминиевая' => ['size', 'steel', 'length', 'price_per_item', 'price_per_metr', 'price_per_kilo', 5, 'шт;м;кг', 0],
-        'Полоса' => ['size', 'steel', 'length', 'price_per_item', 'price_per_metr', 'price_per_kilo', 5, 'шт;м;кг', 0],
-        'Профиль квадратный трубчатый' => ['size', 'steel', 'length', 'price_per_item', 'price_per_metr', 'price_per_kilo', 5, 'шт;м;кг', 1],
-        'Профиль круглый' => ['size', 'steel', 'length', 'price_per_item', 'price_per_metr', 'price_per_kilo', 5, 'шт;м;кг', 1],
-        'Профиль П-образный' => ['size', 'steel', 'length', 'price_per_item', 'price_per_metr', 'price_per_kilo', 5, 'шт;м;кг', 1],
-        'Профиль прямоугольный трубчатый' => ['size', 'steel', 'length', 'price_per_item', 'price_per_metr', 'price_per_kilo', 3, 'шт;м;кг', 1],
-        'Профиль угловой' => ['size', 'steel', 'length', 'price_per_item', 'price_per_metr', 'price_per_kilo', 5, 'шт;м;кг', 1],
+        'Круг алюминиевый (пруток)' => ['size', 'steel', 'length', 'price_per_item', 'price_per_metr', 'price_per_kilo', 5, 'кг', 0], //+ метр
+        'Круг дюралевый (пруток)' => ['size', 'steel', 'length', 'price_per_item', 'price_per_metr', 'price_per_kilo', 5, 'кг', 0],//+ метр
+        'Лента алюминиевая' => ['size', 'steel', 'length', '', 'price_per_kilo', 'price', 5, 'т', 0], //=кг
+        'Лист алюминиевый' => ['size', 'steel', 'length', 'price_per_m2', 'price_per_item', 'price_per_kilo', 5, 'кг', 0],//+ шт
+        'Лист алюминиевый рифленый' => ['size', 'steel', 'riffl', 'price_per_m2', 'price_per_item', 'price_per_kilo', 4, 'шт', 0], //есть проблемы с кг кг=шт, кг=0
+        'Лист дюралевый' => ['size', 'steel', 'length', 'price_per_m2', 'price_per_item', 'price_per_kilo', 5, 'кг', 0],
+        'Плита алюминиевая' => ['size', 'steel', 'length', 'price_per_item', 'price_per_m2', 'price_per_kilo', 5, 'кг', 0], //+m2
+        'Плита дюралевая' => ['size', 'steel', 'length', 'price_per_item', 'price_per_m2', 'price_per_kilo', 5, 'кг', 0],//+m2
+        'Проволока алюминиевая' => ['size', 'steel', 'length', '', 'price_per_kilo', 'price', 5, 'т', 0],//=кг
+        'Труба алюминиевая' => ['size', 'steel', 'length', 'price_per_item', 'price_per_metr', 'price_per_kilo', 5, 'кг', 1],//+м
+        'Труба дюралевая' => ['size', 'steel', 'length', 'price_per_item', 'price_per_metr', 'price_per_kilo', 5, 'кг', 1],//+м
+        'Уголок алюминиевый' => ['size', 'steel', 'length', 'price_per_item', 'price_per_metr', 'price_per_kilo', 5, 'кг', 1],//+м
+        'Чушка алюминиевая' => ['size', 'steel', 'length', '', 'price_per_kilo', 'price', 5, 'т', 0],//=кг
+        'Швеллер алюминиевый' => ['size', 'steel', 'length', 'price_per_item', 'price_per_metr', 'price_per_kilo', 5, 'кг', 0],//+м
+        'Шестигранник дюралевый' => ['size', 'steel', 'length', 'price_per_item', 'price_per_metr', 'price_per_kilo', 5, 'кг', 0],//+м
+        'Шина алюминиевая' => ['size', 'steel', 'length', 'price_per_item', 'price_per_metr', 'price_per_kilo', 5, 'кг', 0],//+м
 
-        'Квадрат латунный' => ['size', 'steel', 'length', 'price_per_metr', 'price_per_item', 'price_per_kilo', 5, 'м;шт;кг', 0],
-        'Круг бронзовый (пруток)' => ['size', 'steel', 'length', 'price_per_metr', 'price_per_item', 'price_per_kilo', 5, 'м;шт;кг', 0],
-        'Круг латунный (пруток)' => ['size', 'steel', 'length', 'price_per_metr', 'price_per_item', 'price_per_kilo', 5, 'м;шт;кг', 0],
-        'Круг медный (пруток)' => ['size', 'steel', 'length', 'price_per_metr', 'price_per_item', 'price_per_kilo', 5, 'м;шт;кг', 0],
-        'Лента латунная' => ['size', 'steel', 'length', '', 'price_per_kilo', 'price', 5, 'кг;т', 0],
-        'Лента медная' => ['size', 'steel', 'length', '', 'price_per_kilo', 'price', 5, 'кг;т', 0],
-        'Лист латунный' => ['size', 'steel', 'length', 'price_per_m2', 'price_per_item', 'price_per_kilo', 5, 'м2;шт;кг', 0],
-        'Лист медный' => ['size', 'steel', 'length', 'price_per_m2', 'price_per_item', 'price_per_kilo', 5, 'м2;шт;кг', 0],
-        'Труба латунная' => ['size', 'steel', 'length', 'price_per_metr', 'price_per_item', 'price_per_kilo', 5, 'м;шт;кг', 1],
-        'Труба медная' => ['size', 'steel', 'length', 'price_per_metr', 'price_per_item', 'price_per_kilo', 5, 'м;шт;кг', 1],
-        'Шестигранник латунный' => ['size', 'steel', 'length', 'price_per_metr', 'price_per_item', 'price_per_kilo', 5, 'м;шт;кг', 0],
-        'Шина медная' => ['size', 'steel', 'length', 'price_per_metr', 'price_per_item', 'price_per_kilo', 5, 'м;шт;кг', 0],
+        'Полоса' => ['size', 'steel', 'length', 'price_per_item', 'price_per_metr', 'price_per_kilo', 5, 'кг', 0],//+м
+        'Профиль квадратный трубчатый' => ['size', 'steel', 'length', 'price_per_item', 'price_per_metr', 'price_per_kilo', 5, 'кг', 1],//+м
+        'Профиль круглый' => ['size', 'steel', 'length', 'price_per_item', 'price_per_metr', 'price_per_kilo', 5, 'кг', 1],//+м
+        'Профиль П-образный' => ['size', 'steel', 'length', 'price_per_item', 'price_per_metr', 'price_per_kilo', 5, 'кг', 1],//+м
+        'Профиль прямоугольный трубчатый' => ['size', 'steel', 'length', 'price_per_item', 'price_per_metr', 'price_per_kilo', 3, 'кг', 1],//+м
+        'Профиль угловой' => ['size', 'steel', 'length', 'price_per_item', 'price_per_metr', 'price_per_kilo', 5, 'кг', 1],//+м
+
+        'Квадрат латунный' => ['size', 'steel', 'length', 'price_per_metr', 'price_per_item', 'price_per_kilo', 5, 'кг', 0],//+шт
+        'Круг бронзовый (пруток)' => ['size', 'steel', 'length', 'price_per_metr', 'price_per_item', 'price_per_kilo', 5, 'кг', 0],//+шт
+        'Круг латунный (пруток)' => ['size', 'steel', 'length', 'price_per_metr', 'price_per_item', 'price_per_kilo', 5, 'кг', 0],//+шт
+        'Круг медный (пруток)' => ['size', 'steel', 'length', 'price_per_metr', 'price_per_item', 'price_per_kilo', 5, 'кг', 0],//+шт
+        'Лента латунная' => ['size', 'steel', 'length', '', 'price_per_kilo', 'price', 5, 'т', 0],//=кг
+        'Лента медная' => ['size', 'steel', 'length', '', 'price_per_kilo', 'price', 5, 'т', 0],//=кг
+        'Лист латунный' => ['size', 'steel', 'length', 'price_per_m2', 'price_per_item', 'price_per_kilo', 5, 'кг', 0],//+шт
+        'Лист медный' => ['size', 'steel', 'length', 'price_per_m2', 'price_per_item', 'price_per_kilo', 5, 'кг', 0],//+шт
+        'Труба латунная' => ['size', 'steel', 'length', 'price_per_metr', 'price_per_item', 'price_per_kilo', 5, 'кг', 1],//+шт
+        'Труба медная' => ['size', 'steel', 'length', 'price_per_metr', 'price_per_item', 'price_per_kilo', 5, 'кг', 1],//+шт
+        'Шестигранник латунный' => ['size', 'steel', 'length', 'price_per_metr', 'price_per_item', 'price_per_kilo', 5, 'кг', 0],//+шт
+        'Шина медная' => ['size', 'steel', 'length', 'price_per_metr', 'price_per_item', 'price_per_kilo', 5, 'кг', 0],//+шт
     ];
 
     /**

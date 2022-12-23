@@ -674,7 +674,8 @@ class SiteHelper {
 
 	public static function getCurrentCity() {
 		$current_city = new City();
-		if (App::bound('CurrentCity')) {
+
+        if (App::bound('CurrentCity')) {
 			$current_city = App::make('CurrentCity');
 		}
 

@@ -1,90 +1,4 @@
-/******/ (function(modules) { // webpackBootstrap
-/******/ 	// The module cache
-/******/ 	var installedModules = {};
-/******/
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
-/******/
-/******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId]) {
-/******/ 			return installedModules[moduleId].exports;
-/******/ 		}
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = installedModules[moduleId] = {
-/******/ 			i: moduleId,
-/******/ 			l: false,
-/******/ 			exports: {}
-/******/ 		};
-/******/
-/******/ 		// Execute the module function
-/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-/******/
-/******/ 		// Flag the module as loaded
-/******/ 		module.l = true;
-/******/
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
-/******/
-/******/
-/******/ 	// expose the modules object (__webpack_modules__)
-/******/ 	__webpack_require__.m = modules;
-/******/
-/******/ 	// expose the module cache
-/******/ 	__webpack_require__.c = installedModules;
-/******/
-/******/ 	// define getter function for harmony exports
-/******/ 	__webpack_require__.d = function(exports, name, getter) {
-/******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
-/******/ 		}
-/******/ 	};
-/******/
-/******/ 	// define __esModule on exports
-/******/ 	__webpack_require__.r = function(exports) {
-/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 		}
-/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 	};
-/******/
-/******/ 	// create a fake namespace object
-/******/ 	// mode & 1: value is a module id, require it
-/******/ 	// mode & 2: merge all properties of value into the ns
-/******/ 	// mode & 4: return value when already ns object
-/******/ 	// mode & 8|1: behave like require
-/******/ 	__webpack_require__.t = function(value, mode) {
-/******/ 		if(mode & 1) value = __webpack_require__(value);
-/******/ 		if(mode & 8) return value;
-/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
-/******/ 		var ns = Object.create(null);
-/******/ 		__webpack_require__.r(ns);
-/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
-/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
-/******/ 		return ns;
-/******/ 	};
-/******/
-/******/ 	// getDefaultExport function for compatibility with non-harmony modules
-/******/ 	__webpack_require__.n = function(module) {
-/******/ 		var getter = module && module.__esModule ?
-/******/ 			function getDefault() { return module['default']; } :
-/******/ 			function getModuleExports() { return module; };
-/******/ 		__webpack_require__.d(getter, 'a', getter);
-/******/ 		return getter;
-/******/ 	};
-/******/
-/******/ 	// Object.prototype.hasOwnProperty.call
-/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-/******/
-/******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "/";
-/******/
-/******/
-/******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
-/******/ })
-/************************************************************************/
-/******/ ({
+(window["webpackJsonp"] = window["webpackJsonp"] || []).push([["/resources/assets/js/main"],{
 
 /***/ "./node_modules/@fancyapps/ui/dist/fancybox.esm.js":
 /*!*********************************************************!*\
@@ -30292,6 +30206,90 @@ module.exports = function(module) {
 
 /***/ }),
 
+/***/ "./resources/assets/js--sources/custom.js":
+/*!************************************************!*\
+  !*** ./resources/assets/js--sources/custom.js ***!
+  \************************************************/
+/*! exports provided: changeWeight, changeWeightPopup, cartUpdateCount, purgeCart, addToCartProductPopup, addToCart */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "changeWeight", function() { return changeWeight; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "changeWeightPopup", function() { return changeWeightPopup; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cartUpdateCount", function() { return cartUpdateCount; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "purgeCart", function() { return purgeCart; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "addToCartProductPopup", function() { return addToCartProductPopup; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "addToCart", function() { return addToCart; });
+var _require = __webpack_require__(/*! ./modules/popups */ "./resources/assets/js--sources/modules/popups.js"),
+    showSuccessOrderDialog = _require.showSuccessOrderDialog;
+
+var _require2 = __webpack_require__(/*! ./modules/popups */ "./resources/assets/js--sources/modules/popups.js"),
+    showSuccessRequestDialog = _require2.showSuccessRequestDialog;
+
+function changeWeight(elem) {
+  var b = document.querySelector('.button.button--primary');
+  var buttonWeight = b.dataset.weight;
+  var buttonSize = b.dataset.size;
+  var buttonPrice = b.dataset.price;
+  var buttonTotal = b.dataset.total;
+  buttonPrice = buttonPrice.replace(/ /g, '');
+  var priceDiv = $('.prod-order__input[name=price]');
+  var sizeDiv = $('.prod-order__input[name=size]');
+  var totalDiv = $('.prod-order__input[name=total]');
+  var weight = $(elem).val();
+  var size = sizeDiv.val();
+  var res = new Intl.NumberFormat('ru-RU').format(weight * buttonPrice);
+  b.dataset.weight = weight;
+  b.dataset.size = size;
+  b.dataset.total = res;
+  priceDiv.text(res);
+  totalDiv.text(res);
+}
+function changeWeightPopup(elem) {
+  var priceDiv = $('.prod-order__input[name=price]');
+  var sizeDiv = $('.prod-order__input[name=size]');
+  var totalDiv = $('.prod-order__input[name=total]');
+  var price = $('[data-order-price]');
+  var total = $('[data-order-total]');
+  var weight = $(elem).val();
+  var size = sizeDiv.val();
+  var priceVal = price.text().replace(/ /g, '');
+  var res = weight * +priceVal;
+  total.text(new Intl.NumberFormat('ru-RU').format(res));
+}
+function cartUpdateCount(elem, id, price) {
+  var count = $(elem).val();
+  var cardSum = $('[data-id=' + id + ']'); // cardSum.text(count * price);
+
+  console.log(count);
+}
+function purgeCart() {
+  Cart.purge(function (res) {
+    $('.basket').replaceWith(res.header_cart);
+    $('.cart__aside').replaceWith(res.order_total);
+    $('.cart-table__row--body').remove(); // location.reload();
+  }.bind(this));
+}
+function addToCartProductPopup(form, e) {
+  e.preventDefault();
+  var id = form.id;
+  var weight = form.weight.value;
+  var qnt = form.weight.size;
+  Cart.add(id, qnt, weight, function (res) {
+    $('.basket').replaceWith(res.header_cart);
+  }.bind(this));
+  $('.is-close').click();
+}
+function addToCart(id) {
+  Cart.add(id, 1, 1, function (res) {
+    $('.basket').replaceWith(res.header_cart);
+    showSuccessOrderDialog();
+  }.bind(this));
+}
+
+/***/ }),
+
 /***/ "./resources/assets/js--sources/functions/isSmallScreen.js":
 /*!*****************************************************************!*\
   !*** ./resources/assets/js--sources/functions/isSmallScreen.js ***!
@@ -30392,6 +30390,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_utility__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/utility */ "./resources/assets/js--sources/modules/utility.js");
 /* harmony import */ var _modules_scrollTop__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/scrollTop */ "./resources/assets/js--sources/modules/scrollTop.js");
 /* harmony import */ var _modules_inputMask__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/inputMask */ "./resources/assets/js--sources/modules/inputMask.js");
+/* harmony import */ var _custom__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./custom */ "./resources/assets/js--sources/custom.js");
+
 
 
 
@@ -35242,4 +35242,4 @@ module.exports = __webpack_require__(/*! C:\_funky\bms-git\resources\assets\js--
 
 /***/ })
 
-/******/ });
+},[[0,"/resources/assets/js/manifest"]]]);

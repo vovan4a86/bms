@@ -20,6 +20,7 @@
             @endif
             <div class="t-catalog__cart">
                 <button class="cart-btn btn-reset {{ $item->getAnyPrice() ? null : 'disabled'}}" type="button"
+                        onclick="addToCart({{$item->id}})"
                         aria-label="Добавить в корзину">
                     <svg class="svg-sprite-icon icon-cart">
                         <use xlink:href="/static/images/sprite/symbol/sprite.svg#cart"></use>

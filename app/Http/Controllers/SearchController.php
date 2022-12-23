@@ -54,6 +54,9 @@ class SearchController extends Controller {
             ]);
         }
 
+        $filterSizes = Product::public()->whereIn('catalog_id', $items_ids)->distinct()->pluck( 'size')->all();
+        $filterNames = Product::public()->whereIn('catalog_id', $items_ids)->distinct()->pluck( 'name')->all();
+
         return view('search.index', [
             'items'       => $items,
             'title'       => 'Результат поиска «' . $q . '»',
@@ -63,6 +66,8 @@ class SearchController extends Controller {
             'keywords'    => 'Поиск',
             'description' => 'Поиск',
             'headerIsWhite' => true,
+            'filterSizes' => $filterSizes,
+            'filterNames' => $filterNames,
         ]);
 	}
 

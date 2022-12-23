@@ -79,9 +79,9 @@ trait ParseFunctions {
             //если нет подразделов, парсим товары
             try {
                 //1 товар парсим?
-//          $this->parseOneProductFromList($catalog, $categoryUrl, $categoryName, $this->priceMap[$catalog->name]);
+          $this->parseOneProductFromList($catalog, $categoryUrl, $categoryName, $this->priceMap[$catalog->name]);
                 //или все?
-            $this->parseListProducts($catalog, $categoryUrl, $categoryName, $this->priceMap[$catalog->name]);
+//            $this->parseListProducts($catalog, $categoryUrl, $categoryName, $this->priceMap[$catalog->name]);
             } catch(\Exception $e) {
                 $this->info('Error Parse From List: ' . $e->getMessage());
                 $this->info('Check priceMap values for '. $categoryName);
@@ -105,7 +105,12 @@ trait ParseFunctions {
         }
 
         $table = $crawler->filter('table')->first(); //table of products
-        $node = $table->filter('tbody tr')->first();
+
+        $node = $table->filter('tbody tr')->first(); //product one row
+        $idt = $node->attr('idt');
+        $idf = $node->attr('idf');
+        $idb = $node->attr('idb');
+        $scriptUrl = 'mc.ru//pages/blocks/add_basket.asp/id/'. $idt .'/idf/'. $idf .'/idb/' . $idb;
 
         try {
             $url = $this->baseUrl . trim($node->filter('a')->first()->attr('href'));
@@ -133,6 +138,16 @@ trait ParseFunctions {
             $product = Product::whereParseUrl($url)->first();
 //          если новый товар
             if (!$product) {
+                //ищем k
+                $scriptPage = $this->client->get($scriptUrl);
+                $scriptHtml = $scriptPage->getBody()->getContents();
+                $scriptCrawler = new Crawler($scriptHtml);
+                $scriptText = $scriptCrawler->filter('script[language="Javascript"]')->first()->text();
+                $findStart = stripos($scriptText, 'var k=');
+                $findEnd = stripos($scriptText, ';', $findStart);
+                $k = substr($scriptText, $findStart + 6, $findEnd - $findStart - 6);
+                $data['k'] = $k;
+
                 $name = trim($node->filter('.refstr')->first()->text());
 
                 $colName = $priceMap[0];
@@ -175,6 +190,7 @@ trait ParseFunctions {
                 $this->info('[+] ' . $name);
 
                 $section = $subCatalog ?: $catalog;
+
                 $product_crawler->filter('.TovInfo img')->each(function ($img, $i) use ($alias, $newProd, $section, $uploadPath) {
                     $imageSrc = $img->attr('src');
                     $fileName = $uploadPath . $alias . '-' . ++$i;
@@ -202,6 +218,7 @@ trait ParseFunctions {
                     }
 
                 });
+
                 sleep(rand(1, 2));
             } else {
                 $product->update($data);

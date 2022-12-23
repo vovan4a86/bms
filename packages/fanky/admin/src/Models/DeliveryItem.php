@@ -27,4 +27,8 @@ class DeliveryItem extends Model {
 
 	public $timestamps = false;
 
+	public function order() {
+	    $this->belongsTo(Order::class);
+    }
+
 }

@@ -255,6 +255,9 @@ class CatalogController extends Controller {
         while($root->parent_id !== 0) {
             $root = $root->findRootCategory($root->parent_id);
         }
+
+        $similar = Product::whereName($product->name)->where('alias', '<>', $product->alias)->get();
+
 //        $params = $root->params()->get();
 
 //        $add_params = ProductAddParam::where('product_id', '=', $product->id)
@@ -262,7 +265,8 @@ class CatalogController extends Controller {
 //            ->groupBy('name')
 //            ->get();
 
-//        $related = $product->related()->get(); //похожие товары добавленные из админки
+        $related = $product->related()->get(); //похожие товары добавленные из админки
+//        dd($related);
 
         //похожие товары, добавленные вручную + из той же подкатегории
 //        $related_from_cat = Product::whereCatalogId($catalog->id)
@@ -294,8 +298,12 @@ class CatalogController extends Controller {
 
 //        $related = $related->merge($related_from_cat);
 
-//        $images = $product->images()->get();
-        $image = $product->image()->first();
+        $prodImage = $product->image()->first();
+        if($prodImage) {
+            $image = $prodImage->image;
+        } else {
+            $image = Catalog::whereId($product->catalog_id)->first()->section_image;
+        }
 
         if(!$product->text) {
             $text = $root->text;
@@ -341,8 +349,9 @@ class CatalogController extends Controller {
             'params'     => $params ?? null,
             'add_params' => $add_params ?? null,
 //            'features' => $features,
-//            'related' => $related,
-            'image' => $image ? $image->image : null,
+            'similar' => $similar,
+            'related' => $related,
+            'image' => $image,
             'cat_image' => $cat_image ?? null,
             'count_weight' => $count_weight,
             'count_per_tonn' => $count_per_tonn,

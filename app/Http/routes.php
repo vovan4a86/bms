@@ -16,11 +16,11 @@ use App\Http\Controllers\AjaxController;
 Route::get('robots.txt', 'PageController@robots')->name('robots');
 
 Route::group(['prefix' => 'ajax', 'as' => 'ajax.'], function () {
-    Route::post('add-to-cart', [AjaxController::class, 'postAddToCart']);
-    Route::post('update-to-cart', [AjaxController::class, 'postUpdateToCart']);
-    Route::post('remove-from-cart', [AjaxController::class, 'postRemoveFromCart']);
-    Route::post('purge-cart', [AjaxController::class, 'postPurgeCart']);
-    Route::post('edit-cart-product', [AjaxController::class, 'postEditCartProduct']);
+    Route::post('add-to-cart', [AjaxController::class, 'postAddToCart'])->name('add-to-cart');
+    Route::post('update-to-cart', [AjaxController::class, 'postUpdateToCart'])->name('update-to-cart');
+    Route::post('remove-from-cart', [AjaxController::class, 'postRemoveFromCart'])->name('remove-from-cart');
+    Route::post('purge-cart', [AjaxController::class, 'postPurgeCart'])->name('purge-cart');
+    Route::post('edit-cart-product', [AjaxController::class, 'postEditCartProduct'])->name('edit-cart-product');
     Route::post('order', [AjaxController::class, 'postOrder'])->name('order');
 	Route::post('request', 'AjaxController@postRequest')->name('request');
     Route::post('fast-request', 'AjaxController@postFastRequest')->name('fast-request');
@@ -96,6 +96,8 @@ Route::group(['middleware' => ['redirects', 'regions']], function() {
     Route::any('search', ['as' => 'search', 'uses' => 'SearchController@getIndex']);
 
     Route::get('cart', ['as' => 'cart', 'uses' => 'CartController@getIndex']);
+
+    Route::get('create-order', ['as' => 'create-order', 'uses' => 'CartController@getCreateOrder']);
 
     Route::get('order-success/{id?}', ['as' => 'order-success', 'uses' => 'CartController@showSuccess']);
 

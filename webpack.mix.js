@@ -16,13 +16,13 @@ mix.browserSync({
 });
 mix.js([
     'resources/assets/js--sources/main.js',
-    ], 'resources/assets/js/main.js')
-    .scripts([
-        'resources/assets/js/main.js',
-        'resources/assets/js/custom.js',
     ], 'public/static/js/all.js')
+    // .scripts([
+        // 'resources/assets/js/main.js',
+    //     'resources/assets/js/custom.js',
+    // ], 'public/static/js/all.js')
+    // .extract(['@fancyapps/ui'])
     .styles([
         'resources/assets/css/styles.css',
-        'resources/assets/css/custom.css'
     ], 'public/static/css/all.css')
     .version();

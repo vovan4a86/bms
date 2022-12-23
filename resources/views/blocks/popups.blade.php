@@ -10,6 +10,7 @@
         <div class="popup__complete-label">Ваш заказ отправлен. Наши специалисты свяжутся с вами в ближайшее время. Спасибо.</div>
     </div>
 </div>
+
 <form class="popup" id="search" action="{{ route('search') }}" style="display:none">
     <div class="popup__search-field">
         <div class="field field--promo">
@@ -21,7 +22,9 @@
         </div>
     </div>
 </form>
-<form class="order-popup popup" id="order" action="#" style="display:none">
+
+<form class="order-popup popup" id="order_t" action="{{ route('ajax.add-to-cart') }}"
+      style="display:none" onsubmit="addToCartProductPopup(this, event)">
     <div class="order-popup__head">
         <div class="order-popup__title" data-order-title></div>
         <div class="p-status in-stock">
@@ -36,7 +39,8 @@
         <div class="order-popup__grid">
             <div class="order-popup__col">
                 <label class="order-popup__label">Количество, т
-                    <input class="order-popup__input" type="number" name="weight" data-order-weight>
+                    <input class="order-popup__input" type="number" step="0.001" name="weight"
+                           data-order-weight onkeyup="changeWeightPopup(this)">
                 </label>
             </div>
             <div class="order-popup__col">
@@ -54,12 +58,52 @@
             </div>
         </div>
         <div class="order-popup__action">
-            <button class="button button--primary button--popup" name="submit" aria-label="Добавить в корзину">
+            <button class="button button--primary button--popup"
+                    name="submit" aria-label="Добавить в корзину">
                 <span>Добавить в корзину</span>
             </button>
         </div>
     </div>
 </form>
+
+<form class="order-popup popup" id="order_item" action="{{ route('ajax.add-to-cart') }}"
+      style="display:none" onsubmit="addToCartProductPopup(this, event)">
+    <div class="order-popup__head">
+        <div class="order-popup__title" data-order-title></div>
+        <div class="p-status in-stock">
+            <span>В наличии</span>
+            <svg width="15" height="16" viewBox="0 0 15 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12.6562 4.71875L6.09375 11.281L2.8125 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+
+        </div>
+    </div>
+    <div class="order-popup__body">
+        <div class="order-popup__grid">
+            <div class="order-popup__col">
+                <label class="order-popup__label">Количество, шт
+                    <input class="order-popup__input" type="number" name="weight"
+                           data-order-weight onkeyup="changeWeightPopup(this)">
+                </label>
+            </div>
+            <div class="order-popup__col">
+                <div class="order-popup__label">Цена, т</div>
+                <div class="order-popup__input" data-order-price></div>
+            </div>
+            <div class="order-popup__col">
+                <div class="order-popup__label">Сумма</div>
+                <div class="order-popup__input" data-order-total></div>
+            </div>
+        </div>
+        <div class="order-popup__action">
+            <button class="button button--primary button--popup"
+                    name="submit" aria-label="Добавить в корзину">
+                <span>Добавить в корзину</span>
+            </button>
+        </div>
+    </div>
+</form>
+
 <form class="popup" id="callback" action="{{ route('ajax.callback') }}"
       onclick="sendCallback(this,event)" style="display:none">
     <div class="popup__container">
@@ -95,6 +139,7 @@
         </div>
     </div>
 </form>
+
 <form class="popup" id="question" action="#" style="display:none">
     <div class="popup__container">
         <div class="popup__title">Задать вопрос</div>

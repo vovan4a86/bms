@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers;
 
 use Fanky\Admin\Models\Catalog;
+use Fanky\Admin\Models\DeliveryItem;
 use Fanky\Admin\Models\Page;
 use Fanky\Admin\Models\Product;
 use Illuminate\Contracts\Validation\Validator;
@@ -17,38 +18,19 @@ class CartController extends Controller {
 	public function getIndex() {
 //        Cart::purge();
 		$items = Cart::all();
-//        dd($items);
 //		if (!count($items)) {
 //			return Response::redirectTo(route('catalog.index', [], false), 307);
 //		}
-		$sum = 0;
-        $total_weight = 0;
-        foreach ($items as $key => $item) {
-			$sum += Product::fullPrice($item['price']) * $item['weight'];
-            $total_weight += $item['weight'];
-			$product = Product::find($item['id']);
-			if ($product) {
-                $catalog = Catalog::find($product->catalog_id);
-                $root = $catalog;
-                while($root->parent_id !== 0) {
-                    $root = $root->findRootCategory($root->parent_id);
-                }
-//                $items[$key]['image'] = $product->image ? Product::UPLOAD_URL . $product->image->image : Catalog::UPLOAD_URL . $root->image;
-                $items[$key]['image'] = $product->showAnyImage();
-			} else {
-				$items[$key]['image'] = '\static\images\common\no_image.png';
-			}
-		}
 
         $page = Page::getByPath(['cart']);
         $bread = $page->getBread();
 
-
         return view('cart.index', [
 			'items' => $items,
-            'sum' => $sum,
-            'total_weight' => $total_weight,
-            'bread' => $bread
+            'sum' => Cart::sum(),
+            'total_weight' => Cart::total_weight(),
+            'bread' => $bread,
+            'headerIsWhite' => true,
 		]);
 	}
 
@@ -103,6 +85,20 @@ class CartController extends Controller {
 
 		return json_encode($result);
 	}
+
+	public function getCreateOrder() {
+        $items = Cart::all();
+
+        $delivery = DeliveryItem::all();
+
+        return view('cart.create_order', [
+            'items' => $items,
+            'delivery' => $delivery,
+            'sum' => Cart::sum(),
+            'total_weight' => Cart::total_weight(),
+            'headerIsWhite' => true,
+        ]);
+    }
 
 	/**
 	 * {@inheritdoc}

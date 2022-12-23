@@ -44,7 +44,7 @@
                 {!! Form::groupText('keywords', $product->keywords, 'keywords') !!}
                 {!! Form::groupText('description', $product->description, 'description') !!}
                 <hr>
-                <h4>Харакетеристики:</h4>
+                <h4>Характеристики:</h4>
                 <div style="display: flex; flex-shrink: 1;">
                     {!! Form::groupText('size', $product->size, 'Размер') !!}
                     <div style="margin: 0 10px;">

@@ -18,5 +18,12 @@
             {{ Settings::get('schema.org') }}
         </article>
     </div>
+    <div>
+{{--        <script src="/static/js/manifest.js"></script>--}}
+{{--        <script src="/static/js/vendor.js"></script>--}}
+        <script src="{{ mix('static/js/all.js') }}"></script>
+{{--        <script src="/static/js/main.js"></script>--}}
+        <script src="/static/js/custom.js"></script>
+    </div>
 </body>
 </html>

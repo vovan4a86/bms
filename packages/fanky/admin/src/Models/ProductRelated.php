@@ -3,6 +3,7 @@
 use App\Traits\HasImage;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Thumb;
 
 /**
@@ -31,16 +32,23 @@ class ProductRelated extends Model {
 
 	public $timestamps = false;
 
-	public function product_info() {
-		return $this->belongsTo(Product::class, 'related_id');
-	}
+	public function product(): BelongsTo {
+	    return $this->belongsTo(Product::class);
+    }
 
-	public function params() {
-		return $this->hasMany(ProductParam::class, 'product_id')->orderBy('order');
-	}
-
-	public function params_on_card() {
-		return $this->params()
-			->where('on_card', '=', 1);
-	}
+    public function getAnyPrice(): ?string {
+        if($this->price) {
+            return number_format($this->price, 0, '', ' ');
+        } elseif($this->price_per_item) {
+            return number_format($this->price_per_item, 0, '', ' ');
+        } elseif($this->price_per_kilo) {
+            return number_format($this->price_per_kilo, 0, '', ' ');
+        } elseif($this->price_per_metr) {
+            return number_format($this->price_per_metr, 0, '', ' ');
+        } elseif($this->price_per_m2) {
+            return number_format($this->price_per_m2, 0, '', ' ');
+        } else {
+            return null;
+        }
+    }
 }

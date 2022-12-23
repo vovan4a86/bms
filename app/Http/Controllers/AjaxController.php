@@ -22,38 +22,37 @@ use Validator;
 
 class AjaxController extends Controller
 {
-    private $fromMail = 'info@stalservis96.ru';
-    private $fromName = 'Stal-Service';
+    private $fromMail = 'info@bms.ru';
+    private $fromName = 'BMS';
 
     //РАБОТА С КОРЗИНОЙ
 
-    public function postAddToCart(Request $request) {
+    public function postAddToCart(Request $request): array {
         $id = $request->get('id');
-        $count_per_tonn = $request->get('count_per_tonn', 0);
-        $count_weight = $request->get('count_weight', 0);
+        $size = $request->get('size');
+        $weight = $request->get('weight');
 
         /** @var Product $product */
         $product = Product::find($id);
         if ($product) {
-            $product_item['image'] = $product->showAnyImage();
             $product_item = $product->toArray();
-            $product_item['dlina'] = $product->getLength();
-            $product_item['count_per_tonn'] = $count_per_tonn;
-            $product_item['count_weight'] = $count_weight;
-            $product_item['url'] = $product->url;
-            if(!$product_item['factor']) !$product_item['factor'] = 100;
-//            $product_item['image'] = $image ? $image->thumb(2) : null;
+            $product_item['measure_price'] = $product->getMeasurePrice();
+            $product_item['count'] = $size;
+            $product_item['round_k'] = $product->round_k;
+            if(!$weight) {
+                $product_item['weight'] = $product_item['count'] *  $product_item['round_k'];
+            } else {
+                $product_item['weight'] = $weight;
+            }
 
+            $product_item['url'] = $product->url;
             Cart::add($product_item);
         }
         $header_cart = view('blocks.header_cart')->render();
 //        $popup = view('blocks.product_added', $product_item)->render();
-        $buttons = view('cart.card_actions', ['product' => $product])->render();
 
         return [
             'header_cart' => $header_cart,
-//            'popup' => $popup,
-            'buttons' => $buttons
         ];
     }
 
@@ -129,13 +128,19 @@ class AjaxController extends Controller
         return ['header_cart' => $header_cart, 'cart_values' => $cart_values];
     }
 
-    public function postPurgeCart()
-    {
+    public function postPurgeCart() {
         Cart::purge();
 
-//        $header_cart = view('cart.index', ['items' => []])->render();
+        $header_cart = view('blocks.header_cart')->render();
+        $order_total = view('cart.blocks.order_total', [
+            'total_weight' => Cart::total_weight(),
+            'sum' => Cart::sum()
+        ])->render();
 
-        return [];
+        return [
+            'header_cart' => $header_cart,
+            'order_total' => $order_total,
+        ];
     }
 
     //заявка в свободной форме
@@ -326,83 +331,53 @@ class AjaxController extends Controller
         }
     }
 
+    public function getOrderShow() {
+
+    }
+
     //ОФОРМЛЕНИЕ ЗАКАЗА
-    public function postOrder(Request $request)
-    {
+    public function postOrder(Request $request) {
         $data = $request->only([
+            'payer_type',
             'name',
-            'phone',
             'email',
-            'user',
-            'text',
-            'inn',
+            'phone',
             'company',
-            'address',
-            'timing',
-            'delivery_method',
-            'summ',
-            'total_weight',
-//            'payment_method',
+            'delivery',
+            'payment',
         ]);
-        $file = $data['file'] = $request->file('file');
 
         $messages = array(
+            'payer_type' => 'Не указан тип плательщика',
             'email.required' => 'Не указан ваш e-mail адрес!',
             'email.email' => 'Не корректный e-mail адрес!',
             'name.required' => 'Не заполнено поле Имя',
             'phone.required' => 'Не заполнено поле Телефон',
-            'delivery_method.required' => 'Не выбран способ доставки',
-//            'payment_method.required'  => 'Не выбран способ оплаты',
+            'delivery.required' => 'Не выбран способ доставки',
+            'payment.required' => 'Не выбран способ оплаты',
         );
 
         $valid = Validator::make($data, [
-            'user' => 'required|numeric',
+            'payer_type' => 'required',
             'name' => 'required',
+            'email' => 'required',
             'phone' => 'required',
-            'inn' => 'required_if:user,0',
-            'company' => 'required_if:user,0',
-            'delivery_method' => 'required',
-            'summ' => 'required|min:1',
-            'total_weight'     => 'required',
-            'address' => 'required_if:delivery_method,0',
-            'file' => 'nullable|max:5120|mimes:jpg,jpeg,png,pdf,doc,docs,xls,xlsx',
+            'company' => 'required_if:payer_type,2',
+            'delivery' => 'required',
         ], $messages);
         if ($valid->fails()) {
             return ['errors' => $valid->messages()];
         }
-        if ($file) {
-            $file_name = md5(uniqid(rand(), true)) . '.' . $file->getClientOriginalExtension();
-            $file->move(base_path() . Order::UPLOAD_PATH, $file_name);
-            $data['file'] = $file_name;
-        }
+
+        $data['summ'] = Cart::sum();
+        $data['total_weight'] = Cart::total_weight();
 
         $order = Order::create($data);
         $items = Cart::all();
-        $summ = 0;
-        $total_weight = 0;
-        $all_count = 0;
-        foreach ($items as $item) {
-            if($item['measure'] == 'м2') {
-                if($item['factor_m2_weight']) {
-                    $item['count_weight'] = round($item['factor_m2_weight'] * $item['count_per_tonn'],2);
-                } else {
-                    $item['factor_m2'] = $item['count_weight'];
-                    $item['count_weight'] = null;
-                }
-            }
 
-            $order->products()->attach($item['id'], [
-                'count' => $item['count_per_tonn'],
-                'm2' => $item['factor_m2'],
-                'weight' => round($item['count_weight'], 2),
-                'price' => Product::fullPrice($item['price']),
-            ]);
-            $summ += $item['measure'] == 'т' ? $item['count_weight'] * Product::fullPrice($item['price']) :
-                $item['count_per_tonn'] * $item['factor_m2'] * Product::fullPrice($item['price']);
-            $total_weight += round($item['count_weight'], 2);
-            $all_count += $item['count_per_tonn'];
+        foreach ($items as $item) {
+            $order->products()->attach($item['id']);
         }
-        $order->update(['summ' => $summ, 'total_weight' => $total_weight]);
 
 //        $data['total_sum'] = Cart::getRawTotalSum();
 //        $order = Order::create($data);
@@ -435,7 +410,7 @@ class AjaxController extends Controller
 
         Cart::purge();
 
-        return ['success' => true, 'redirect' => url('/order-success', ['id' => $order->id])];
+        return ['success' => true];
     }
 
     //РАБОТА С ГОРОДАМИ

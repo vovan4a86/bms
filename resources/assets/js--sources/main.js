@@ -3,6 +3,7 @@ import './modules';
 import { preloader, utils } from './modules/utility';
 import { scrollTop } from './modules/scrollTop';
 import { maskedInputs } from './modules/inputMask';
+// import './custom'
 
 preloader();
 utils();

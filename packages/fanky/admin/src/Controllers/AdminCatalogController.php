@@ -194,7 +194,7 @@ class AdminCatalogController extends AdminController {
             ]);
         }
         $catalogs = Catalog::getCatalogList();
-        $product_list = Product::where('id', '<>', $product->id)->public()->pluck('name', 'id')->all();
+        $product_list = Product::public()->where('id', '<>', $product->id)->orderBy('name')->pluck('name', 'id')->all();
 
         $category = Catalog::where('id', '=', $product->catalog_id)->first();
         if($category->parent_id !== 0) {
