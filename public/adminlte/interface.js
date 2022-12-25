@@ -387,34 +387,6 @@ function sendRequest(frm, e) {
 	});
 }
 
-function sendQuestion(frm, e) {
-	e.preventDefault();
-	var form = $(frm);
-	var data = form.serialize();
-	var url = form.attr('action');
-	sendAjax(url, data, function (json) {
-		if (typeof json.errors !== 'undefined') {
-			let focused = false;
-			for (var key in json.errors) {
-				if (!focused) {
-					form.find('#' + key).focus();
-					focused = true;
-				}
-				form.find('#' + key).after('<span class="has-error">' + json.errors[key] + '</span>');
-			}
-			form.find('.sending__title').after('<div class="err-msg-block has-error">Заполните, пожалуйста, обязательные поля.</div>');
-		} else {
-			resetForm(form);
-			alert('Спасибо, ваш вопрос отправлен. Мы вам перезвоним!');
-			// form.parent().find('.is-close').click();
-			// popup('Спасибо, ваш вопрос отправлен. Сообщение об ответе придет на эл. почту.');
-			// Fancybox.show([{ src: '#confirm', type: 'inline' }], {
-			//     mainClass: 'popup--main popup--thanks'
-			// });
-		}
-	});
-}
-
 function sendFastRequest(frm, e) {
 	e.preventDefault();
 	var form = $(frm);
@@ -464,7 +436,7 @@ function sendCallback(frm, e) {
 			form.find('.sending__title').after('<div class="err-msg-block has-error">Заполните, пожалуйста, обязательные поля.</div>');
 		} else {
 			resetForm(form);
-			form.find('.is-close').click();
+			// form.find('.is-close').click();
 			Fancybox.show([{ src: '#request-done', type: 'inline' }], {
 				mainClass: 'popup--custom popup--complete',
 				template: { closeButton: closeBtn },
@@ -474,12 +446,20 @@ function sendCallback(frm, e) {
 	});
 }
 
-function sendWriteback(frm, e) {
+//форма с прикрепленным файлом
+function sendQuestion(frm, e) {
 	e.preventDefault();
 	var form = $(frm);
-	var data = form.serialize();
 	var url = form.attr('action');
-	sendAjax(url, data, function (json) {
+	var inputFile = $('input[name=file]');
+
+	var data = new FormData();
+	$.each($(form).serializeArray(), function(key, value){
+		data.append(value.name, value.value);
+	});
+	data.append('file', inputFile.prop('files')[0]);
+
+	sendAjaxWithFile(url, data, function (json) {
 		if (typeof json.errors !== 'undefined') {
 			let focused = false;
 			for (var key in json.errors) {
@@ -492,12 +472,12 @@ function sendWriteback(frm, e) {
 			form.find('.sending__title').after('<div class="err-msg-block has-error">Заполните, пожалуйста, обязательные поля.</div>');
 		} else {
 			resetForm(form);
-			alert('Ваша заявка получена! Мы вам перезвоним!');
 			form.find('.is-close').click();
-			// popup('Спасибо, ваш вопрос отправлен. Сообщение об ответе придет на эл. почту.');
-			// Fancybox.show([{ src: '#confirm', type: 'inline' }], {
-			//     mainClass: 'popup--main popup--thanks'
-			// });
+			Fancybox.show([{ src: '#request-done', type: 'inline' }], {
+				mainClass: 'popup--custom popup--complete',
+				template: { closeButton: closeBtn },
+				hideClass: 'fancybox-zoomOut'
+			});
 		}
 	});
 }
@@ -520,12 +500,12 @@ function sendContactUs(frm, e) {
 			form.find('.sending__title').after('<div class="err-msg-block has-error">Заполните, пожалуйста, обязательные поля.</div>');
 		} else {
 			resetForm(form);
-			alert('Ваша заявка получена! Мы с вами свяжемся!');
 			// form.find('.is-close').click();
-			// popup('Спасибо, ваш вопрос отправлен. Сообщение об ответе придет на эл. почту.');
-			// Fancybox.show([{ src: '#confirm', type: 'inline' }], {
-			//     mainClass: 'popup--main popup--thanks'
-			// });
+			Fancybox.show([{ src: '#request-done', type: 'inline' }], {
+				mainClass: 'popup--custom popup--complete',
+				template: { closeButton: closeBtn },
+				hideClass: 'fancybox-zoomOut'
+			});
 		}
 	});
 }

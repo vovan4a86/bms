@@ -14,7 +14,7 @@
     <div class="t-catalog__col t-catalog__col--wide" data-caption="Цена, руб">
         <div class="t-catalog__row">
             @if($item->getAnyPrice())
-                <div class="t-catalog__value">{{ $item->getAnyPrice() }} ₽</div>
+                <div class="t-catalog__value">{{ number_format($item->getAnyPrice(), 0, '', ' ') }} ₽</div>
             @else
                 <div class="t-catalog__value">Под заказ</div>
             @endif

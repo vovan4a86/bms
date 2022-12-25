@@ -23,7 +23,7 @@ use Validator;
 class AjaxController extends Controller
 {
     private $fromMail = 'info@bms.ru';
-    private $fromName = 'BMS';
+    private $fromName = 'БМС';
 
     //РАБОТА С КОРЗИНОЙ
 
@@ -67,7 +67,6 @@ class AjaxController extends Controller
             $product_item = $product->toArray();
             $product_item['count_per_tonn'] = $count;
             $product_item['url'] = $product->url;
-//            $product_item['image'] = $image ? $image->thumb(2) : null;
 
             Cart::add($product_item);
         }
@@ -166,7 +165,7 @@ class AjaxController extends Controller
             ];
             $feedback = Feedback::create($feedback_data);
             Mail::send('mail.feedback', ['feedback' => $feedback], function ($message) use ($feedback) {
-                $title = $feedback->id . ' | Заявка в свободной форме | Stal-Service';
+                $title = $feedback->id . ' | Заявка в свободной форме | БМС';
                 $message->from($this->fromMail, $this->fromName)
                     ->to(Settings::get('feedback_email'))
                     ->subject($title);
@@ -197,7 +196,7 @@ class AjaxController extends Controller
             ];
             $feedback = Feedback::create($feedback_data);
             Mail::send('mail.feedback', ['feedback' => $feedback], function ($message) use ($feedback) {
-                $title = $feedback->id . ' | Написать нам | Stal-Service';
+                $title = $feedback->id . ' | Написать нам | БМС';
                 $message->from($this->fromMail, $this->fromName)
                     ->to(Settings::get('feedback_email'))
                     ->subject($title);
@@ -259,7 +258,7 @@ class AjaxController extends Controller
             ];
             $feedback = Feedback::create($feedback_data);
             Mail::send('mail.feedback', ['feedback' => $feedback], function ($message) use ($feedback) {
-                $title = $feedback->id . ' | Быстрый заказ | Stal-Service';
+                $title = $feedback->id . ' | Быстрый заказ | БМС';
                 $message->from($this->fromMail, $this->fromName)
                     ->to(Settings::get('feedback_email'))
                     ->subject($title);
@@ -269,26 +268,38 @@ class AjaxController extends Controller
         }
     }
 
-    //остались вопросы?
+    //задать вопрос
     public function postQuestions(Request $request)
     {
-        $data = $request->only(['phone']);
+        $data = $request->only(['name', 'phone', 'question']);
+        $file = $request->file('file');
         $valid = Validator::make($data, [
+            'name' => 'required',
             'phone' => 'required',
+            'question' => 'required',
         ], [
-            'phone.required' => 'Не заполнено поле Телефон',
+            'name.required' => 'Не заполнено поле имя',
+            'phone.required' => 'Не заполнено поле телефон',
+            'question.required' => 'Не заполнено поле сообщение',
         ]);
 
         if ($valid->fails()) {
             return ['errors' => $valid->messages()];
         } else {
+            if ($file) {
+                $file_name = md5(uniqid(rand(), true)) . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path(Feedback::UPLOAD_URL), $file_name);
+                $data['file'] = '<a target="_blanc" href=\'' . Feedback::UPLOAD_URL . $file_name . '\'>' . $file_name . '</a>';
+            }
+
             $feedback_data = [
                 'type' => 5,
                 'data' => $data
             ];
+
             $feedback = Feedback::create($feedback_data);
             Mail::send('mail.feedback', ['feedback' => $feedback], function ($message) use ($feedback) {
-                $title = $feedback->id . ' | Отались вопросы | Stal-Service';
+                $title = $feedback->id . ' | Задать вопрос | БМС';
                 $message->from($this->fromMail, $this->fromName)
                     ->to(Settings::get('feedback_email'))
                     ->subject($title);
@@ -298,7 +309,7 @@ class AjaxController extends Controller
         }
     }
 
-    //заявка в свободной форме
+    //свяжитесь с нами
     public function postContactUs(Request $request)
     {
         $data = $request->only(['name', 'phone', 'text']);
@@ -321,7 +332,7 @@ class AjaxController extends Controller
             ];
             $feedback = Feedback::create($feedback_data);
             Mail::send('mail.feedback', ['feedback' => $feedback], function ($message) use ($feedback) {
-                $title = $feedback->id . ' | Свяжитесь с нами | Stal-Service';
+                $title = $feedback->id . ' | Свяжитесь с нами | БМС';
                 $message->from($this->fromMail, $this->fromName)
                     ->to(Settings::get('feedback_email'))
                     ->subject($title);
@@ -329,10 +340,6 @@ class AjaxController extends Controller
 
             return ['success' => true];
         }
-    }
-
-    public function getOrderShow() {
-
     }
 
     //ОФОРМЛЕНИЕ ЗАКАЗА
@@ -376,7 +383,11 @@ class AjaxController extends Controller
         $items = Cart::all();
 
         foreach ($items as $item) {
-            $order->products()->attach($item['id']);
+            $order->products()->attach($item['id'], [
+                'count' => $item['count'],
+                'weight' => $item['weight'],
+                'price' => $item['weight'] * $item['price']
+            ]);
         }
 
 //        $data['total_sum'] = Cart::getRawTotalSum();
@@ -402,7 +413,7 @@ class AjaxController extends Controller
 //        }
 
         Mail::send('mail.new_order', ['order' => $order], function ($message) use ($order) {
-            $title = $order->id . ' | Новый заказ | Stal-Service';
+            $title = $order->id . ' | Новый заказ | БМС';
             $message->from($this->fromMail, $this->fromName)
                 ->to(Settings::get('feedback_email'))
                 ->subject($title);

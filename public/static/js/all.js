@@ -30837,15 +30837,16 @@ var initMap = function initMap(id, lat, lon, zoom, text) {
     if (window.innerWidth < 600) myMap.behaviors.disable('drag');
   });
 };
-var map = document.querySelector('[data-map]');
-
-if (map) {
-  var latitude = map.dataset.lat;
-  var longitude = map.dataset["long"];
-  var label = map.dataset.hint;
-  var id = map.id;
-  initMap(id, latitude, longitude, 13, label);
-}
+var maps = document.querySelectorAll('[data-map]');
+maps.forEach(function (map) {
+  if (map) {
+    var latitude = map.dataset.lat;
+    var longitude = map.dataset["long"];
+    var label = map.dataset.hint;
+    var id = map.id;
+    initMap(id, latitude, longitude, 13, label);
+  }
+});
 
 /***/ }),
 
@@ -35238,7 +35239,7 @@ var utils = function utils() {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! C:\_funky\bms-git\resources\assets\js--sources\main.js */"./resources/assets/js--sources/main.js");
+module.exports = __webpack_require__(/*! /mnt/main/vovan4a/Funky/bms-git/resources/assets/js--sources/main.js */"./resources/assets/js--sources/main.js");
 
 
 /***/ })

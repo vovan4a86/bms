@@ -32,13 +32,15 @@ export const initMap = (id, lat, lon, zoom, text) => {
   });
 };
 
-const map = document.querySelector('[data-map]');
+const maps = document.querySelectorAll('[data-map]');
 
-if (map) {
-  const latitude = map.dataset.lat;
-  const longitude = map.dataset.long;
-  const label = map.dataset.hint;
-  const id = map.id;
+maps.forEach(map => {
+    if (map) {
+        const latitude = map.dataset.lat;
+        const longitude = map.dataset.long;
+        const label = map.dataset.hint;
+        const id = map.id;
 
-  initMap(id, latitude, longitude, 13, label);
-}
+        initMap(id, latitude, longitude, 13, label);
+    }
+})

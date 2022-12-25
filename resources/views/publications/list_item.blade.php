@@ -3,7 +3,7 @@
         <h3 class="news-card__title">
             <a href="{{ $item->url }}" title="{{ $item->name }}">{{ $item->name }}</a>
         </h3>
-        <img class="news-card__picture lazy" src="/" data-src="//static/images/common/news.svg"
+        <img class="news-card__picture lazy" src="/" data-src="/static/images/common/news.svg"
              alt="alt" width="60" height="44">
     </div>
     <div class="news-card__content">

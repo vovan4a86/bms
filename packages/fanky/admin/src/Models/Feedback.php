@@ -40,7 +40,9 @@ class Feedback extends Model {
 
 	use SoftDeletes;
 
-	protected $table = 'feedbacks';
+    protected $table = 'feedbacks';
+
+    const UPLOAD_URL = '/uploads/feedbacks/';
 
     protected $guarded = ['id'];
 
@@ -53,7 +55,7 @@ class Feedback extends Model {
         2 => 'Написать нам',
         3 => 'Заказать звонок',
         4 => 'Быстрый заказ',
-        5 => 'Остались вопросы?',
+        5 => 'Задать вопрос',
         6 => 'Свяжитесь с нами',
     );
 

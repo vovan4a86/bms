@@ -53,7 +53,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4 text-bold">Сумма заказа</div>
-                        <div class="col-md-8">{{ $all_summ }}</div>
+                        <div class="col-md-8">{{ number_format($all_summ, 0, '', ' ') }}</div>
                     </div>
                 </div>
             </div>
@@ -67,35 +67,30 @@
                     <thead>
                     <tr>
                         <th>Товар</th>
-                        <th>Количество</th>
-                        <th>M2</th>
-                        <th>Вес, т</th>
-                        <th>Цена с {{ Settings::get('multiplier') }}% </th>
-                        <th>Сумма</th>
-                        <th width="50"></th>
+                        <th style="text-align: center;">Количество, м</th>
+                        <th style="text-align: center;">Вес, т</th>
+                        <th style="text-align: center;">Цена, руб</th>
+                        <th style="text-align: center;">Сумма, руб</th>
                     </tr>
                     </thead>
                     <tbody>
                     @foreach ($items as $item)
                         <tr>
                             <td><a target="_blank" href="{{ route('admin.catalog.productEdit', [$item->id]) }}">{{ $item->name }}</a></td>
-                            <td>{{ $item->pivot->count }}</td>
-                            <td>{{ round($item->pivot->m2, 2) ?? '-' }}</td>
-                            <td>{{ $item->pivot->weight ?? '-' }}</td>
-                            <td>{{ $item->pivot->price }} ({{ $item->measure }})</td>
-                            <td>{{ $item->pivot->m2 ? round($item->pivot->m2 * $item->pivot->price, 2) :
-                                                      round($item->pivot->weight * $item->pivot->price,2 ) }}</td>
+                            <td style="text-align: center;">{{ $item->pivot->count }}</td>
+                            <td style="text-align: center;">{{ $item->pivot->weight ?? '-' }}</td>
+                            <td style="text-align: center;">{{ number_format($item->price, 0, '', ' ') }}/{{ $item->measure }}</td>
+                            <td style="text-align: center;">{{ number_format($item->pivot->price, 0, '', ' ') }} </td>
                         </tr>
                     @endforeach
                     </tbody>
                     <tfoot>
                         <tr>
                             <th>Итого:</th>
-                            <th>{{ $all_count }}</th>
+                            <th style="text-align: center;">{{ $all_count }}</th>
+                            <th style="text-align: center;">{{ $all_weight }}</th>
                             <th>{{ '' }}</th>
-                            <th>{{ $all_weight }}</th>
-                            <th></th>
-                            <th>{{ $all_summ }}</th>
+                            <th style="text-align: center;">{{ number_format($all_summ, 0, '', ' ') }}</th>
                         </tr>
                     </tfoot>
                 </table>

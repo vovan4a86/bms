@@ -140,10 +140,13 @@
     </div>
 </form>
 
-<form class="popup" id="question" action="#" style="display:none">
+<form class="popup" id="question" action="{{ route('ajax.questions') }}" style="display:none"
+      onsubmit="sendQuestion(this, event)">
     <div class="popup__container">
         <div class="popup__title">Задать вопрос</div>
-        <div class="popup__subtitle">Менеджеры компании с радостью ответят на ваши вопросы и подскажут по ассортименту, и сделают лучшее предложение</div>
+        <div class="popup__subtitle">
+            Менеджеры компании с радостью ответят на ваши вопросы и подскажут по ассортименту, и сделают лучшее предложение
+        </div>
         <div class="popup__row">
             <div class="field">
                 <input class="field__input" type="text" name="name" required>

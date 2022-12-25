@@ -14,7 +14,6 @@ class AdminOrdersController extends AdminController {
     public function getView($id) {
         $order = Order::find($id);
         $order->update(['new' => 0]);
-//        $paymentOrder = PaymentOrder::where('order_id', '=', $order->id)->first();
 
         $items = $order->products;
         $all_count = 0;
@@ -22,11 +21,7 @@ class AdminOrdersController extends AdminController {
         $all_weight = 0;
 
         foreach ($items as $item) {
-            if($item->pivot->m2) {
-                $all_summ += $item->pivot->m2 * $item->pivot->price * $item->pivot->count;
-            } else {
-                $all_summ += $item->pivot->weight * $item->pivot->price;
-            }
+            $all_summ += $item->pivot->price;
             $all_count += $item->pivot->count;
             $all_weight += $item->pivot->weight;
         }
@@ -36,8 +31,8 @@ class AdminOrdersController extends AdminController {
             'order'     => $order,
             'items'     => $items,
             'all_count' => $all_count,
-            'all_summ'  => round($all_summ, 2),
-            'all_weight' => round($all_weight, 2),
+            'all_summ'  => $all_summ,
+            'all_weight' => $all_weight,
         ]);
     }
 

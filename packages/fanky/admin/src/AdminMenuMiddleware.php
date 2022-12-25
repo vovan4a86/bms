@@ -21,11 +21,11 @@ class AdminMenuMiddleware {
 			$menu->add('Каталог', ['route' => 'admin.catalog', 'icon' => 'fa-list'])
 				->active('/admin/catalog/*');
 
-			$menu->add('Акции', ['route' => 'admin.actions', 'icon' => 'fa-percent'])
-				->active('/admin/actions/*');
+//			$menu->add('Акции', ['route' => 'admin.actions', 'icon' => 'fa-percent'])
+//				->active('/admin/actions/*');
 
-            $menu->add('Спецпредложения', ['route' => 'admin.offers', 'icon' => 'fa-star'])
-				->active('/admin/offers/*');
+//            $menu->add('Спецпредложения', ['route' => 'admin.offers', 'icon' => 'fa-star'])
+//				->active('/admin/offers/*');
 
 			$menu->add('Заказы', ['route' => 'admin.orders', 'icon' => 'fa-dollar'])
 				->active('/admin/orders/*');
@@ -48,6 +48,9 @@ class AdminMenuMiddleware {
 
 			$menu->add('Способы доставки', ['route' => 'admin.delivery', 'icon' => 'fa-truck'])
 				->active('/admin/delivery/*');
+
+            $menu->add('Контакты в городах', ['route' => 'admin.contacts', 'icon' => 'fa-id-card'])
+                ->active('/admin/contacts/*');
 
 //			$menu->add('Статьи', ['route' => 'admin.publications', 'icon' => 'fa-calendar'])
 //				->active('/admin/publications/*');

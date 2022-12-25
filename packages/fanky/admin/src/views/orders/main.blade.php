@@ -29,7 +29,7 @@
                         <th>Способ оплаты</th>
                         <th>Телефон</th>
                         <th>Email</th>
-                        <th>Вес</th>
+                        <th>Вес, т</th>
                         <th>Сумма</th>
                         <th width="50"></th>
                     </tr>
@@ -44,7 +44,7 @@
                             <td><a href="{{ route('admin.orders.view', [$item->id]) }}">{{ array_get(\Fanky\Admin\Models\Order::$payment, $item->payment) }}</a></td>
                             <td><a href="{{ route('admin.orders.view', [$item->id]) }}">{{ $item->phone }}</a></td>
                             <td><a href="{{ route('admin.orders.view', [$item->id]) }}">{{ $item->email }}</a></td>
-                            <td><a href="{{ route('admin.orders.view', [$item->id]) }}">{{ $item->total_weight }}</a></td>
+                            <td><a href="{{ route('admin.orders.view', [$item->id]) }}">{{ $item->total_weight / 1000 }}</a></td>
                             <td><a href="{{ route('admin.orders.view', [$item->id]) }}">{{ $item->summ }}</a></td>
 {{--                            <td><a href="{{ route('admin.orders.view', [$item->id]) }}">{{ $item->payment_order()->payment_id }}</a></td>--}}
 {{--                            <td><a href="{{ route('admin.orders.view', [$item->id]) }}">{{ array_get(\Fanky\Admin\Models\PaymentOrder::$statuses, $item->payment_order()->status_id) }}</a></td>--}}

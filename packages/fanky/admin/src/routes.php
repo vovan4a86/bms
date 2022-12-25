@@ -284,6 +284,23 @@ Route::group(['namespace' => 'Fanky\Admin\Controllers', 'prefix' => 'admin', 'as
             ->name('.update-height');
     });
 
+    Route::group(['as' => '.contacts', 'prefix' => 'contacts'], function () {
+        $controller = 'AdminContactsController@';
+        Route::get('/', $controller . 'getIndex');
+
+        Route::get('edit/{id?}', $controller . 'getEdit')
+            ->name('.edit');
+
+        Route::post('save', $controller . 'postSave')
+            ->name('.save');
+
+        Route::post('delete/{id}', $controller . 'postDelete')
+            ->name('.delete');
+
+        Route::post('update-order/{id}', $controller . 'postUpdateOrder')
+            ->name('.update-order');
+    });
+
     Route::group(['as' => '.delivery', 'prefix' => 'delivery'], function () {
         $controller = 'AdminDeliveryController@';
         Route::get('/', $controller . 'getIndex');

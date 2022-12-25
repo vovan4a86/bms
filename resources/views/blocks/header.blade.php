@@ -31,19 +31,19 @@
                 <div class="header__messengers">
                     <div class="messenger">
                         <a class="messenger__item"
-                           href="https://wa.me/{{ preg_replace('/[^\d]+/', '', Settings::get('header_whatsapp')) }}"
+                           href="https://wa.me/{{ preg_replace('/[^\d+]/', '', Settings::get('header_whatsapp')) }}"
                            title="Написать в Whatsapp">
                             <span class="lazy" data-bg="/static/images/common/ico_wa.svg"></span>
                         </a>
                         <a class="messenger__item"
-                           href="https://t.me/+{{ preg_replace('/[^\d]+/', '', Settings::get('header_telegram')) }}"
+                           href="https://t.me/{{ preg_replace('/[^\d+]/', '', Settings::get('header_telegram')) }}"
                            title="Написать в Telegram">
                             <span class="lazy" data-bg="/static/images/common/ico_telegram.svg"></span>
                         </a>
                     </div>
                 </div>
                 <a class="header__phone"
-                   href="tel:+{{ preg_replace('/[^\d]+/', '', Settings::get('header_phone')) }}">{{ Settings::get('header_phone') }}</a>
+                   href="tel:{{ preg_replace('/[^\d+]/', '', Settings::get('header_phone')) }}">{{ Settings::get('header_phone') }}</a>
             </div>
         </div>
     </div>

@@ -3,12 +3,14 @@
         <div class="prod-order__grid">
             <div class="prod-order__col">
                 <label class="prod-order__label">Количество, т
-                    <input class="prod-order__input" type="number" name="weight" value="0" onkeyup="changeWeight(this)">
+                    <input class="prod-order__input" type="number"
+                           name="weight" value="0" onkeyup="ae(this)">
                 </label>
             </div>
             <div class="prod-order__col">
                 <label class="prod-order__label">Количество, М
-                    <input class="prod-order__input" type="number" step="1" name="size" value="0" onkeyup="changeSize(this)">
+                    <input class="prod-order__input" type="number"
+                           step="1" name="size" value="0" onkeyup="be(this)">
                 </label>
             </div>
             <div class="prod-order__col">
@@ -30,6 +32,7 @@
                     data-weight="1"
                     data-size=""
                     data-k="{{ $product->k }}"
+                    data-l="{{ $product->length ?? 0 }}"
                     data-price="{{ $product->price }}"
                     data-total="{{ $product->price }}">
                 <span>{{ $in_cart ? 'В корзине' : 'Добавить в корзину'}}</span>

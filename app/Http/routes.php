@@ -85,6 +85,8 @@ Route::group(['middleware' => ['redirects', 'regions']], function() {
 
     Route::any('partners', ['as' => 'partners', 'uses' => 'PartnersController@index']);
 
+    Route::any('contacts', ['as' => 'contacts', 'uses' => 'ContactsController@index']);
+
     Route::any('suppliers', ['as' => 'suppliers', 'uses' => 'SuppliersController@index']);
 
     Route::any('directory', ['as' => 'directory', 'uses' => 'DirectoryController@index']);
