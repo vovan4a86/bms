@@ -5,17 +5,17 @@
             <div class="cart-view__row">
                 <dl class="dl-reset">
                     <dt>Общий вес товаров</dt>
-                    @if($total_weight)
-                        <dd>{{ $total_weight }} кг</dd>
+                    @if(!Cart::total_weight())
+                        <dd style="font-style: italic; font-size: 14px;"></dd>
                     @else
-                        <dd>~~~</dd>
+                        <dd>{{ Cart::total_weight() }} кг</dd>
                     @endif
                 </dl>
             </div>
             <div class="cart-view__total">
                 <dl class="dl-reset">
                     <dt>Итого</dt>
-                    <dd>{{number_format($sum , 0, '', ' ')}} руб.</dd>
+                    <dd>{{number_format(Cart::sum() , 0, '', ' ')}} руб.</dd>
                 </dl>
             </div>
             <div class="cart-view__submit">

@@ -81,10 +81,10 @@
                     </div>
                     <div class="box-body">
                         {!! Form::groupText('product_title_template', $catalog->product_title_template, 'Шаблон title') !!}
-                        <div class="small">Шаблон по умолчанию</div>
+                        <div class="small">Шаблон title по умолчанию</div>
                         <div class="small">{{ \Fanky\Admin\Models\Product::$defaultTitleTemplate }}</div>
                         {!! Form::groupText('product_description_template', $catalog->product_description_template, 'Шаблон description') !!}
-                        <div class="small">Шаблон по умолчанию</div>
+                        <div class="small">Шаблон description по умолчанию</div>
                         <div class="small">{{ \Fanky\Admin\Models\Product::$defaultDescriptionTemplate }}</div>
 
                         {!! Form::groupRichtext('product_text_template', $catalog->product_text_template, 'Шаблон текста') !!}

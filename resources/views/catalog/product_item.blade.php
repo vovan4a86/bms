@@ -13,19 +13,29 @@
     </div>
     <div class="t-catalog__col t-catalog__col--wide" data-caption="Цена, руб">
         <div class="t-catalog__row">
-            @if($item->getAnyPrice())
-                <div class="t-catalog__value">{{ number_format($item->getAnyPrice(), 0, '', ' ') }} ₽</div>
+            @if($item->getMeasurePrice())
+                <div class="t-catalog__value">{{ number_format($item->getMeasurePrice(), 0, '', ' ') }} ₽</div>
             @else
                 <div class="t-catalog__value">Под заказ</div>
             @endif
             <div class="t-catalog__cart">
-                <button class="cart-btn btn-reset {{ $item->getAnyPrice() ? null : 'disabled'}}" type="button"
-                        onclick="addToCart({{$item->id}})"
-                        aria-label="Добавить в корзину">
-                    <svg class="svg-sprite-icon icon-cart">
-                        <use xlink:href="/static/images/sprite/symbol/sprite.svg#cart"></use>
-                    </svg>
-                </button>
+                @if($item->measure == 'т')
+                    <button class="cart-btn btn-reset {{ $item->getMeasurePrice() ? null : 'disabled'}}" type="button"
+                            onclick="addToCart({{$item->id}})"
+                            aria-label="Добавить в корзину">
+                        <svg class="svg-sprite-icon icon-cart">
+                            <use xlink:href="/static/images/sprite/symbol/sprite.svg#cart"></use>
+                        </svg>
+                    </button>
+                @else
+                    <button class="cart-btn btn-reset {{ $item->getMeasurePrice() ? null : 'disabled'}}" type="button"
+                            onclick="addToCartPerItem({{$item->id}})"
+                            aria-label="Добавить в корзину">
+                        <svg class="svg-sprite-icon icon-cart">
+                            <use xlink:href="/static/images/sprite/symbol/sprite.svg#cart"></use>
+                        </svg>
+                    </button>
+                @endif
             </div>
         </div>
     </div>

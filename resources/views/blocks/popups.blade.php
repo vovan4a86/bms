@@ -23,7 +23,7 @@
     </div>
 </form>
 
-<form class="order-popup popup" id="order_t" action="{{ route('ajax.add-to-cart') }}"
+<form class="order-popup popup" id="order_tonn" action="{{ route('ajax.add-to-cart') }}"
       style="display:none" onsubmit="addToCartProductPopup(this, event)">
     <div class="order-popup__head">
         <div class="order-popup__title" data-order-title></div>
@@ -44,7 +44,7 @@
                 </label>
             </div>
             <div class="order-popup__col">
-                <label class="order-popup__label">Количество, М
+                <label class="order-popup__label">Количество, м
                     <input class="order-popup__input" type="number" name="size" data-order-size>
                 </label>
             </div>
@@ -66,7 +66,7 @@
     </div>
 </form>
 
-<form class="order-popup popup" id="order_item" action="{{ route('ajax.add-to-cart') }}"
+<form class="order-popup popup" id="order_kilo" action="{{ route('ajax.add-to-cart') }}"
       style="display:none" onsubmit="addToCartProductPopup(this, event)">
     <div class="order-popup__head">
         <div class="order-popup__title" data-order-title></div>
@@ -81,9 +81,52 @@
     <div class="order-popup__body">
         <div class="order-popup__grid">
             <div class="order-popup__col">
-                <label class="order-popup__label">Количество, шт
-                    <input class="order-popup__input" type="number" name="weight"
+                <label class="order-popup__label">Количество, кг
+                    <input class="order-popup__input" type="number" step="0.001" name="weight"
                            data-order-weight onkeyup="changeWeightPopup(this)">
+                </label>
+            </div>
+            <div class="order-popup__col">
+                <label class="order-popup__label">Количество, шт
+                    <input class="order-popup__input" type="number" name="size" data-order-size>
+                </label>
+            </div>
+            <div class="order-popup__col">
+                <div class="order-popup__label">Цена, кг</div>
+                <div class="order-popup__input" data-order-price></div>
+            </div>
+            <div class="order-popup__col">
+                <div class="order-popup__label">Сумма</div>
+                <div class="order-popup__input" data-order-total></div>
+            </div>
+        </div>
+        <div class="order-popup__action">
+            <button class="button button--primary button--popup"
+                    name="submit" aria-label="Добавить в корзину">
+                <span>Добавить в корзину</span>
+            </button>
+        </div>
+    </div>
+</form>
+
+<form class="order-popup popup" id="order_item" action="{{ route('ajax.add-to-cart-pi') }}"
+      style="display:none" onsubmit="addToCartProductItemPopup(this, event)">
+    <div class="order-popup__head">
+        <div class="order-popup__title" data-order-title></div>
+        <div class="p-status in-stock">
+            <span>В наличии</span>
+            <svg width="15" height="16" viewBox="0 0 15 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12.6562 4.71875L6.09375 11.281L2.8125 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+
+        </div>
+    </div>
+    <div class="order-popup__body">
+        <div class="order-popup__grid">
+            <div class="order-popup__col">
+                <label class="order-popup__label">Количество, шт
+                    <input class="order-popup__input" type="number" name="size" step="1"
+                           data-order-size onkeyup="changeItemPopup(this)">
                 </label>
             </div>
             <div class="order-popup__col">

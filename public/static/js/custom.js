@@ -24,6 +24,22 @@ function changeWeight(elem) {
     totalDiv.text(res);
 }
 
+function changeWeightPopup(elem) {
+    let priceDiv = $('.prod-order__input[name=price]');
+    let sizeDiv = $('.prod-order__input[name=size]');
+    let totalDiv = $('.prod-order__input[name=total]');
+    let price = $('[data-order-price]');
+    let total = $('[data-order-total]');
+    let weight = $(elem).val();
+    let size = sizeDiv.val();
+
+    let priceVal = price.text().replace(/ /g, '');
+
+    let res = weight * +priceVal;
+
+    total.text(new Intl.NumberFormat('ru-RU').format(res));
+}
+
 function changeSize(elem) {
     const b = document.querySelector('.button.button--primary');
     let buttonWeight = b.dataset.weight;
@@ -64,27 +80,35 @@ function changeSize(elem) {
     totalDiv.text(total);
 }
 
-function changeWeightPopup(elem) {
+function changeItem(elem) {
+    const b = document.querySelector('.button.button--primary');
+    let buttonWeight = b.dataset.weight;
+    let buttonSize = b.dataset.size;
+    let buttonPrice = b.dataset.price.replace(/ /g, '');
+    let buttonTotal = b.dataset.total;
+    let buttonK = b.dataset.k;
+    let sizeInput = $('.prod-order__input[name=size]');
+    let totalDiv = $('.prod-order__input[name=total]');
+
+    let size = $(elem).val();
+
+    b.dataset.size = size;
+    b.dataset.total = new Intl.NumberFormat('ru-RU').format(size * buttonPrice);
+
+    totalDiv.text(new Intl.NumberFormat('ru-RU').format(size * buttonPrice));
+}
+
+function changeItemPopup(elem) {
     let priceDiv = $('.prod-order__input[name=price]');
     let sizeDiv = $('.prod-order__input[name=size]');
     let totalDiv = $('.prod-order__input[name=total]');
     let price = $('[data-order-price]');
     let total = $('[data-order-total]');
-    let weight = $(elem).val();
-    let size = sizeDiv.val();
+    let size = $(elem).val();
 
-    let priceVal = price.text().replace(/ /g, '');
-
-    let res = weight * +priceVal;
+    let res = size * price.text().replace(/ /g, '');
 
     total.text(new Intl.NumberFormat('ru-RU').format(res));
-}
-
-function cartUpdateCount(elem, id, price) {
-    let count = $(elem).val();
-    let cardSum = $('[data-id=' + id + ']');
-    // cardSum.text(count * price);
-    console.log(count);
 }
 
 function purgeCart() {
@@ -99,8 +123,14 @@ function purgeCart() {
 function addToCartProductPopup(form, e) {
     e.preventDefault()
     const id = form.id;
-    const weight = form.weight.value;
-    const size = form.size.value;
+    let weight = 0
+    if(form.weight) {
+        weight = form.weight.value;
+    }
+    let size = 0;
+    if(form.size) {
+        size = form.size.value;
+    }
 
     Cart.add(id, size, weight, function (res) {
         $('.basket').replaceWith(res.header_cart);
@@ -109,8 +139,29 @@ function addToCartProductPopup(form, e) {
     $('.is-close').click();
 }
 
+function addToCartProductItemPopup(form, e) {
+    e.preventDefault()
+    const id = form.id;
+    let size = 0;
+    if(form.size) {
+        size = form.size.value;
+    }
+
+    Cart.add_pi(id, size, 0, function (res) {
+        $('.basket').replaceWith(res.header_cart);
+    }.bind(this));
+
+    $('.is-close').click();
+}
+
 function addToCart(id) {
     Cart.add(id, 0, 1, function (res) {
+        $('.basket').replaceWith(res.header_cart);
+    }.bind(this));
+}
+
+function addToCartPerItem(id) {
+    Cart.add_pi(id, 1, 0, function (res) {
         $('.basket').replaceWith(res.header_cart);
     }.bind(this));
 }
@@ -146,10 +197,7 @@ function sendOrder(form, e) {
 function ae(elem) {
     let total, m, cl, pr;
     const b = document.querySelector('.button.button--primary');
-    let buttonWeight = b.dataset.weight;
-    let buttonSize = b.dataset.size;
     let buttonPrice = b.dataset.price;
-    let buttonTotal = b.dataset.total;
     let buttonK = b.dataset.k;
     let buttonL = b.dataset.l;
 
@@ -159,10 +207,8 @@ function ae(elem) {
         buttonL /= 1000;
     }
 
-    console.log(buttonK);
-    console.log(buttonL);
-
     let weight = $(elem).val();
+    let weightInput = $(elem);
     let sizeInput = $('.prod-order__input[name=size]');
     let totalDiv = $('.prod-order__input[name=total]');
 
@@ -174,14 +220,13 @@ function ae(elem) {
                 if (total > 100 && buttonL == 11.7) {
                     m = Math.ceil(total);
                 } else {
-                    cl = Math.floor(total / l);
-                    m = cl * l;
+                    cl = Math.floor(total / buttonL);
+                    m = cl * buttonL;
                     if (m != m - (m % 1)) m = m.toFixed(3) * 1;
                 }
-                // document.forms['basket_form'].elements['meters'].value = m;
-                sizeInput.text(m);
+                sizeInput.val(m);
             } else {
-                sizeInput.text('');
+                sizeInput.val('');
             }
         } else {
             if (total < 1)
@@ -196,40 +241,45 @@ function ae(elem) {
                 pr = 0.1;
 
             total = Math.ceil(total * pr);
-            if (total == 0)
-                // document.forms['basket_form'].elements['meters'].value = '';
+            if (total === 0)
                 sizeInput.val('');
             else
                 sizeInput.val(total / pr);
         }
     } else
-        // document.forms['basket_form'].elements['meters'].value = '';
         sizeInput.val('');
+
+    b.dataset.weight = weightInput.val();
+    b.dataset.size = sizeInput.val();
+    b.dataset.total = Math.round(weightInput.val() * buttonPrice);
+
+    totalDiv.text(Math.round(weightInput.val() * buttonPrice));
+
 }
 
 function be(elem) {
     let total, k, l, cl, pr;
     const b = document.querySelector('.button.button--primary');
-    let buttonWeight = b.dataset.weight;
-    let buttonSize = b.dataset.size;
     let buttonPrice = b.dataset.price;
-    let buttonTotal = b.dataset.total;
     let buttonK = b.dataset.k;
     let buttonL = b.dataset.l;
 
     if(buttonL !== 0) buttonL /= 1000;
 
-    let size = $(elem).val();
     let weightInput = $('.prod-order__input[name=weight]');
     let totalDiv = $('.prod-order__input[name=total]');
 
     if (buttonK > 0) {
-        // total = document.forms['basket_form'].elements['meters'].value.replace(',', '.');
-        total = size;
+        total = $(elem).val();
+
         if (buttonL > 0) {
-            total = total * buttonK;
-            cl = Math.ceil(total / buttonL);
+            // total = total * buttonK;
+            // cl = Math.ceil(total / buttonL);
+            // total = cl * buttonL;
+            cl = Math.ceil(total/buttonL);
             total = cl * buttonL;
+            total = total * buttonK;
+
         } else {
             total = total * buttonK;
         }
@@ -245,13 +295,16 @@ function be(elem) {
             pr = 0.1;
 
         total = Math.ceil(total * pr);
-        if (total == 0)
-            // document.forms['basket_form'].elements['tonns'].value = ''
+        if (total === 0)
             weightInput.val('');
         else
-            // document.forms['basket_form'].elements['tonns'].value = total / pr
             weightInput.val(total / pr);
     } else
-        // document.forms['basket_form'].elements['tonns'].value = '';
         weightInput.val('');
+
+    b.dataset.weight = weightInput.val();
+    b.dataset.size = $(elem).val();
+    b.dataset.total = Math.round(weightInput.val() * buttonPrice);
+
+    totalDiv.text(Math.round(weightInput.val() * buttonPrice));
 }

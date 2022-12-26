@@ -258,9 +258,17 @@ let Cart = {
 			});
 	},
 
-	update: function (id, size, weight, callback) {
+	add_pi: function (id, size, weight, callback) {
+		sendAjax('/ajax/add-to-cart-pi',
+			{id, size, weight}, (result) => {
+				if (typeof callback == 'function') {
+					callback(result);
+				}
+			});
+	},
+	update: function (id, count, callback) {
 		sendAjax('/ajax/update-to-cart',
-			{id: id, count: count, weight: weight}, (result) => {
+			{id, count}, (result) => {
 				if (typeof callback == 'function') {
 					callback(result);
 				}

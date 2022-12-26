@@ -30490,12 +30490,34 @@ var counter = function counter() {
   counters && counters.forEach(function (counter) {
     counter.addEventListener('click', function (e) {
       var input = this.querySelector('[data-count]');
-      var target = e.target;
+      var target = e.target; // console.log(counter.dataset.id);
 
       if (target.closest('.counter__btn--prev') && input.value > 1) {
         input.value--;
+        Cart.update(counter.dataset.id, input.value, function (res) {
+          if (res.cur_summ) {
+            var summ = document.querySelector('.cart-table__col[data-id="' + counter.dataset.id + '"]');
+            summ.innerHTML = res.cur_summ;
+          }
+
+          if (res.order_total) {
+            var cart_aside = document.querySelector('.cart__aside');
+            cart_aside.innerHTML = res.order_total;
+          }
+        });
       } else if (target.closest('.counter__btn--next')) {
         input.value++;
+        Cart.update(counter.dataset.id, input.value, function (res) {
+          if (res.cur_summ) {
+            var summ = document.querySelector('.cart-table__col[data-id="' + counter.dataset.id + '"]');
+            summ.innerHTML = res.cur_summ;
+          }
+
+          if (res.order_total) {
+            var cart_aside = document.querySelector('.cart__aside');
+            cart_aside.innerHTML = res.order_total;
+          }
+        });
       }
 
       input.addEventListener('change', function () {
@@ -35239,7 +35261,7 @@ var utils = function utils() {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /mnt/main/vovan4a/Funky/bms-git/resources/assets/js--sources/main.js */"./resources/assets/js--sources/main.js");
+module.exports = __webpack_require__(/*! C:\_funky\bms-git\resources\assets\js--sources\main.js */"./resources/assets/js--sources/main.js");
 
 
 /***/ })

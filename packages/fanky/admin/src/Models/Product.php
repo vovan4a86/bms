@@ -327,10 +327,10 @@ class Product extends Model {
         if (!empty($catalog->product_title_template)) return $catalog->product_title_template;
         if ($catalog->parent_id) return $this->getTitleTemplate($catalog->parent_id);
 
-        return null;
+        return self::$defaultTitleTemplate;
     }
 
-    public static $defaultTitleTemplate = '{name} купить{city} - БИЗНЕС-МС';
+    public static $defaultTitleTemplate = '{name} купить - БИЗНЕС-МС';
 
     public function generateTitle() {
         if (!($template = $this->getTitleTemplate())) {
@@ -341,9 +341,9 @@ class Product extends Model {
             }
         }
 
-        if (strpos($template, '{city}') === false) { //если кода city нет - добавляем
-            $template .= '{city}';
-        }
+//        if (strpos($template, '{city}') === false) { //если кода city нет - добавляем
+//            $template .= '{city}';
+//        }
         $this->title = $this->replaceTemplateVariable($template);
     }
 
@@ -354,7 +354,7 @@ class Product extends Model {
         if (!empty($catalog->product_description_template)) return $catalog->product_description_template;
         if ($catalog->parent_id) return $this->getDescriptionTemplate($catalog->parent_id);
 
-        return null;
+        return self::$defaultDescriptionTemplate;
     }
 
     public function getTextTemplate($catalog_id = null) {
@@ -367,7 +367,7 @@ class Product extends Model {
         return null;
     }
 
-    public static $defaultDescriptionTemplate = '{name} купить{city} по цене от {price} руб. | БИЗНЕС-МС';
+    public static $defaultDescriptionTemplate = '{name} купить по цене от {price} руб. | БИЗНЕС-МС';
 
     public function generateDescription() {
         if (!($template = $this->getDescriptionTemplate())) {
@@ -378,9 +378,9 @@ class Product extends Model {
             }
         }
 
-        if (strpos($template, '{city}') === false) { //если кода city нет - добавляем
-            $template .= '{city}';
-        }
+//        if (strpos($template, '{city}') === false) { //если кода city нет - добавляем
+//            $template .= '{city}';
+//        }
 
         $this->description = $this->replaceTemplateVariable($template);;
     }
@@ -457,22 +457,6 @@ class Product extends Model {
         }
     }
 
-    public function getAnyMeasure(): ?string {
-        if ($this->price) {
-            return 'т';
-        } elseif ($this->price_per_item) {
-            return 'шт';
-        } elseif ($this->price_per_kilo) {
-            return 'кг';
-        } elseif ($this->price_per_metr) {
-            return 'м';
-        } elseif ($this->price_per_m2) {
-            return 'м2';
-        } else {
-            return null;
-        }
-    }
-
     public function getProductOrderView(): ?string {
         if ($this->price) {
             return 'catalog.blocks.product_order_t';
@@ -488,5 +472,20 @@ class Product extends Model {
             return 'catalog.blocks.product_order_other';
         }
     }
+
+//    public function getRecurseText($par_id = null) {
+//        if($par_id === null) {
+//            $cat = Catalog::whereId($this->catalog_id)->first();
+//            if($this->text) return $this->text;
+//            elseif($cat->text) return $cat->text;
+//            else $this->getRecurseText($cat->parent_id);
+//        } elseif($par_id == 0) {
+//            return Catalog::whereId($par_id)->first()->text;
+//        } else {
+//            $cat = Catalog::whereId($par_id)->first();
+//            if($cat->text) return $cat->text;
+//            else $this->getRecurseText($cat->parent_id);
+//        }
+//    }
 
 }

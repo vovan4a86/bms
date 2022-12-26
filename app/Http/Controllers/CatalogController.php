@@ -81,6 +81,21 @@ class CatalogController extends Controller {
         $bread = $category->getBread();
         $category = $this->add_region_seo($category);
         $category->setSeo();
+        $updatedDate = $category->products->first()->updated_at ?? null;
+        if(!$updatedDate) {
+            foreach ($category->public_children as $child) {
+                $updatedDate = $child->products->first()->updated_at ?? null;
+                if(!$updatedDate) {
+                    foreach ($child->public_children as $grandchild) {
+                        $updatedDate = $grandchild->products->first()->updated_at ?? null;
+                        if($updatedDate) break 2;
+                    }
+                } else {
+                    break;
+                }
+            }
+        }
+
         $children = $category->public_children;
 //        $catalog_sub_id = $category->catalog_sub_show()->pluck('catalog_sub_show_id')->all();
 //        $catalog_sub = Catalog::whereIn('id', $catalog_sub_id)->orderBy('order')->get();
@@ -149,7 +164,7 @@ class CatalogController extends Controller {
             'categories' => $categories,
             'children' => $children,
             'h1'       => $category->getH1(),
-            'updated' => $items[0]->updated_at ?? null,
+            'updatedDate' => date_format($updatedDate, 'd.m.Y'),
             'items' => $items,
             'filterSizes' => $filterSizes,
             'filterNames' => $filterNames,
@@ -246,6 +261,9 @@ class CatalogController extends Controller {
     public function product(Product $product) {
         $bread = $product->getBread();
         $product = $this->add_region_seo($product);
+        $product->generateTitle();
+        $product->generateDescription();
+        $product->generateText();
         $product->setSeo();
 //        $features = ProductIcon::orderBy('order', 'asc')->get();
         $categories = Catalog::getTopLevelOnList();

@@ -33,7 +33,7 @@
                             <div class="s-subcatalog__update">
                                 <div class="c-update">
                                     <div class="c-update__title">Каталог обновлён:</div>
-                                    <div class="c-update__date">16.10.2022</div>
+                                    <div class="c-update__date">{{ $updatedDate }}</div>
                                 </div>
                             </div>
                         </div>

@@ -36,7 +36,7 @@ class AjaxController extends Controller
         $product = Product::find($id);
         if ($product) {
             $product_item = $product->toArray();
-            $product_item['measure_price'] = $product->getMeasurePrice();
+            $product_item['current_price'] = $product->price;
             $product_item['count'] = $size;
             $product_item['round_k'] = $product->round_k;
             if(!$weight) {
@@ -45,6 +45,29 @@ class AjaxController extends Controller
                 $product_item['weight'] = $weight;
             }
 
+            $product_item['url'] = $product->url;
+            Cart::add($product_item);
+        }
+        $header_cart = view('blocks.header_cart')->render();
+//        $popup = view('blocks.product_added', $product_item)->render();
+
+        return [
+            'header_cart' => $header_cart,
+        ];
+    }
+
+    public function postAddToCartPerItem(Request $request): array {
+        $id = $request->get('id');
+        $size = $request->get('size', 0);
+
+        /** @var Product $product */
+        $product = Product::find($id);
+        if ($product) {
+            $product_item = $product->toArray();
+            $product_item['current_price'] = $product->price_per_item;
+            $product_item['count'] = $size;
+            $product_item['round_k'] = $product->round_k;
+            $product_item['weight'] = 0;
             $product_item['url'] = $product->url;
             Cart::add($product_item);
         }
@@ -76,41 +99,29 @@ class AjaxController extends Controller
         return ['cart_popup' => $popup];
     }
 
-    public function postUpdateToCart(Request $request) {
+    public function postUpdateToCart(Request $request): array {
         $id = $request->get('id');
-        $count = count(Cart::all());
-        $count_per_tonn = $request->get('count', 1);
-        $weight = $request->get('weight', 1);
-        Cart::updateCount($id, $count_per_tonn, $weight);
+        $count = $request->get('count');
+
+        Cart::updateCount($id, $count);
 
         $product = Product::find($id);
+
         $product_item = $product->toArray();
         $product_item['url'] = $product->url;
-        $product_item['count_weight'] = $weight;
-        $product_item['count_per_tonn'] = $count_per_tonn;
 
-        $catalog = Catalog::find($product->catalog_id);
-        $root = $catalog;
-        while($root->parent_id !== 0) {
-            $root = $root->findRootCategory($root->parent_id);
+        if($product_item['measure'] == 'т') {
+            $product_item['weight'] = $count;
+        } else {
+            $product_item['count'] = $count;
         }
-        $product_item['image'] - $product->showAnyImage();
-//        $product_item['image'] = $product->image ?
-//            Product::UPLOAD_URL . $product->image->image :
-//            Catalog::UPLOAD_URL . $root->image;
 
-        $item = view('cart.table_row', ['item' => $product_item])->render();
-        $header_cart = view('blocks.header_cart')->render();
-        $total = view('cart.blocks.total')->render();
-        $summ = view('cart.blocks.summ')->render();
-        $full_summ = view('cart.blocks.full_summ')->render();
+        $cur_summ = view('cart.table_row_summ', ['item' => $product_item])->render();
+        $order_total = view('cart.blocks.order_total')->render();
 
         return [
-            'header_cart' => $header_cart,
-            'total' => $total,
-            'summ' => $summ,
-            'full_summ' => $full_summ,
-            'item' => $item
+            'order_total' => $order_total,
+            'cur_summ' => $cur_summ
         ];
     }
 

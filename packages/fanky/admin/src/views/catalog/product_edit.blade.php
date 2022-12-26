@@ -88,9 +88,9 @@
             </div>
             <div class="tab-pane" id="tab_2">
                 {{--                {!! Form::groupRichtext('product__points', $product->product__points, 'Преимущества на странице товара', ['rows' => 3]) !!}--}}
-                {!! Form::groupRichtext('announce_text', $product->announce_text, 'Краткое описание', ['rows' => 3]) !!}
+{{--                {!! Form::groupRichtext('announce_text', $product->announce_text, 'Краткое описание', ['rows' => 3]) !!}--}}
                 {!! Form::groupRichtext('text', $product->text, 'Текст', ['rows' => 3]) !!}
-                {!! Form::groupRichtext('seo_text', $product->seo_text, 'SEO Текст', ['rows' => 3]) !!}
+{{--                {!! Form::groupRichtext('seo_text', $product->seo_text, 'SEO Текст', ['rows' => 3]) !!}--}}
             </div>
 
             <div class="tab-pane" id="tab_4">

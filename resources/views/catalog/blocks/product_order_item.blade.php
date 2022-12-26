@@ -3,7 +3,7 @@
         <div class="prod-order__grid">
             <div class="prod-order__col">
                 <label class="prod-order__label">Количество, шт
-                    <input class="prod-order__input" type="number" step="1" name="weight" value="1" onkeyup="changeWeight(this)">
+                    <input class="prod-order__input" type="number" step="1" name="size" value="1" onkeyup="changeItem(this)">
                 </label>
             </div>
             <div class="prod-order__col">
@@ -24,7 +24,7 @@
                     data-title="{{ $product->name }}"
                     data-weight="1"
                     data-size=""
-                    data-price="{{ $product->price_per_item }}"
+                    data-price="{{ number_format($product->price_per_item, 0 , '', ' ') }}"
                     data-total="{{ $product->price_per_item }}">
                 <span>{{ $in_cart ? 'В корзине' : 'Добавить в корзину'}}</span>
             </button>

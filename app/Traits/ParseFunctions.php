@@ -81,9 +81,10 @@ trait ParseFunctions
             //если нет подразделов, парсим товары
             try {
                 //1 товар парсим?
-//          $this->parseOneProductFromList($catalog, $categoryUrl, $categoryName, $this->priceMap[$catalog->name]);
+//                $this->parseOneProductFromList($catalog, $categoryUrl, $categoryName, $this->priceMap[$catalog->name]);
                 //или все?
-                $this->parseListProducts($catalog, $categoryUrl, $categoryName, $this->priceMap[$catalog->name]);
+                if($categoryName == 'Лист алюминиевый рифленый')  $this->parseListProducts($catalog, $categoryUrl, $categoryName, $this->priceMap[$catalog->name]);
+//                $this->parseListProducts($catalog, $categoryUrl, $categoryName, $this->priceMap[$catalog->name]);
             } catch (\Exception $e) {
                 $this->info('Error Parse From List: ' . $e->getMessage());
                 $this->info('Check priceMap values for ' . $categoryName);
@@ -132,6 +133,11 @@ trait ParseFunctions
             }
 
             $data['measure'] = $priceMap[7];
+            //лист рифленый
+            if (isset($data['riffl']) && $data['riffl'] != null) {
+                if($data['price_per_item'] == $data['price_per_kilo']) $data['measure'] = 'шт';
+            }
+
             $data['inStock'] = $data[$priceMap[$usedPrice]] ? 1 : 0;
 
             $product = Product::whereParseUrl($url)->first();
@@ -237,7 +243,7 @@ trait ParseFunctions
 //    парсим список товаров
     public function parseListProducts($catalog, $categoryUrl, $subcatName, $priceMap)
     {
-        $this->info('Parse one product from: ' . $catalog->name);
+        $this->info('Parse products from: ' . $catalog->name);
         $res = $this->client->get($categoryUrl);
         $html = $res->getBody()->getContents();
         $crawler = new Crawler($html); //page from url
@@ -254,7 +260,7 @@ trait ParseFunctions
         $table->filter('tbody tr')
             ->each(function (Crawler $node, $n) use ($catalog, $subCatalog, $uploadPath, $priceMap) {
                 $this->info('Parse: ' . ++$n . ' element');
-                if ($n == 10) exit();
+                if ($n == 11) exit();
 
                 $scriptUrl = $this->getInnerSiteScript($node); //строка с адресом внутреннего скрипта с инфой
 
@@ -272,8 +278,11 @@ trait ParseFunctions
                     if ($priceMap[5] !== null) {
                         $data[$priceMap[5]] = preg_replace("/[^,.0-9]/", null, ($node->filter('td')->eq(8)->text())); //7 колонка цены
                     }
-                    $data['raw_price'] = $data['price'];
-                    $data['price'] = (ceil($data['raw_price'] / 100)) * 100; //округляем в большую сторону
+                    if(isset($data['price']) && $data['price']) {
+                        $data['raw_price'] = $data['price'];
+                        $data['price'] = (ceil($data['raw_price'] / 100)) * 100; //округляем в большую сторону
+                    }
+
                     $data['measure'] = $priceMap[7];
                     $data['inStock'] = $data[$priceMap[$usedPrice]] ? 1 : 0;
 
@@ -281,23 +290,17 @@ trait ParseFunctions
 //                если новый товар -> заходим на страничку и получаем изображение и мин.длину
                     if (!$product) {
                         //ищем коэффициент k
-                        try {
-                            $scriptPage = $this->client->get($scriptUrl);
-                            $scriptHtml = $scriptPage->getBody()->getContents();
-                            $scriptCrawler = new Crawler($scriptHtml);
-                            $scriptText = $scriptCrawler->filter('script[language="Javascript"]')->first()->text();
-                            $findStart = stripos($scriptText, 'var k=');
-                            $findEnd = stripos($scriptText, ';', $findStart);
-                            $k = substr($scriptText, $findStart + 6, $findEnd - $findStart - 6);
-                            $data['k'] = $k;
-                        } catch (\Exception $e) {
-                            $this->info('/extract inner script problem/ => ' . $e->getMessage());
-                        }
+                        $data['k'] = $this->getKFromScriptUrl($scriptUrl);
 
                         $name = trim($node->filter('.refstr')->first()->text());
                         $data[$priceMap[0]] = trim($node->filter('td')->eq(1)->text());
                         $data[$priceMap[1]] = trim($node->filter('td')->eq(2)->text());
                         $data[$priceMap[2]] = trim($node->filter('td')->eq(3)->text());
+
+                        //лист рифленый
+                        if (isset($data['riffl']) && $data['riffl'] != null) {
+                            if($data['price_per_item'] == $data['price_per_kilo']) $data['measure'] = 'шт';
+                        }
 
                         //если 1 ищем стенку
                         if ($priceMap[8] == 1) {
@@ -339,8 +342,8 @@ trait ParseFunctions
 
                             if ($this->checkIsImageJpg($imageSrc)) {
                                 //делаем изображение для раздела
-                                if (!$section->section_image) {
-                                    $fileName = $uploadPath . $section->alias . '.jpg';
+                                $fileName = $uploadPath . $section->alias . '.jpg';
+                                if (!file_exists($fileName)) {
                                     $res = $this->downloadJpgFile($imageSrc, $uploadPath, $fileName);
                                     if ($res) {
                                         $section->section_image = $fileName;
@@ -381,6 +384,128 @@ trait ParseFunctions
 //        }
     }
 
+
+    /**
+     * @param string $str
+     * @return bool
+     */
+    public function checkIsImageJpg(string $str): bool
+    {
+        $imgEnds = ['.jpg', 'jpeg', 'png'];
+        foreach ($imgEnds as $ext) {
+            if (str_ends_with($str, $ext)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function downloadJpgFile($url, $uploadPath, $fileName): bool
+    {
+        $file = file_get_contents($this->baseUrl . $url);
+        if (!is_dir(public_path($uploadPath))) {
+            mkdir(public_path($uploadPath), 0777, true);
+        }
+        try {
+            file_put_contents(public_path($fileName), $file);
+            return true;
+        } catch (\Exception $e) {
+            $e->getMessage();
+            return false;
+        }
+    }
+
+    public function downloadSvgFile($url, $uploadPath, $fileName): bool
+    {
+        $image = SVG::fromFile($this->baseUrl . $url);
+        if (!is_dir(public_path($uploadPath))) {
+            mkdir(public_path($uploadPath), 0777, true);
+        }
+        try {
+            file_put_contents(public_path($fileName), $image->toXMLString());
+            return true;
+        } catch (\Exception $e) {
+            $e->getMessage();
+            return false;
+        }
+    }
+
+    public function parseProductWallFromString($str, $productSize, $rectangle = null)
+    {
+        if (!$productSize) return null;
+        if (!$rectangle) {
+            $sizePos = mb_stripos($str, $productSize); //находим место в строке с текущим размером
+            $subStr = mb_substr($str, $sizePos + mb_strlen($productSize) + 1); //вырезаем подстроку в которой есть размер стенки
+            $charX = null;
+        } else {
+            //для прямоугольника, напр: 'трубы нерж. электросварные ЭСВ прямоугольные 30x15x1.5 шлиф';
+            $sizeTempPos = mb_stripos($str, $productSize); //находим size 30
+            $tempSubStr = mb_substr($str, $sizeTempPos + mb_strlen($productSize)); //'x15x1.5 шлиф'
+            $charX = $tempSubStr[0];
+            $sizeTempPos = mb_strripos($tempSubStr, $tempSubStr[0]); // 3 символ = последняя x
+            $subStr = mb_substr($tempSubStr, $sizeTempPos + 1); // '1.5 шлиф'
+        }
+
+        if (mb_stripos($subStr, ' ')) {
+            // если есть пробел в подстроке, отбрасываем лишнее и берем первую часть
+            $arr = explode(' ', $subStr);
+            return $arr[0];
+        } else {
+            // если в подстроке нет пробелов, т.е. строка заканчивается размером стенки
+            if ($charX) {
+                $arr = array_reverse(explode($charX, $subStr));
+                return $arr[0];
+            } else {
+                return $subStr;
+            }
+        }
+    }
+
+    public function getKFromScriptUrl($scriptUrl) {
+        try {
+            $scriptPage = $this->client->get($scriptUrl);
+            $scriptHtml = $scriptPage->getBody()->getContents();
+            $scriptCrawler = new Crawler($scriptHtml);
+            $scriptText = $scriptCrawler->filter('script[language="Javascript"]')->first()->text();
+            $findStart = stripos($scriptText, 'var k=');
+            $findEnd = stripos($scriptText, ';', $findStart);
+            return substr($scriptText, $findStart + 6, $findEnd - $findStart - 6);
+        } catch (\Exception $e) {
+            $this->info('/extract inner script problem/ => ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * @param string $categoryName
+     * @param int $parentId
+     * @return Catalog
+     */
+    private function getCatalogByName(string $categoryName, int $parentId): Catalog
+    {
+        $catalog = Catalog::whereName($categoryName)->first();
+        if (!$catalog) {
+            $catalog = Catalog::create([
+                'name' => $categoryName,
+                'title' => $categoryName,
+                'h1' => $categoryName,
+                'parent_id' => $parentId,
+                'alias' => Text::translit($categoryName),
+                'slug' => Text::translit($categoryName),
+                'order' => Catalog::whereParentId($parentId)->max('order') + 1,
+                'published' => 1,
+            ]);
+        }
+        return $catalog;
+    }
+
+    public function getInnerSiteScript($node): string
+    {
+        $idt = $node->attr('idt');
+        $idf = $node->attr('idf');
+        $idb = $node->attr('idb');
+        //mc.ru//pages/blocks/add_basket.asp/id/XY12/idf/5/idb/1
+        return 'mc.ru//pages/blocks/add_basket.asp/id/' . $idt . '/idf/' . $idf . '/idb/' . $idb;
+    }
 
     //парсим список товаров
 //    public function parseListProducts($catalog, $categoryUrl, $subcatName, $priceMap) {
@@ -509,114 +634,5 @@ trait ParseFunctions
 ////            $this->parseListProducts($categoryName, $nextUrl, $subcatname);
 ////        }
 //    }
-
-    /**
-     * @param string $str
-     * @return bool
-     */
-    public function checkIsImageJpg(string $str): bool
-    {
-        $imgEnds = ['.jpg', 'jpeg', 'png'];
-        foreach ($imgEnds as $ext) {
-            if (str_ends_with($str, $ext)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public function downloadJpgFile($url, $uploadPath, $fileName): bool
-    {
-        $file = file_get_contents($this->baseUrl . $url);
-        if (!is_dir(public_path($uploadPath))) {
-            mkdir(public_path($uploadPath), 0777, true);
-        }
-        try {
-            file_put_contents(public_path($fileName), $file);
-            return true;
-        } catch (\Exception $e) {
-            $e->getMessage();
-            return false;
-        }
-    }
-
-    public function downloadSvgFile($url, $uploadPath, $fileName): bool
-    {
-        $image = SVG::fromFile($this->baseUrl . $url);
-        if (!is_dir(public_path($uploadPath))) {
-            mkdir(public_path($uploadPath), 0777, true);
-        }
-        try {
-            file_put_contents(public_path($fileName), $image->toXMLString());
-            return true;
-        } catch (\Exception $e) {
-            $e->getMessage();
-            return false;
-        }
-    }
-
-    public function parseProductWallFromString($str, $productSize, $rectangle = null)
-    {
-        if (!$productSize) return null;
-        if (!$rectangle) {
-            $sizePos = mb_stripos($str, $productSize); //находим место в строке с текущим размером
-            $subStr = mb_substr($str, $sizePos + mb_strlen($productSize) + 1); //вырезаем подстроку в которой есть размер стенки
-            $charX = null;
-        } else {
-            //для прямоугольника, напр: 'трубы нерж. электросварные ЭСВ прямоугольные 30x15x1.5 шлиф';
-            $sizeTempPos = mb_stripos($str, $productSize); //находим size 30
-            $tempSubStr = mb_substr($str, $sizeTempPos + mb_strlen($productSize)); //'x15x1.5 шлиф'
-            $charX = $tempSubStr[0];
-            $sizeTempPos = mb_strripos($tempSubStr, $tempSubStr[0]); // 3 символ = последняя x
-            $subStr = mb_substr($tempSubStr, $sizeTempPos + 1); // '1.5 шлиф'
-        }
-
-        if (mb_stripos($subStr, ' ')) {
-            // если есть пробел в подстроке, отбрасываем лишнее и берем первую часть
-            $arr = explode(' ', $subStr);
-            return $arr[0];
-        } else {
-            // если в подстроке нет пробелов, т.е. строка заканчивается размером стенки
-            if ($charX) {
-                $arr = array_reverse(explode($charX, $subStr));
-                return $arr[0];
-            } else {
-                return $subStr;
-            }
-        }
-    }
-
-    /**
-     * @param string $categoryName
-     * @param int $parentId
-     * @return Catalog
-     */
-    private function getCatalogByName(string $categoryName, int $parentId): Catalog
-    {
-        $catalog = Catalog::whereName($categoryName)->first();
-        if (!$catalog) {
-            $catalog = Catalog::create([
-                'name' => $categoryName,
-                'title' => $categoryName,
-                'h1' => $categoryName,
-                'parent_id' => $parentId,
-                'alias' => Text::translit($categoryName),
-                'slug' => Text::translit($categoryName),
-                'order' => Catalog::whereParentId($parentId)->max('order') + 1,
-                'published' => 1,
-            ]);
-        }
-        return $catalog;
-    }
-
-    public function getInnerSiteScript($node): string
-    {
-        $idt = $node->attr('idt');
-        $idf = $node->attr('idf');
-        $idb = $node->attr('idb');
-        //mc.ru//pages/blocks/add_basket.asp/id/XY12/idf/5/idb/1
-        return 'mc.ru//pages/blocks/add_basket.asp/id/' . $idt . '/idf/' . $idf . '/idb/' . $idb;
-    }
-
 
 }

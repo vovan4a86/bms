@@ -17,6 +17,7 @@ Route::get('robots.txt', 'PageController@robots')->name('robots');
 
 Route::group(['prefix' => 'ajax', 'as' => 'ajax.'], function () {
     Route::post('add-to-cart', [AjaxController::class, 'postAddToCart'])->name('add-to-cart');
+    Route::post('add-to-cart-pi', [AjaxController::class, 'postAddToCartPerItem'])->name('add-to-cart-pi');
     Route::post('update-to-cart', [AjaxController::class, 'postUpdateToCart'])->name('update-to-cart');
     Route::post('remove-from-cart', [AjaxController::class, 'postRemoveFromCart'])->name('remove-from-cart');
     Route::post('purge-cart', [AjaxController::class, 'postPurgeCart'])->name('purge-cart');

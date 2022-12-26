@@ -25,11 +25,14 @@ class Cart {
 		return isset($cart[$id]);
 	}
 
-	public static function updateCount($id, $count, $weight){
+	public static function updateCount($id, $count){
 		$cart = self::all();
 		if(isset($cart[$id])){
-			$cart[$id]['count_per_tonn'] = $count;
-            $cart[$id]['count_weight'] = $weight;
+		    if($cart[$id]['measure'] == 'т') {
+                $cart[$id]['weight'] = $count;
+            } else {
+                $cart[$id]['count'] = $count;
+            }
             Session::put(self::$key, $cart);
 		}
 	}
@@ -50,7 +53,10 @@ class Cart {
 		$sum = 0;
 		foreach ($cart as $item) {
             if($item['weight'] != 0)
-            $sum += $item['weight'] * $item['price'];
+                $sum += $item['weight'] * $item['price'];
+            else {
+                $sum += $item['count'] * $item['price_per_item'];
+            }
 		}
 		return $sum;
 	}
