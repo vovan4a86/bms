@@ -40,6 +40,7 @@
                         <div class="t-catalog">
                             @include('catalog.blocks.catalog_grid_head')
                             @each('catalog.product_item', $items, 'item')
+                            @include('paginations.with_pages', ['paginator' => $items])
                         </div>
                         <div class="s-subcatalog__content text-block">
                             {!!  $category->text  !!}

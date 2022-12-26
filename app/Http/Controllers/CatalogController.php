@@ -12,29 +12,34 @@ use Fanky\Admin\Models\ProductAddParam;
 use Fanky\Admin\Models\ProductIcon;
 use Fanky\Admin\Settings;
 use Illuminate\Database\Eloquent\Collection;
+
 //use Illuminate\Http\Request;
 use SEOMeta;
 use Session;
 use View;
 use Request;
 
-class CatalogController extends Controller {
+class CatalogController extends Controller
+{
 
-    public function region_index($city) {
+    public function region_index($city)
+    {
         $this->city = City::current($city);
 
         return $this->index();
     }
 
-    public function region_view($city_alias, $alias) {
+    public function region_view($city_alias, $alias)
+    {
         $this->city = City::current($city_alias);
 
         return $this->view($alias);
     }
 
-    public function index() {
+    public function index()
+    {
         $page = Page::getByPath(['catalog']);
-        if(!$page) return abort(404);
+        if (!$page) return abort(404);
         $bread = $page->getBread();
         $page->h1 = $page->getH1();
         $page = $this->add_region_seo($page);
@@ -45,27 +50,28 @@ class CatalogController extends Controller {
 //        dd($cat);
 
         return view('catalog.index', [
-            'h1'         => $page->h1,
-            'text'       => $page->text,
-            'title'      => $page->title,
-            'bread'      => $bread,
+            'h1' => $page->h1,
+            'text' => $page->text,
+            'title' => $page->title,
+            'bread' => $bread,
             'categories' => $categories,
             'headerIsWhite' => true,
         ]);
     }
 
-    public function view($alias) {
+    public function view($alias)
+    {
         $path = explode('/', $alias);
         /* проверка на продукт в категории */
         $product = null;
         $end = array_pop($path);
         $category = Catalog::getByPath($path);
-        if($category && $category->published) {
+        if ($category && $category->published) {
             $product = Product::whereAlias($end)
                 ->public()
                 ->whereCatalogId($category->id)->first();
         }
-        if($product) {
+        if ($product) {
             return $this->product($product);
         } else {
             array_push($path, $end);
@@ -74,21 +80,22 @@ class CatalogController extends Controller {
         }
     }
 
-    public function category($path) {
+    public function category($path)
+    {
         /** @var Catalog $category */
         $category = Catalog::getByPath($path);
-        if(!$category || !$category->published) abort(404, 'Страница не найдена');
+        if (!$category || !$category->published) abort(404, 'Страница не найдена');
         $bread = $category->getBread();
         $category = $this->add_region_seo($category);
         $category->setSeo();
         $updatedDate = $category->products->first()->updated_at ?? null;
-        if(!$updatedDate) {
+        if (!$updatedDate) {
             foreach ($category->public_children as $child) {
                 $updatedDate = $child->products->first()->updated_at ?? null;
-                if(!$updatedDate) {
+                if (!$updatedDate) {
                     foreach ($child->public_children as $grandchild) {
                         $updatedDate = $grandchild->products->first()->updated_at ?? null;
-                        if($updatedDate) break 2;
+                        if ($updatedDate) break 2;
                     }
                 } else {
                     break;
@@ -103,7 +110,7 @@ class CatalogController extends Controller {
         $categories = Catalog::getTopLevelOnList();
 
         $root = $category;
-        while($root->parent_id !== 0) {
+        while ($root->parent_id !== 0) {
             $root = $root->findRootCategory($root->parent_id);
         }
 
@@ -114,18 +121,18 @@ class CatalogController extends Controller {
 //        $parentIds = Catalog::where('parent_id', '=', '0')->pluck('id')->all();
 
         $ids = [];
-        if(count($children)) {
+        if (count($children)) {
             $ids = $category->getRecurseChildrenIds();
         } else {
             $ids = $category->getRecurseChildrenIdsInner();
         }
 
-        $filterSizes = Product::public()->whereIn('catalog_id', $ids)->distinct()->pluck( 'size')->all();
-        $filterNames = Product::public()->whereIn('catalog_id', $ids)->distinct()->pluck( 'name')->all();
+        $filterSizes = Product::public()->whereIn('catalog_id', $ids)->distinct()->pluck('size')->all();
+        $filterNames = Product::public()->whereIn('catalog_id', $ids)->distinct()->pluck('name')->all();
 
 
         $items = Product::public()->whereIn('catalog_id', $ids)
-            ->orderBy('catalog_id')->paginate($per_page);
+            ->orderBy('catalog_id')->paginate(5); //$per_page
 //        dd($items);
 //        dd($items->pluck('name')->all());
 
@@ -159,11 +166,11 @@ class CatalogController extends Controller {
 //        }
 
         $data = [
-            'bread'    => $bread,
+            'bread' => $bread,
             'category' => $category,
             'categories' => $categories,
             'children' => $children,
-            'h1'       => $category->getH1(),
+            'h1' => $category->getH1(),
             'updatedDate' => date_format($updatedDate, 'd.m.Y'),
             'items' => $items,
             'filterSizes' => $filterSizes,
@@ -185,80 +192,79 @@ class CatalogController extends Controller {
 //            'per_page' => $per_page
 //        ]);
 
-//        if (Request::ajax()) {
-//            $column1 = Request::only('column1');
-//            $column2 = Request::only('column2');
-//            $filter_name1 = Request::get('filter_name1');
-//            $filter_name2 = Request::get('filter_name2');
-//
-//            $queries = [];
-//            if (count($column1)) {
-//                foreach ($column1 as $name => $values) {
-//                    foreach ($values as $value) {
-//                        $queries[$filter_name1][] = [$value];
-//                    }
-//                }
-//            }
-//
-//            if (count($column2)) {
-//                foreach ($column2 as $name => $values) {
-//                    foreach ($values as $value) {
-//                        $queries[$filter_name2][] = [$value];
-//                    }
-//                }
-//            }
-//
-//
-//            if(count($queries)) {
-//                $prods_id = []; //все найденные id продуктов
-//                foreach ($queries as $name => $values) {
-//                    foreach ($values as $value) {
-//                        $prods_id[] = Product::where('catalog_id', $category->id)->where($name, $value)->pluck('id');
-//                    }
-//                }
-//
-//                $products_ids = [];
-//                foreach ($prods_id as $items) {
-//                    foreach ($items as $item) {
-//                        $products_ids[] = $item;
-//                    }
-//                }
-////                \Debugbar::log($products_ids);
-//                $items = Product::whereIn('id', $products_ids)
-//                    ->orderBy('name')->paginate($per_page);
-//            } else {
-//                $items = Product::where('catalog_id', $category->id)
-//                    ->orderBy('name')->paginate($per_page);
-//            }
-//
-//            $view_items = [];
-//            foreach ($items as $item) {
-//                $view_items[] = view('catalog.list_row', [
-//                    'item' => $item,
-//                    'category' => $category,
-//                    'sort' => $sort,
-//                    'root' => $root,
-//                    'filters' => $filters,
-//                    'per_page' => $per_page
-//                ])->render();
-//            }
-//
-//            return response()->json([
-//                'list' => $view_items,
-//                'paginate' => view('catalog.list_pagination', [
-//                    'items' => $items,
-//                ])->render(),
-////                'perpage' => view('catalog.views.per_page', [
-////                    'category' => $category,
-////                    'per_page' => $per_page
-////                ])->render()
-//            ]);
-//        }
+        if (Request::ajax()) {
+            $filter_name = Request::only('name');
+            $filter_size = Request::only('size');
+//            \Debugbar::log($filter_size);
+
+            $queries = [];
+            if (count($filter_name)) {
+                foreach ($filter_name as $name => $values) {
+                    foreach ($values as $value) {
+                        $queries['name'][] = [$value];
+                    }
+                }
+            }
+
+            if (count($filter_size)) {
+                foreach ($filter_size as $name => $values) {
+                    foreach ($values as $value) {
+                        $queries['size'][] = $value;
+                    }
+                }
+            }
+//            \Debugbar::log($queries);
+
+            if (count($queries)) {
+                $prods_id = []; //все найденные id продуктов
+                foreach ($queries as $name => $values) {
+                    foreach ($values as $value) {
+//                        \Debugbar::log($name);
+//                        \Debugbar::log($value);
+                        \Debugbar::log($category->id);
+                        $prods_id[] = Product::where('catalog_id', $category->id)
+                            ->where($name, $value)->pluck('id');
+                    }
+                }
+//                \Debugbar::log($prods_id);
+
+
+                $products_ids = [];
+                foreach ($prods_id as $items) {
+                    foreach ($items as $item) {
+                        $products_ids[] = $item;
+                    }
+                }
+                $items = Product::whereIn('id', $products_ids)
+                    ->orderBy('name')->paginate(5);
+            } else {
+                $items = Product::where('catalog_id', $category->id)
+                    ->orderBy('name')->paginate(5);
+            }
+
+            $view_items = [];
+            foreach ($items as $item) {
+                $view_items[] = view('catalog.product_item', [
+                    'item' => $item,
+                    'category' => $category,
+                    'root' => $root,
+                    'per_page' => $per_page
+                ])->render();
+            }
+
+            return response()->json([
+                'list' => $view_items,
+                'paginate' => view('paginations.with_pages', [
+                    'paginator' => $items,
+                ])->render(),
+            ]);
+        }
 
         return view('catalog.category', $data);
     }
 
-    public function product(Product $product) {
+    public function product(Product $product)
+    {
         $bread = $product->getBread();
         $product = $this->add_region_seo($product);
         $product->generateTitle();
@@ -270,7 +276,7 @@ class CatalogController extends Controller {
 
         $catalog = Catalog::whereId($product->catalog_id)->first();
         $root = $catalog;
-        while($root->parent_id !== 0) {
+        while ($root->parent_id !== 0) {
             $root = $root->findRootCategory($root->parent_id);
         }
 
@@ -307,9 +313,9 @@ class CatalogController extends Controller {
 
         //наличие в корзине
         $in_cart = false;
-        if(Session::get('cart')) {
+        if (Session::get('cart')) {
             $cart = array_keys(Session::get('cart'));
-            if($cart) {
+            if ($cart) {
                 $in_cart = in_array($product->id, $cart);
             }
         }
@@ -317,22 +323,22 @@ class CatalogController extends Controller {
 //        $related = $related->merge($related_from_cat);
 
         $prodImage = $product->image()->first();
-        if($prodImage) {
+        if ($prodImage) {
             $image = $prodImage->image;
         } else {
             $image = Catalog::whereId($product->catalog_id)->first()->section_image;
         }
 
-        if(!$product->text) {
+        if (!$product->text) {
             $text = $root->text;
         }
 
         $count_per_tonn = 0;
         $count_weight = 0;
         $summ = 0;
-        if($product->price && $product->measure == 'т') {
+        if ($product->price && $product->measure == 'т') {
             $cur_factor = 0.1; //если фактор не известен
-            if($product->factor != 0) {
+            if ($product->factor != 0) {
                 $cur_factor = $product->factor / 1000;
             }
             do {
@@ -341,30 +347,30 @@ class CatalogController extends Controller {
             } while ($count_weight < 1);
             $summ = $count_weight * Product::fullPrice($product->price);
 
-        } else if($product->price && $product->measure == 'м2') {
+        } else if ($product->price && $product->measure == 'м2') {
             $count_per_tonn = 1;
-            if($product->factor_m2) {
+            if ($product->factor_m2) {
                 $count_weight = $product->factor_m2;
             } else {
                 $dlina = 1;
                 $shirina = 1;
-                if($product->dlina) $dlina = preg_replace('/[А-Яа-я]/', '', $product->dlina);
-                if($product->shirina) $shirina = preg_replace('/[А-Яа-я]/', '', $product->shirina);
+                if ($product->dlina) $dlina = preg_replace('/[А-Яа-я]/', '', $product->dlina);
+                if ($product->shirina) $shirina = preg_replace('/[А-Яа-я]/', '', $product->shirina);
                 $count_weight = $dlina * $shirina;
             }
             $summ = $count_weight * Product::fullPrice($product->price);
         }
 
         return view('catalog.product', [
-            'product'    => $product,
+            'product' => $product,
             'categories' => $categories,
-            'in_cart'    => $in_cart,
-            'text'       => $text ?? null,
-            'bread'      => $bread,
+            'in_cart' => $in_cart,
+            'text' => $text ?? null,
+            'bread' => $bread,
             'headerIsWhite' => true,
-            'name'       => $product->name,
+            'name' => $product->name,
             'specParams' => $product->params_on_spec,
-            'params'     => $params ?? null,
+            'params' => $params ?? null,
             'add_params' => $add_params ?? null,
 //            'features' => $features,
             'similar' => $similar,
@@ -374,7 +380,7 @@ class CatalogController extends Controller {
             'count_weight' => $count_weight,
             'count_per_tonn' => $count_per_tonn,
             'factor_m2_weight' => $product->factor_m2_weight ?? 1,
-            'summ' => number_format($summ, 2 ,',', ' ' ),
+            'summ' => number_format($summ, 2, ',', ' '),
         ]);
     }
 
