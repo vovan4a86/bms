@@ -51,74 +51,74 @@ class ParseSanteh extends Command {
         ]);
     }
 
-    //      0          1          2          3         4
-    //[2 колонка, 3 колонка, по какой цене=inStock, measure]
+    //      0          1              2                3               4
+    //[2 колонка, 3 колонка, по какой цене=inStock, measure, уникальные картинки товара]
     public $priceMap = [
-        'Фитинги, арматура PP-R' => ['type', 'comment', 'price_per_item', 'шт'],
+        'Фитинги, арматура PP-R' => ['type', 'comment', 'price_per_item', 'шт', 1],
 
         'Трубы PP-R армированные стекло волокном' => ['py', 'length', 'price_per_metr', 'м'],
         'Трубы PP-R армированные фольгой' => ['py', 'length', 'price_per_metr', 'м'],
         'Трубы PP-R не армированные' => ['py', 'length', 'price_per_metr', 'м'],
 
-        'Фитинги резьбовые латунные' => ['type', 'comment', 'price_per_item', 'шт'],
-        'Фитинги резьбовые стальные' => ['type', 'comment', 'price_per_item', 'шт'],
-        'Фитинги резьбовые чугунные' => ['type', 'comment', 'price_per_item', 'шт'],
+        'Фитинги резьбовые латунные' => ['type', 'comment', 'price_per_item', 'шт', 1],
+        'Фитинги резьбовые стальные' => ['type', 'comment', 'price_per_item', 'шт', 1],
+        'Фитинги резьбовые чугунные' => ['type', 'comment', 'price_per_item', 'шт', 1],
 
         'Трубы полиэтиленовые' => ['py', 'length', 'price_per_metr', 'м'],
 
-        'Краны шаровые латунные' => ['py', 'comment', 'price_per_item', 'шт'],
-        'Краны шаровые стальные' => ['py', 'comment', 'price_per_item', 'шт'],
-        'Краны латунные для манометров' => ['py', 'comment', 'price_per_item', 'шт'],
-        'Задвижки стальные' => ['py', 'comment', 'price_per_item', 'шт'],
-        'Задвижки чугунные' => ['py', 'comment', 'price_per_item', 'шт'],
-        'Клапаны и затворы обратные' => ['py', 'comment', 'price_per_item', 'шт'],
+        'Краны шаровые латунные' => ['py', 'comment', 'price_per_item', 'шт', 1],
+        'Краны шаровые стальные' => ['py', 'comment', 'price_per_item', 'шт', 1],
+        'Краны латунные для манометров' => ['py', 'comment', 'price_per_item', 'шт', 1],
+        'Задвижки стальные' => ['py', 'comment', 'price_per_item', 'шт', 1],
+        'Задвижки чугунные' => ['py', 'comment', 'price_per_item', 'шт', 1],
+        'Клапаны и затворы обратные' => ['py', 'comment', 'price_per_item', 'шт', 1],
         'Клапаны стальные запорные' => ['py', 'comment', 'price_per_item', 'шт'],
         'Клапаны и затворы чугунные' => ['py', 'comment', 'price_per_item', 'шт'],
-        'Клапаны пожарные' => ['py', 'comment', 'price_per_item', 'шт'],
+        'Клапаны пожарные' => ['py', 'comment', 'price_per_item', 'шт', 1],
 
-        'Фланцы стальные' => ['py', 'comment', '', '', 'price_per_item', 4, 'шт', 0],
-        'Отводы стальные' => ['wall', 'comment', '', '', 'price_per_item', 4, 'шт', 0],
-        'Тройники стальные' => ['wall', 'comment', '', '', 'price_per_item', 4, 'шт', 0],
-        'Заглушки стальные' => ['py', 'comment', '', '', 'price_per_item', 4, 'шт', 0],
-        'Переходы стальные' => ['type', 'comment', '', '', 'price_per_item', 4, 'шт', 0],
-        'Сгоны, бочата, резьбы' => ['length', 'comment', '', '', 'price_per_item', 4, 'шт', 0],
-        'Опоры стальные' => ['type', 'comment', '', '', 'price_per_item', 4, 'шт', 0],
-        'Хомуты' => ['diameter', 'comment', '', '', 'price_per_item', 4, 'шт', 0],
+        'Фланцы стальные' => ['py', 'comment', 'price_per_item', 'шт', 1],
+        'Отводы стальные' => ['wall', 'comment', 'price_per_item', 'шт', 1],
+        'Тройники стальные' => ['wall', 'comment', 'price_per_item', 'шт', 1],
+        'Заглушки стальные' => ['py', 'comment', 'price_per_item', 'шт', 1],
+        'Переходы стальные' => ['type', 'comment', 'price_per_item', 'шт', 1],
+        'Сгоны, бочата, резьбы' => ['length', 'comment', 'price_per_item', 'шт', 1],
+        'Опоры стальные' => ['type', 'comment', 'price_per_item', 'шт', 1],
+        'Хомуты' => ['diameter', 'comment', 'price_per_item', 'шт', 1],
 
-        'Фильтры' => ['py', 'comment', '', '', 'price_per_item', 4, 'шт', 0],
-        'Грязевики' => ['type', 'comment', '', '', 'price_per_item', 4, 'шт', 0],
+        'Фильтры' => ['py', 'comment', 'price_per_item', 'шт', 1],
+        'Грязевики' => ['type', 'comment', 'price_per_item', 'шт', 1],
 
-        'Трубы полипропиленовые и соединительные детали PP-H' => ['type', 'length', '', '', 'price_per_item', 4, 'шт', 0],
-        'Трубы из поливинилхлорида ПВХ' => ['type', 'length', '', '', 'price_per_item', 4, 'шт', 0],
-        'Трубы чугунные безраструбные SML' => ['type', 'length', '', '', 'price_per_item', 4, 'шт', 0],
-        'Трубы чугунные ЧК и соединительные детали' => ['type', 'length', '', '', 'price_per_item', 4, 'шт', 0],
+        'Трубы полипропиленовые и соединительные детали PP-H' => ['type', 'length', 'price_per_item', 'шт', 1],
+        'Трубы из поливинилхлорида ПВХ' => ['type', 'length', 'price_per_item', 'шт', 1],
+        'Трубы чугунные безраструбные SML' => ['type', 'length', 'price_per_item', 'шт', 1],
+        'Трубы чугунные ЧК и соединительные детали' => ['type', 'length', 'price_per_item', 'шт', 1],
 
-        'Теплоизоляция полиэтилен' => ['type', 'length', '', '', 'price_per_item', 4, 'шт', 0],
-        'Теплоизоляция каучук' => ['type', 'length', '', '', 'price_per_item', 4, 'шт', 0],
-        'Паронит листовой' => ['type', 'comment', '', '', 'price_per_item', 4, 'шт', 0],
-        'Прокладки' => ['type', 'comment', '', '', 'price_per_item', 4, 'шт', 0],
-        'Лента ФУМ и нить уплотнительная' => ['type', 'comment', '', '', 'price_per_item', 4, 'шт', 0],
+        'Теплоизоляция полиэтилен' => ['type', 'length', 'price_per_item', 'шт', 1],
+        'Теплоизоляция каучук' => ['type', 'length', 'price_per_item', 'шт', 1],
+        'Паронит листовой' => ['type', 'comment', 'price_per_item', 'шт'],
+        'Прокладки' => ['type', 'comment', 'price_per_item', 'шт', 1],
+        'Лента ФУМ и нить уплотнительная' => ['type', 'comment', 'price_per_item', 'шт', 1],
 
-        'Радиаторы THERMA Q' => ['type', 'comment', '', '', 'price_per_item', 4, 'шт', 0],
-        'Радиаторы биметаллические' => ['type', 'comment', '', '', 'price_per_item', 4, 'шт', 0],
-        'Радиаторы алюминиевые' => ['type', 'comment', '', '', 'price_per_item', 4, 'шт', 0],
-        'Радиаторы стальные панельные' => ['type', 'comment', '', '', 'price_per_item', 4, 'шт', 0],
-        'Радиаторы чугунные' => ['type', 'length', '', '', 'price_per_item', 4, 'шт', 0],
-        'Полотенцесушители' => ['type', 'comment', '', '', 'price_per_item', 4, 'шт', 0],
-        'Узлы подключения' => ['py', 'comment', '', '', 'price_per_item', 4, 'шт', 0],
-        'Комплектующие для радиаторов' => ['type', 'comment', '', '', 'price_per_item', 4, 'шт', 0],
+        'Радиаторы THERMA Q' => ['type', 'comment', 'price_per_item', 'шт', 1],
+        'Радиаторы биметаллические' => ['type', 'comment', 'price_per_item', 'шт', 1],
+        'Радиаторы алюминиевые' => ['type', 'comment', 'price_per_item', 'шт', 1],
+        'Радиаторы стальные панельные' => ['type', 'comment', 'price_per_item', 'шт'],
+        'Радиаторы чугунные' => ['type', 'length', 'price_per_item', 'шт', 1],
+        'Полотенцесушители' => ['type', 'comment', 'price_per_item', 'шт', 1],
+        'Узлы подключения' => ['py', 'comment', 'price_per_item', 'шт', 1],
+        'Комплектующие для радиаторов' => ['type', 'comment', 'price_per_item', 'шт', 1],
 
-        'Регулирующая, предохранительная арматура и автоматика' => ['py', 'comment', '', '', 'price_per_item', 4, 'шт', 0],
-        'Коллекторы и коллекторные группы' => ['py', 'comment', '', '', 'price_per_item', 4, 'шт', 0],
+        'Регулирующая, предохранительная арматура и автоматика' => ['py', 'comment', 'price_per_item', 'шт', 1],
+        'Коллекторы и коллекторные группы' => ['py', 'comment', 'price_per_item', 'шт', 1],
 
-        'Инструмент для монтажа PP-R' => ['type', 'comment', '', '', 'price_per_item', 4, 'шт', 0],
+        'Инструмент для монтажа PP-R' => ['type', 'comment', 'price_per_item', 'шт', 1],
 
-        'Комплектующие для КИПиА' => ['type', 'comment', '', '', 'price_per_item', 4, 'шт', 0],
-        'Манометры' => ['type', 'comment', '', '', 'price_per_item', 4, 'шт', 0],
-        'Термоманометры' => ['type', 'comment', '', '', 'price_per_item', 4, 'шт', 0],
-        'Термометры биметаллические' => ['type', 'comment', '', '', 'price_per_item', 4, 'шт', 0],
+        'Комплектующие для КИПиА' => ['type', 'comment', 'price_per_item', 'шт', 1],
+        'Манометры' => ['type', 'comment', 'price_per_item', 'шт', 1],
+        'Термоманометры' => ['type', 'comment', 'price_per_item', 'шт', 1],
+        'Термометры биметаллические' => ['type', 'comment', 'price_per_item', 'шт', 1],
 
-        'Электроинструменты' => ['brand', 'model', '', '', 'price_per_item', 4, 'шт', 0],
+        'Электроинструменты' => ['brand', 'model', 'price_per_item', 'шт', 1],
     ];
 
     /**
@@ -147,7 +147,9 @@ class ParseSanteh extends Command {
 //            'Регулирующая, предохранительная арматура и автоматика' => 'https://mc.ru/metalloprokat/regulyatory_davleniya',
 //            'Коллекторы и коллекторные группы' => 'https://mc.ru/metalloprokat/kollektory_raspredel',
 //            'Инструмент, оборудование и материалы' => 'https://mc.ru/metalloprokat/instrument_engineering',
-//            'Электроинструменты' => 'https://mc.ru/metalloprokat/elektroinstrument',
+
+//            'Электроинструменты' => 'https://mc.ru/metalloprokat/elektroinstrument', //отдельно
         ];
     }
+
 }

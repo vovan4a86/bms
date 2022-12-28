@@ -56,10 +56,10 @@
             </select>
         </div>
         <div class="t-catalog__col t-catalog__col--wide">
-            <div class="t-catalog__col-label">{{ \Fanky\Admin\Models\Catalog::$filter_type[$category->catalog_type][0]['name'] }}</div>
+            <div class="t-catalog__col-label">{{ isset($col1) ? \Fanky\Admin\Models\Filter::whereAlias($col1)->first()->name : 'Марка' }}</div>
         </div>
         <div class="t-catalog__col">
-            <div class="t-catalog__col-label">{{ \Fanky\Admin\Models\Catalog::$filter_type[$category->catalog_type][1]['name'] }}</div>
+            <div class="t-catalog__col-label">{{ isset($col2) ? \Fanky\Admin\Models\Filter::whereAlias($col2)->first()->name : 'Длина' }}</div>
         </div>
         <div class="t-catalog__col t-catalog__col--wide">
             <div class="t-catalog__col-label">Цена, руб</div>

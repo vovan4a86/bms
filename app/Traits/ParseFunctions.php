@@ -58,6 +58,7 @@ trait ParseFunctions
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 YaBrowser/22.9.1 Yowser/2.5 Safari/537.36",
     ];
 
+//    парсим категории
     public function parseCategory($categoryName, $categoryUrl, $parentId)
     {
         $this->info($categoryName . ' => ' . $categoryUrl);
@@ -92,7 +93,6 @@ trait ParseFunctions
             }
         }
     }
-
 //    парсим список товаров
     public function parseListProducts($catalog, $categoryUrl, $subcatName, $priceMap)
     {
@@ -303,36 +303,26 @@ trait ParseFunctions
 
         $table = $crawler->filter('table')->first(); //table of products
         $table->filter('tbody tr')->reduce(function(Crawler $nnode, $i) {
-            return ($i < 10);
+            return ($i <= 3);
         })
             ->each(function (Crawler $node, $n) use ($catalog, $subCatalog, $uploadPath, $priceMap) {
                 $this->info('Parse: ' . ++$n . ' element');
-
-                $scriptUrl = $this->getInnerSiteScript($node); //строка с адресом внутреннего скрипта с инфой
 
                 try {
                     $url = $this->baseUrl . trim($node->filter('a')->first()->attr('href'));
 
                     $data = [];
-                    $usedPrice = $priceMap[5]; //по какому столбцу проверяем наличие
-                    if ($priceMap[2] !== null) {
-                        $data[$priceMap[2]] = preg_replace("/[^,.0-9]/", null, ($node->filter('td')->eq(5)->text())); //5 колонка цены
-                    }
-                    if ($priceMap[3] !== null) {
-                        $data[$priceMap[3]] = preg_replace("/[^,.0-9]/", null, ($node->filter('td')->eq(6)->text())); //6 колонка цены
-                    }
-                    if ($priceMap[4] !== null) {
-                        $data[$priceMap[4]] = preg_replace("/[^,.0-9]/", null, ($node->filter('td')->eq(8)->text())); //7 колонка цены
-                    }
+                    $data[$priceMap[2]] = preg_replace("/[^,.0-9]/", null, ($node->filter('td')
+                        ->eq(8)->text())); //7 колонка цены
 
-                    $data['measure'] = $priceMap[6];
-                    if(isset($priceMap[8])) $data['measure2'] = $priceMap[8];
-                    $data['inStock'] = $data[$priceMap[$usedPrice]] ? 1 : 0;
+                    $this->info('price: ' . $data[$priceMap[2]]); //float prices!!!!!!!!!!!!!!!!
+
+                    $data['measure'] = $priceMap[3];
+                    $data['inStock'] = $data[$priceMap[2]] ? 1 : 0;
 
                     $product = Product::whereParseUrl($url)->first();
 //                если новый товар -> заходим на страничку и получаем изображение и мин.длину
                     if (!$product) {
-
                         $name = trim($node->filter('.refstr')->first()->text());
                         $data['size'] = trim($node->filter('td')->eq(1)->text());
                         $data[$priceMap[0]] = trim($node->filter('td')->eq(2)->text());
@@ -344,7 +334,8 @@ trait ParseFunctions
                         $h1 = $product_crawler->filter('.catalogHeader h1')->first()->text();
                         $alias = Text::translit($h1);
 
-                        $order = $subCatalog ? $subCatalog->products()->max('order') + 1 : $catalog->products()->max('order') + 1;
+                        $order = $subCatalog ? $subCatalog->products()->max('order') + 1 :
+                                               $catalog->products()->max('order') + 1;
 
                         $newProd = Product::create(array_merge([
                             'name' => $name,
@@ -358,24 +349,42 @@ trait ParseFunctions
                         ], $data));
 
                         $section = $subCatalog ?: $catalog;
-                        $product_crawler->filter('.TovInfo img')->each(function ($img, $i) use ($alias, $newProd, $section, $uploadPath) {
+                        $product_crawler->filter('.TovInfo img')
+                            ->each(function ($img, $i) use ($alias, $newProd, $section, $uploadPath) {
                             $imageSrc = $img->attr('src');
                             $fileName = $uploadPath . $alias . '-' . ++$i;
                             $fileName .= $this->checkIsImageJpg($imageSrc) ? '.jpg' : '.svg';
 
                             if ($this->checkIsImageJpg($imageSrc)) {
                                 $res = $this->downloadJpgFile($imageSrc, $uploadPath, $fileName);
+                                if(!isset($priceMap[4])) {
+                                    //делаем изображение для раздела
+                                    $fileName = $uploadPath . $section->alias . '.jpg';
+                                    if (!file_exists($fileName)) {
+                                        if ($res) {
+                                            $section->section_image = $fileName;
+                                            $section->save();
+                                        }
+                                    }
+                                } else {
+                                    if ($res) {
+                                        ProductImage::create([
+                                            'product_id' => $newProd->id,
+                                            'image' => $fileName,
+                                            'order' => ProductImage::where('product_id', $newProd->id)->max('order') + 1,
+                                        ]);
+                                    }
+                                }
                             } else {
                                 $res = $this->downloadSvgFile($imageSrc, $uploadPath, $fileName);
+                                if ($res) {
+                                    ProductImage::create([
+                                        'product_id' => $newProd->id,
+                                        'image' => $fileName,
+                                        'order' => ProductImage::where('product_id', $newProd->id)->max('order') + 1,
+                                    ]);
+                                }
                             }
-                            if ($res) {
-                                ProductImage::create([
-                                    'product_id' => $newProd->id,
-                                    'image' => $fileName,
-                                    'order' => ProductImage::where('product_id', $newProd->id)->max('order') + 1,
-                                ]);
-                            }
-
                         });
                         sleep(rand(1, 2));
                         if(!$this->updateOneTime) {
