@@ -2,17 +2,17 @@
     <div class="prod-order">
         <div class="prod-order__grid">
             <div class="prod-order__col">
-                <label class="prod-order__label">Количество, т
+                <label class="prod-order__label">Количество, ?
                     <input class="prod-order__input" type="number" name="weight" value="0,025">
                 </label>
             </div>
             <div class="prod-order__col">
-                <label class="prod-order__label">Количество, М
+                <label class="prod-order__label">Количество, ?
                     <input class="prod-order__input" type="number" name="size" value="">
                 </label>
             </div>
             <div class="prod-order__col">
-                <div class="prod-order__label">Цена, т</div>
+                <div class="prod-order__label">Цена, ?</div>
                 <div class="prod-order__input">111 111</div>
             </div>
             <div class="prod-order__col">

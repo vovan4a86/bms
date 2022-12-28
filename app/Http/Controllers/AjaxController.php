@@ -32,6 +32,7 @@ class AjaxController extends Controller
         $size = $request->get('size');
         $weight = $request->get('weight');
 
+
         /** @var Product $product */
         $product = Product::find($id);
         if ($product) {
@@ -43,6 +44,10 @@ class AjaxController extends Controller
                 $product_item['weight'] = $product_item['count'] *  $product_item['round_k'];
             } else {
                 $product_item['weight'] = $weight;
+            }
+            if($product_item['measure'] == 'м') {
+                $product_item['weight'] = $size;
+                $product_item['count'] = $weight;
             }
 
             $product_item['url'] = $product->url;
@@ -79,8 +84,7 @@ class AjaxController extends Controller
         ];
     }
 
-    public function postEditCartProduct(Request $request)
-    {
+    public function postEditCartProduct(Request $request): array {
         $id = $request->get('id');
         $count = $request->get('count', 1);
         /** @var Product $product */
@@ -103,8 +107,6 @@ class AjaxController extends Controller
         $id = $request->get('id');
         $count = $request->get('count');
 
-        Cart::updateCount($id, $count);
-
         $product = Product::find($id);
 
         $product_item = $product->toArray();
@@ -112,16 +114,22 @@ class AjaxController extends Controller
 
         if($product_item['measure'] == 'т') {
             $product_item['weight'] = $count;
+        } elseif($product_item['measure'] == 'кг') {
+            $product_item['weight'] = $count;
+        } elseif($product_item['measure'] == 'м') {
+            $product_item['count'] = $count;
         } else {
             $product_item['count'] = $count;
         }
+
+        Cart::updateCount($id, $count);
 
         $cur_summ = view('cart.table_row_summ', ['item' => $product_item])->render();
         $order_total = view('cart.blocks.order_total')->render();
 
         return [
+            'cur_summ' => $cur_summ,
             'order_total' => $order_total,
-            'cur_summ' => $cur_summ
         ];
     }
 

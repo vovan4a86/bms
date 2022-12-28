@@ -1,6 +1,8 @@
 <?php namespace App\Traits;
 
+use Carbon\Carbon;
 use Fanky\Admin\Models\Catalog;
+use Fanky\Admin\Models\Filter;
 use Fanky\Admin\Models\Product;
 use Fanky\Admin\Models\ProductImage;
 use Fanky\Admin\Text;
@@ -11,6 +13,8 @@ trait ParseFunctions
 {
 
     public $baseUrl = 'https://mc.ru';
+
+    private $updateOneTime = false;
 
     public $userAgents = [
         "Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.101 Safari/537.36",
@@ -62,9 +66,9 @@ trait ParseFunctions
         $crawler = new Crawler($html); //page from url
 
         if (!$parentId) {
-            $catalog = $this->getCatalogByName($categoryName, 2);
+            $catalog = $this->getCatalogByName($categoryName, $parentId, '');
         } else {
-            $catalog = $this->getCatalogByName($categoryName, $parentId);
+            $catalog = $this->getCatalogByName($categoryName, $parentId, '');
         }
 
         $catalogItemList = $crawler->filter($this->catalogItemListTagElement);
@@ -80,163 +84,12 @@ trait ParseFunctions
         } else {
             //если нет подразделов, парсим товары
             try {
-                //1 товар парсим?
-//                $this->parseOneProductFromList($catalog, $categoryUrl, $categoryName, $this->priceMap[$catalog->name]);
-                //или все?
-                if($categoryName == 'Лист алюминиевый рифленый')  $this->parseListProducts($catalog, $categoryUrl, $categoryName, $this->priceMap[$catalog->name]);
-//                $this->parseListProducts($catalog, $categoryUrl, $categoryName, $this->priceMap[$catalog->name]);
+//                if($categoryName == 'Лента латунная')  $this->parseListProducts($catalog, $categoryUrl, $categoryName, $this->priceMap[$catalog->name]);
+                $this->parseListProducts($catalog, $categoryUrl, $categoryName, $this->priceMap[$catalog->name]);
             } catch (\Exception $e) {
                 $this->info('Error Parse From List: ' . $e->getMessage());
                 $this->info('Check priceMap values for ' . $categoryName);
             }
-        }
-    }
-
-    //парсим по 1 товару из категории
-    public function parseOneProductFromList($catalog, $categoryUrl, $subcatName, $priceMap)
-    {
-        $this->info('[section] ' . $catalog->name);
-        $res = $this->client->get($categoryUrl);
-        $html = $res->getBody()->getContents();
-        $crawler = new Crawler($html); //page from url
-
-        $subCatalog = $subcatName ? $this->getCatalogByName($subcatName, $catalog->id) : null;
-
-        if (!$subCatalog) {
-            $uploadPath = $this->basePath . $catalog->alias . '/';
-        } else {
-            $uploadPath = $this->basePath . $catalog->alias . '/' . $subCatalog->alias . '/';
-        }
-
-        $table = $crawler->filter('table')->first(); //список товаров
-        $node = $table->filter('tbody tr')->first(); //строка с товаром из списка
-        $scriptUrl = $this->getInnerSiteScript($node); //строка с адресом внутреннего скрипта с инфой
-
-        try {
-            $url = $this->baseUrl . trim($node->filter('a')->first()->attr('href'));
-
-            $data = [];
-            $usedPrice = $priceMap[6]; //по какому столбцу проверяем наличие
-            if ($priceMap[3] !== null) {
-                $data[$priceMap[3]] = preg_replace("/[^,.0-9]/", null, ($node->filter('td')->eq(5)->text())); //5 колонка цены
-            }
-            if ($priceMap[4] !== null) {
-                $data[$priceMap[4]] = preg_replace("/[^,.0-9]/", null, ($node->filter('td')->eq(6)->text())); //6 колонка цены
-            }
-            if ($priceMap[5] !== null) {
-                $data[$priceMap[5]] = preg_replace("/[^,.0-9]/", null, ($node->filter('td')->eq(8)->text())); //7 колонка цены
-            }
-
-            if (isset($data['price']) && $data['price'] != null) {
-                $data['raw_price'] = $data['price'];
-                $data['price'] = (ceil($data['raw_price'] / 100)) * 100; //округляем в большую сторону
-            }
-
-            $data['measure'] = $priceMap[7];
-            //лист рифленый
-            if (isset($data['riffl']) && $data['riffl'] != null) {
-                if($data['price_per_item'] == $data['price_per_kilo']) $data['measure'] = 'шт';
-            }
-
-            $data['inStock'] = $data[$priceMap[$usedPrice]] ? 1 : 0;
-
-            $product = Product::whereParseUrl($url)->first();
-//          если новый товар
-            if (!$product) {
-                //ищем коэффициент k
-                try {
-                    $scriptPage = $this->client->get($scriptUrl);
-                    $scriptHtml = $scriptPage->getBody()->getContents();
-                    $scriptCrawler = new Crawler($scriptHtml);
-                    $scriptText = $scriptCrawler->filter('script[language="Javascript"]')->first()->text();
-                    $findStart = stripos($scriptText, 'var k=');
-                    $findEnd = stripos($scriptText, ';', $findStart);
-                    $k = substr($scriptText, $findStart + 6, $findEnd - $findStart - 6);
-                    $data['k'] = $k;
-                } catch (\Exception $e) {
-                    $this->info('/extract inner script problem/ => ' . $e->getMessage());
-                }
-
-                $name = trim($node->filter('.refstr')->first()->text());
-
-                $colName = $priceMap[0];
-                $data[$colName] = trim($node->filter('td')->eq(1)->text());
-                $colName = $priceMap[1];
-                $data[$colName] = trim($node->filter('td')->eq(2)->text());
-                $colName = $priceMap[2];
-                $data[$colName] = trim($node->filter('td')->eq(3)->text());
-
-                //если 1 ищем стенку
-                if ($priceMap[8] == 1) {
-                    $data['wall'] = $this->parseProductWallFromString($name, $data['size']);
-                }
-
-                $html_product = $this->client->get($url);
-                $inner_html = $html_product->getBody()->getContents();
-                $product_crawler = new Crawler($inner_html);
-                $h1 = $product_crawler->filter('.catalogHeader h1')->first()->text();
-                $alias = Text::translit($h1);
-
-                //находим минимальную длину, если есть
-                if ($product_crawler->filter('.catalogInfo > .catalogInfoWrap')->eq(2)->count() != 0) {
-                    $minLengthRaw = $product_crawler->filter('.catalogInfo > .catalogInfoWrap')->eq(2)->text();
-                    $data['min_length'] = preg_replace("/[^,.0-9]/", null, $minLengthRaw);
-                }
-
-                $order = $subCatalog ? $subCatalog->products()->max('order') + 1 : $catalog->products()->max('order') + 1;
-
-                $newProd = Product::create(array_merge([
-                    'name' => $name,
-                    'catalog_id' => $subCatalog ? $subCatalog->id : $catalog->id,
-                    'title' => $name,
-                    'h1' => $h1,
-                    'alias' => $alias,
-                    'parse_url' => $url,
-                    'published' => 1,
-                    'order' => $order,
-                ], $data));
-
-                $this->info('[+] ' . $name);
-
-                $section = $subCatalog ?: $catalog;
-
-                $product_crawler->filter('.TovInfo img')->each(function ($img, $i) use ($alias, $newProd, $section, $uploadPath) {
-                    $imageSrc = $img->attr('src');
-                    $fileName = $uploadPath . $alias . '-' . ++$i;
-                    $fileName .= $this->checkIsImageJpg($imageSrc) ? '.jpg' : '.svg';
-
-                    if ($this->checkIsImageJpg($imageSrc)) {
-                        //делаем изображение для раздела
-                        if (!$section->section_image) {
-                            $fileName = $uploadPath . $section->alias . '.jpg';
-                            $res = $this->downloadJpgFile($imageSrc, $uploadPath, $fileName);
-                            if ($res) {
-                                $section->section_image = $fileName;
-                                $section->save();
-                            }
-                        }
-                    } else {
-                        $res = $this->downloadSvgFile($imageSrc, $uploadPath, $fileName);
-                        if ($res) {
-                            ProductImage::create([
-                                'product_id' => $newProd->id,
-                                'image' => $fileName,
-                                'order' => ProductImage::where('product_id', $newProd->id)->max('order') + 1,
-                            ]);
-                        }
-                    }
-
-                });
-
-                sleep(rand(1, 2));
-            } else {
-                $product->update($data);
-                $product->catalog_id = $subCatalog ? $subCatalog->id : $catalog->id;
-                $product->save();
-            }
-
-        } catch (\Exception $e) {
-            $this->info('error: ' . $e->getMessage());
         }
     }
 
@@ -248,7 +101,7 @@ trait ParseFunctions
         $html = $res->getBody()->getContents();
         $crawler = new Crawler($html); //page from url
 
-        $subCatalog = $subcatName ? $this->getCatalogByName($subcatName, $catalog->id) : null;
+        $subCatalog = $subcatName ? $this->getCatalogByName($subcatName, $catalog->id, null) : null;
 
         if (!$subCatalog) {
             $uploadPath = $this->basePath . $catalog->alias . '/';
@@ -257,10 +110,11 @@ trait ParseFunctions
         }
 
         $table = $crawler->filter('table')->first(); //table of products
-        $table->filter('tbody tr')
+        $table->filter('tbody tr')->reduce(function(Crawler $nnode, $i) {
+            return ($i < 10);
+        })
             ->each(function (Crawler $node, $n) use ($catalog, $subCatalog, $uploadPath, $priceMap) {
                 $this->info('Parse: ' . ++$n . ' element');
-                if ($n == 11) exit();
 
                 $scriptUrl = $this->getInnerSiteScript($node); //строка с адресом внутреннего скрипта с инфой
 
@@ -268,22 +122,23 @@ trait ParseFunctions
                     $url = $this->baseUrl . trim($node->filter('a')->first()->attr('href'));
 
                     $data = [];
-                    $usedPrice = $priceMap[6]; //по какому столбцу проверяем наличие
+                    $usedPrice = $priceMap[5]; //по какому столбцу проверяем наличие
+                    if ($priceMap[2] !== null) {
+                        $data[$priceMap[2]] = preg_replace("/[^,.0-9]/", null, ($node->filter('td')->eq(5)->text())); //5 колонка цены
+                    }
                     if ($priceMap[3] !== null) {
-                        $data[$priceMap[3]] = preg_replace("/[^,.0-9]/", null, ($node->filter('td')->eq(5)->text())); //5 колонка цены
+                        $data[$priceMap[3]] = preg_replace("/[^,.0-9]/", null, ($node->filter('td')->eq(6)->text())); //6 колонка цены
                     }
                     if ($priceMap[4] !== null) {
-                        $data[$priceMap[4]] = preg_replace("/[^,.0-9]/", null, ($node->filter('td')->eq(6)->text())); //6 колонка цены
-                    }
-                    if ($priceMap[5] !== null) {
-                        $data[$priceMap[5]] = preg_replace("/[^,.0-9]/", null, ($node->filter('td')->eq(8)->text())); //7 колонка цены
+                        $data[$priceMap[4]] = preg_replace("/[^,.0-9]/", null, ($node->filter('td')->eq(8)->text())); //7 колонка цены
                     }
                     if(isset($data['price']) && $data['price']) {
                         $data['raw_price'] = $data['price'];
                         $data['price'] = (ceil($data['raw_price'] / 100)) * 100; //округляем в большую сторону
                     }
 
-                    $data['measure'] = $priceMap[7];
+                    $data['measure'] = $priceMap[6];
+                    if(isset($priceMap[8])) $data['measure2'] = $priceMap[8];
                     $data['inStock'] = $data[$priceMap[$usedPrice]] ? 1 : 0;
 
                     $product = Product::whereParseUrl($url)->first();
@@ -293,9 +148,9 @@ trait ParseFunctions
                         $data['k'] = $this->getKFromScriptUrl($scriptUrl);
 
                         $name = trim($node->filter('.refstr')->first()->text());
-                        $data[$priceMap[0]] = trim($node->filter('td')->eq(1)->text());
-                        $data[$priceMap[1]] = trim($node->filter('td')->eq(2)->text());
-                        $data[$priceMap[2]] = trim($node->filter('td')->eq(3)->text());
+                        $data['size'] = trim($node->filter('td')->eq(1)->text());
+                        $data[$priceMap[0]] = trim($node->filter('td')->eq(2)->text());
+                        $data[$priceMap[1]] = trim($node->filter('td')->eq(3)->text());
 
                         //лист рифленый
                         if (isset($data['riffl']) && $data['riffl'] != null) {
@@ -303,9 +158,9 @@ trait ParseFunctions
                         }
 
                         //если 1 ищем стенку
-                        if ($priceMap[8] == 1) {
+                        if ($priceMap[7] == 1) {
                             $data['wall'] = $this->parseProductWallFromString($name, $data['size']);
-                        } elseif ($priceMap[8] == 2) {
+                        } elseif ($priceMap[7] == 2) {
                             $data['wall'] = $this->parseProductWallFromString($name, $data['size'], true);
                         }
 
@@ -363,15 +218,24 @@ trait ParseFunctions
 
                         });
                         sleep(rand(1, 2));
+                        if(!$this->updateOneTime) {
+                            $this->updateCatalogUpdatedAt($section);
+                            $this->updateOneTime = true;
+                        }
                     } else {
                         $product->update($data);
                         $product->catalog_id = $subCatalog ? $subCatalog->id : $catalog->id;
                         $product->save();
+                        if(!$this->updateOneTime) {
+                            $this->updateCatalogUpdatedAt($subCatalog ? : $catalog);
+                            $this->updateOneTime = true;
+                        }
                     }
                 } catch (\Exception $e) {
                     $this->info('error: ' . $e->getMessage());
                 }
             });
+
 
 //        проход по страницам
 //        $pages = $crawler->filter('.catalogPaginator ul li');
@@ -384,6 +248,165 @@ trait ParseFunctions
 //        }
     }
 
+
+    //для сантехарматуры
+    public function parseSantehCategory($categoryName, $categoryUrl, $parentId, $catFilters)
+    {
+        $this->info($categoryName . ' => ' . $categoryUrl);
+        $res = $this->client->get($categoryUrl);
+        $html = $res->getBody()->getContents();
+        $crawler = new Crawler($html); //page from url
+
+        if (!$parentId) {
+            $catalog = $this->getCatalogByName($categoryName, $parentId, $catFilters);
+        } else {
+            $catalog = $this->getCatalogByName($categoryName, $parentId, $catFilters);
+        }
+
+        $catalogItemList = $crawler->filter($this->catalogItemListTagElement);
+
+        //парсим список подразделов
+        if (count($catalogItemList)) {
+            $catalogItemList->each(function ($subcatItem) use ($categoryName, $catalog, $parentId, $catFilters) {
+                $subcatName = trim($subcatItem->filter('a')->first()->text());
+                $subcatUrl = $this->baseUrl . $subcatItem->filter('a')->first()->attr('href');
+
+                $this->parseSantehCategory($subcatName, $subcatUrl, $catalog->id, $catFilters);
+            });
+        } else {
+            //если нет подразделов, парсим товары
+            try {
+//                if($categoryName == 'Лента латунная')  $this->parseListProducts($catalog, $categoryUrl, $categoryName, $this->priceMap[$catalog->name]);
+                $this->parseSantehListProducts($catalog, $categoryUrl, $categoryName, $this->priceMap[$catalog->name]);
+            } catch (\Exception $e) {
+                $this->info('Error Parse From List: ' . $e->getMessage());
+                $this->info('Check priceMap values for ' . $categoryName);
+            }
+        }
+    }
+    //для сантехарматуры
+    public function parseSantehListProducts($catalog, $categoryUrl, $subcatName, $priceMap)  {
+        $this->info('Parse products from: ' . $catalog->name);
+        $res = $this->client->get($categoryUrl);
+        $html = $res->getBody()->getContents();
+        $crawler = new Crawler($html); //page from url
+
+        $catFilters = $priceMap[0].'/'.$priceMap[1];
+
+        $subCatalog = $subcatName ? $this->getCatalogByName($subcatName, $catalog->id, $catFilters) : null;
+
+        if (!$subCatalog) {
+            $uploadPath = $this->basePath . $catalog->alias . '/';
+        } else {
+            $uploadPath = $this->basePath . $catalog->alias . '/' . $subCatalog->alias . '/';
+        }
+
+        $table = $crawler->filter('table')->first(); //table of products
+        $table->filter('tbody tr')->reduce(function(Crawler $nnode, $i) {
+            return ($i < 10);
+        })
+            ->each(function (Crawler $node, $n) use ($catalog, $subCatalog, $uploadPath, $priceMap) {
+                $this->info('Parse: ' . ++$n . ' element');
+
+                $scriptUrl = $this->getInnerSiteScript($node); //строка с адресом внутреннего скрипта с инфой
+
+                try {
+                    $url = $this->baseUrl . trim($node->filter('a')->first()->attr('href'));
+
+                    $data = [];
+                    $usedPrice = $priceMap[5]; //по какому столбцу проверяем наличие
+                    if ($priceMap[2] !== null) {
+                        $data[$priceMap[2]] = preg_replace("/[^,.0-9]/", null, ($node->filter('td')->eq(5)->text())); //5 колонка цены
+                    }
+                    if ($priceMap[3] !== null) {
+                        $data[$priceMap[3]] = preg_replace("/[^,.0-9]/", null, ($node->filter('td')->eq(6)->text())); //6 колонка цены
+                    }
+                    if ($priceMap[4] !== null) {
+                        $data[$priceMap[4]] = preg_replace("/[^,.0-9]/", null, ($node->filter('td')->eq(8)->text())); //7 колонка цены
+                    }
+
+                    $data['measure'] = $priceMap[6];
+                    if(isset($priceMap[8])) $data['measure2'] = $priceMap[8];
+                    $data['inStock'] = $data[$priceMap[$usedPrice]] ? 1 : 0;
+
+                    $product = Product::whereParseUrl($url)->first();
+//                если новый товар -> заходим на страничку и получаем изображение и мин.длину
+                    if (!$product) {
+
+                        $name = trim($node->filter('.refstr')->first()->text());
+                        $data['size'] = trim($node->filter('td')->eq(1)->text());
+                        $data[$priceMap[0]] = trim($node->filter('td')->eq(2)->text());
+                        $data[$priceMap[1]] = trim($node->filter('td')->eq(3)->text());
+
+                        $html_product = $this->client->get($url);
+                        $inner_html = $html_product->getBody()->getContents();
+                        $product_crawler = new Crawler($inner_html);
+                        $h1 = $product_crawler->filter('.catalogHeader h1')->first()->text();
+                        $alias = Text::translit($h1);
+
+                        $order = $subCatalog ? $subCatalog->products()->max('order') + 1 : $catalog->products()->max('order') + 1;
+
+                        $newProd = Product::create(array_merge([
+                            'name' => $name,
+                            'catalog_id' => $subCatalog ? $subCatalog->id : $catalog->id,
+                            'title' => $name,
+                            'h1' => $h1,
+                            'alias' => $alias,
+                            'parse_url' => $url,
+                            'published' => 1,
+                            'order' => $order,
+                        ], $data));
+
+                        $section = $subCatalog ?: $catalog;
+                        $product_crawler->filter('.TovInfo img')->each(function ($img, $i) use ($alias, $newProd, $section, $uploadPath) {
+                            $imageSrc = $img->attr('src');
+                            $fileName = $uploadPath . $alias . '-' . ++$i;
+                            $fileName .= $this->checkIsImageJpg($imageSrc) ? '.jpg' : '.svg';
+
+                            if ($this->checkIsImageJpg($imageSrc)) {
+                                $res = $this->downloadJpgFile($imageSrc, $uploadPath, $fileName);
+                            } else {
+                                $res = $this->downloadSvgFile($imageSrc, $uploadPath, $fileName);
+                            }
+                            if ($res) {
+                                ProductImage::create([
+                                    'product_id' => $newProd->id,
+                                    'image' => $fileName,
+                                    'order' => ProductImage::where('product_id', $newProd->id)->max('order') + 1,
+                                ]);
+                            }
+
+                        });
+                        sleep(rand(1, 2));
+                        if(!$this->updateOneTime) {
+                            $this->updateCatalogUpdatedAt($section);
+                            $this->updateOneTime = true;
+                        }
+                    } else {
+                        $product->update($data);
+                        $product->catalog_id = $subCatalog ? $subCatalog->id : $catalog->id;
+                        $product->save();
+                        if(!$this->updateOneTime) {
+                            $this->updateCatalogUpdatedAt($subCatalog ? : $catalog);
+                            $this->updateOneTime = true;
+                        }
+                    }
+                } catch (\Exception $e) {
+                    $this->info('error: ' . $e->getMessage());
+                }
+            });
+
+
+//        проход по страницам
+//        $pages = $crawler->filter('.catalogPaginator ul li');
+//        $currentPage = $crawler->filter('.catalogPaginator .selected')->first()->text();
+//        if ($currentPage < $pages->count()) {
+//            $nextUrl = $this->baseUrl . $pages->eq($currentPage)->filter('a')->attr('href');
+//            $this->info('parse: ' . $nextUrl . ' / ' . $pages->count());
+//            sleep(rand(1, 2));
+//            $this->parseListProducts($categoryName, $nextUrl, $subcatname);
+//        }
+    }
 
     /**
      * @param string $str
@@ -402,7 +425,9 @@ trait ParseFunctions
 
     public function downloadJpgFile($url, $uploadPath, $fileName): bool
     {
-        $file = file_get_contents($this->baseUrl . $url);
+        $safeUrl = str_replace(' ', '%20', $url);
+        $this->info('jpg url: ' . $safeUrl);
+        $file = file_get_contents($this->baseUrl . $safeUrl);
         if (!is_dir(public_path($uploadPath))) {
             mkdir(public_path($uploadPath), 0777, true);
         }
@@ -410,14 +435,16 @@ trait ParseFunctions
             file_put_contents(public_path($fileName), $file);
             return true;
         } catch (\Exception $e) {
-            $e->getMessage();
+            $this->info('download jpg error: ' . $e->getMessage());
             return false;
         }
     }
 
     public function downloadSvgFile($url, $uploadPath, $fileName): bool
     {
-        $image = SVG::fromFile($this->baseUrl . $url);
+        $safeUrl = str_replace(' ', '%20', $url);
+
+        $image = SVG::fromFile($this->baseUrl . $safeUrl);
         if (!is_dir(public_path($uploadPath))) {
             mkdir(public_path($uploadPath), 0777, true);
         }
@@ -425,7 +452,7 @@ trait ParseFunctions
             file_put_contents(public_path($fileName), $image->toXMLString());
             return true;
         } catch (\Exception $e) {
-            $e->getMessage();
+            $this->info('download svg error: ' . $e->getMessage());
             return false;
         }
     }
@@ -480,7 +507,7 @@ trait ParseFunctions
      * @param int $parentId
      * @return Catalog
      */
-    private function getCatalogByName(string $categoryName, int $parentId): Catalog
+    private function getCatalogByName(string $categoryName, int $parentId, string $catFilters = null): Catalog
     {
         $catalog = Catalog::whereName($categoryName)->first();
         if (!$catalog) {
@@ -489,13 +516,20 @@ trait ParseFunctions
                 'title' => $categoryName,
                 'h1' => $categoryName,
                 'parent_id' => $parentId,
+                'filters' => $catFilters,
                 'alias' => Text::translit($categoryName),
                 'slug' => Text::translit($categoryName),
                 'order' => Catalog::whereParentId($parentId)->max('order') + 1,
                 'published' => 1,
             ]);
+
         }
         return $catalog;
+    }
+
+    private function updateCatalogUpdatedAt(Catalog $catalog) {
+        $catalog->updated_at = Carbon::now();
+        $catalog->save();
     }
 
     public function getInnerSiteScript($node): string
@@ -506,133 +540,5 @@ trait ParseFunctions
         //mc.ru//pages/blocks/add_basket.asp/id/XY12/idf/5/idb/1
         return 'mc.ru//pages/blocks/add_basket.asp/id/' . $idt . '/idf/' . $idf . '/idb/' . $idb;
     }
-
-    //парсим список товаров
-//    public function parseListProducts($catalog, $categoryUrl, $subcatName, $priceMap) {
-//        $this->info('Parse one product from: ' . $catalog->name);
-//        $res = $this->client->get($categoryUrl);
-//        $html = $res->getBody()->getContents();
-//        $crawler = new Crawler($html); //page from url
-//
-//        $subCatalog = $subcatName ? $this->getCatalogByName($subcatName, $catalog->id) : null;
-//
-//        if (!$subCatalog) {
-//            $uploadPath = $this->basePath . $catalog->alias . '/';
-//        } else {
-//            $uploadPath = $this->basePath . $catalog->alias . '/' . $subCatalog->alias . '/';
-//        }
-//
-//        $table = $crawler->filter('table')->first(); //table of products
-//        $productRows = $table->filter('tbody tr')->siblings();
-//
-//        foreach($productRows as $i => $row) {
-//            $this->info('Parse: ' . ++$i . ' element');
-//            $this->info('row: ' . $productRows->count());
-//            exit();
-//            if($i == 10) break;
-//
-//            try {
-//                $url = $this->baseUrl . trim($row->filter('a')->first()->attr('href'));
-//
-//                $data = [];
-//                $usedPrice = $priceMap[6]; //по какому столбцу проверяем наличие
-//                if ($priceMap[3] !== null) {
-//                    $data[$priceMap[3]] = preg_replace("/[^,.0-9]/", null, ($row->filter('td')->eq(5)->text())); //5 колонка цены
-//                }
-//                if ($priceMap[4] !== null) {
-//                    $data[$priceMap[4]] = preg_replace("/[^,.0-9]/", null, ($row->filter('td')->eq(6)->text())); //6 колонка цены
-//                }
-//                if ($priceMap[5] !== null) {
-//                    $data[$priceMap[5]] = preg_replace("/[^,.0-9]/", null, ($row->filter('td')->eq(8)->text())); //7 колонка цены
-//                }
-//                $data['raw_price'] = $data['price'];
-//                $data['price'] = (ceil($data['raw_price'] / 100)) * 100; //округляем в большую сторону
-//                $data['measure'] = $priceMap[7];
-//                $data['inStock'] = $data[$priceMap[$usedPrice]] ? 1 : 0;
-//
-//                $product = Product::whereParseUrl($url)->first();
-////                если новый товар -> заходим на страничку и получаем изображение и мин. длину
-//                if (!$product) {
-//                    $name = trim($row->filter('.refstr')->first()->text());
-//                    $data[$priceMap[0]] = trim($row->filter('td')->eq(1)->text());
-//                    $data[$priceMap[1]] = trim($row->filter('td')->eq(2)->text());
-//                    $data[$priceMap[2]] = trim($row->filter('td')->eq(3)->text());
-//
-//                    //если 1 ищем стенку
-//                    if ($priceMap[8] == 1) {
-//                        $data['wall'] = $this->parseProductWallFromString($name, $data['size']);
-//                    } elseif ($priceMap[8] == 2) {
-//                        $data['wall'] = $this->parseProductWallFromString($name, $data['size'], true);
-//                    }
-//
-//                    $html_product = $this->client->get($url);
-//                    $inner_html = $html_product->getBody()->getContents();
-//                    $product_crawler = new Crawler($inner_html);
-//                    $h1 = $product_crawler->filter('.catalogHeader h1')->first()->text();
-//                    $alias = Text::translit($h1);
-//
-//                    $order = $subCatalog ? $subCatalog->products()->max('order') + 1 : $catalog->products()->max('order') + 1;
-//
-//                    $newProd = Product::create(array_merge([
-//                        'name' => $name,
-//                        'catalog_id' => $subCatalog ? $subCatalog->id : $catalog->id,
-//                        'title' => $name,
-//                        'h1' => $h1,
-//                        'alias' => $alias,
-//                        'parse_url' => $url,
-//                        'published' => 1,
-//                        'order' => $order,
-//                    ], $data));
-//
-//                    $section = $subCatalog ?: $catalog;
-//                    $product_crawler->filter('.TovInfo img')->each(function ($img, $i) use ($alias, $newProd, $section, $uploadPath) {
-//                        $imageSrc = $img->attr('src');
-//                        $fileName = $uploadPath . $alias . '-' . ++$i;
-//                        $fileName .= $this->checkIsImageJpg($imageSrc) ? '.jpg' : '.svg';
-//
-//                        if ($this->checkIsImageJpg($imageSrc)) {
-//                            //делаем изображение для раздела
-//                            if (!$section->section_image) {
-//                                $fileName = $uploadPath . $section->alias . '.jpg';
-//                                $res = $this->downloadJpgFile($imageSrc, $uploadPath, $fileName);
-//                                if ($res) {
-//                                    $section->section_image = $fileName;
-//                                    $section->save();
-//                                }
-//                            }
-//                        } else {
-//                            $res = $this->downloadSvgFile($imageSrc, $uploadPath, $fileName);
-//                            if ($res) {
-//                                ProductImage::updateOrCreate([
-//                                    'product_id' => $newProd->id,
-//                                    'image' => $fileName,
-//                                    'order' => 0,
-////                                    'order' => ProductImage::where('product_id', $newProd->id)->max('order') + 1,
-//                                ]);
-//                            }
-//                        }
-//
-//                    });
-//                    sleep(rand(1, 2));
-//                } else {
-//                    $product->update($data);
-//                    $product->catalog_id = $subCatalog ? $subCatalog->id : $catalog->id;
-//                    $product->save();
-//                }
-//            } catch (\Exception $e) {
-//                $this->info('error: ' . $e->getMessage());
-//            }
-//        }
-//
-////        проход по страницам
-////        $pages = $crawler->filter('.catalogPaginator ul li');
-////        $currentPage = $crawler->filter('.catalogPaginator .selected')->first()->text();
-////        if ($currentPage < $pages->count()) {
-////            $nextUrl = $this->baseUrl . $pages->eq($currentPage)->filter('a')->attr('href');
-////            $this->info('parse: ' . $nextUrl . ' / ' . $pages->count());
-////            sleep(rand(1, 2));
-////            $this->parseListProducts($categoryName, $nextUrl, $subcatname);
-////        }
-//    }
 
 }

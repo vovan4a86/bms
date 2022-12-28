@@ -51,13 +51,9 @@ class PageController extends Controller {
 		$page->ogGenerate();
         $page->setSeo();
 
-        if($page->alias = 'sitemap') {
-            $catalog = Catalog::public()->whereParentId(0)->get();
-            $sitemap = Page::find(1)->getPublicChildren();
-        }
-
         if($page->alias = 'about') {
             $about_image = Page::UPLOAD_URL . $page->image;
+            $categories = Catalog::getTopOnMain();
             $headerIsBlack = true;
         }
 
@@ -68,8 +64,7 @@ class PageController extends Controller {
 			'title'        => $page->title,
 			'bread'       => $bread,
 			'children'    => $children,
-            'sitemap'     => $sitemap ?? null,
-            'catalog' => $catalog ?? null,
+            'categories' => $categories ?? null,
             'about_image' => $about_image ?? null,
             'headerIsBlack' => $headerIsBlack ?? null,
 		]);

@@ -23,16 +23,12 @@ use Thumb;
  * @method static \Illuminate\Database\Eloquent\Builder|\Fanky\Admin\Models\ProductImage newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\Fanky\Admin\Models\ProductImage query()
  */
-class CatalogSubShow extends Model {
+class ProductFilters extends Model {
 
-	protected $table = 'catalog_sub_show';
+	protected $table = 'product_filters';
 
 	protected $guarded = ['id'];
 
 	public $timestamps = false;
-
-	public function catalog() {
-		return $this->belongsTo(Catalog::class);
-	}
 
 }

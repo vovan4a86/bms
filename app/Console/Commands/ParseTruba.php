@@ -52,38 +52,38 @@ class ParseTruba extends Command {
     }
 
     //                                                                                                           формат      2-для квадрата/прямоугольника
-    //      0          1          2          3         4           5              6  [3,4,5]       7           8[1-30x2, 2-30x20x2]
-    //[1 колонка, 2 колонка, 3 колонка, 5 колонка, 6 колонка, 7 колонка, по какой цене=inStock, measure, искать стенку]
+    //      0          1          2          3         4           5              6  [3,4,5]       7           8[1-30x2, 2-30x20x2]     9
+    //[2 колонка, 3 колонка, 5 колонка, 6 колонка, 7 колонка, по какой цене=inStock, measure, искать стенку,             measure2]
     public $priceMap = [
-        'Трубы г/д' => ['size', 'steel', 'length', '', 'price', '', 4, 'т', 1],
-        'Трубы х/д' => ['size', 'steel', 'length', '', 'price', '', 4, 'т', 1],
+        'Трубы г/д' => ['steel', 'length', '', 'price', '', 3, 'т', 1, 'м'],//+
+        'Трубы х/д' => ['steel', 'length', '', 'price', '', 3, 'т', 1, 'м'],//+
 
-        'Трубы ВГП' => ['size', 'steel', 'length', '', 'price', '', 4, 'т', 1],
-        'Трубы ВГП оцинкованные ГОСТ 3262-75' => ['size', 'steel', 'length', '', 'price', '', 4, 'т', 1],
-        'Трубы электросварные круглые' => ['size', 'steel', 'length', '', 'price', '', 4, 'т', 1],
-        'Трубы электросварные квадратные' => ['size', 'steel', 'length', '', 'price', '', 4, 'т', 1],
-        'Трубы электросварные прямоугольные' => ['size', 'steel', 'length', '', 'price', '', 4, 'т', 2],
-        'Трубы электросварные в изоляции ППУ' => ['size', 'steel', 'length', '', 'price', '', 4, 'м', 1],
-        'Трубы круглые оцинкованные' => ['size', 'steel', 'length', '', 'price', '', 4, 'т', 1],
-        'Трубы квадратные оцинкованные' => ['size', 'steel', 'length', '', 'price', '', 4, 'т', 1],
-        'Трубы прямоугольные оцинкованные' => ['size', 'steel', 'length', '', 'price', '', 4, 'т', 2],
+        'Трубы ВГП' => ['steel', 'length', '', 'price', '', 3, 'т', 1, 'м'],
+        'Трубы ВГП оцинкованные ГОСТ 3262-75' => ['steel', 'length', '', 'price', '', 3, 'т', 1, 'м'],//+
+        'Трубы электросварные круглые' => ['steel', 'length', '', 'price', '', 3, 'т', 1, 'м'],//+
+        'Трубы электросварные квадратные' => ['steel', 'length', '', 'price', '', 3, 'т', 1, 'м'],//+
+        'Трубы электросварные прямоугольные' => ['steel', 'length', '', 'price', '', 3, 'т', 2, 'м'],//+
+        'Трубы электросварные в изоляции ППУ' => ['steel', 'length', '', 'price_per_metr', '', 3, 'м', 1],//++
+        'Трубы круглые оцинкованные' => ['steel', 'length', '', 'price', '', 3, 'т', 1, 'м'],//+
+        'Трубы квадратные оцинкованные' => ['steel', 'length', '', 'price', '', 3, 'т', 1, 'м'],//+
+        'Трубы прямоугольные оцинкованные' => ['steel', 'length', '', 'price', '', 3, 'т', 2, 'м'],//+
 
-        'Трубы электросварные низколегированные круглые' => ['size', 'steel', 'length', '', 'price', '', 4, 'т', 1],
-        'Трубы электросварные низколегированные квадратные' => ['size', 'steel', 'length', '', 'price', '', 4, 'т', 1],
-        'Трубы электросварные низколегированные прямоугольные' => ['size', 'steel', 'length', '', 'price', '', 4, 'т', 2],
+        'Трубы электросварные низколегированные круглые' => ['steel', 'length', '', 'price', '', 3, 'т', 1, 'м'],//+
+        'Трубы электросварные низколегированные квадратные' => ['steel', 'length', '', 'price', '', 3, 'т', 1, 'м'],//+
+        'Трубы электросварные низколегированные прямоугольные' => ['steel', 'length', '', 'price', '', 3, 'т', 2, 'м'],//+
 
-        'Трубы оцинкованные круглые' => ['size', 'steel', 'length', '', 'price', '', 4, 'т', 1],
-        'Трубы оцинкованные квадратные' => ['size', 'steel', 'length', '', 'price', '', 4, 'т', 1],
-        'Трубы оцинкованные прямоугольные' => ['size', 'steel', 'length', '', 'price', '', 4, 'т', 2],
+        'Трубы оцинкованные круглые' => ['steel', 'length', '', 'price', '', 3, 'т', 1, 'м'],//+
+        'Трубы оцинкованные квадратные' => ['steel', 'length', '', 'price', '', 3, 'т', 1, 'м'],//+
+        'Трубы оцинкованные прямоугольные' => ['steel', 'length', '', 'price', '', 3, 'т', 2, 'м'],//+
 
-        'Трубы нержавеющие электросварные' => ['size', 'steel', 'length', 'price_per_item', 'price', '', 4, 'т', 1], //есть за метр
-        'Трубы нержавеющие электросварные AISI' => ['size', 'steel', 'length', 'price_per_item', 'price', '', 4, 'т', 1],//есть за метр
-        'Трубы нержавеющие электросварные AISI квадратные' => ['size', 'steel', 'length', '', 'price', '', 4, 'т', 1],//есть за метр
-        'Трубы нержавеющие электросварные AISI прямоугольные' => ['size', 'steel', 'length', '', 'price', '', 4, 'т', 2], //есть за метр
-        'Трубы нержавеющие бесшовные' => ['size', 'steel', 'length', '', 'price_per_metr', 'price', 5, 'т', 1], //есть за метр
+        'Трубы нержавеющие электросварные' => ['steel', 'length', 'price_per_item', 'price', 'price_per_metr', 4, 'м', 1, 'т'], //есть за метр
+        'Трубы нержавеющие электросварные AISI' => ['steel', 'length', 'price_per_item', 'price', 'price_per_metr', 4, 'м', 1, 'т'],//есть за метр
+        'Трубы нержавеющие электросварные AISI квадратные' => ['steel', 'length', '', 'price', 'price_per_metr', 4, 'м', 1, 'т'],//есть за метр
+        'Трубы нержавеющие электросварные AISI прямоугольные' => ['steel', 'length', '', 'price', 'price_per_metr', 4, 'м', 2, 'т'], //есть за метр
+        'Трубы нержавеющие бесшовные' => ['steel', 'length', '', 'price_per_metr', 'price', 4, 'т', 1, 'м'], //есть за метр
 
-        'Сваи винтовые' => ['size', 'steel', 'length', '', 'price', '', 4, 'т', 1],
-        'Трубы чугунные' => ['size', 'steel', 'length', '', '', 'price_per_item', 5, 'шт', 0], // ?
+        'Сваи винтовые' => ['steel', 'length', '', '', 'price_per_item', 4, 'шт', 1],//+
+        'Трубы чугунные' => ['steel', 'length', '', '', 'price_per_item', 4, 'шт', 0],//+
 
     ];
 
@@ -124,13 +124,13 @@ class ParseTruba extends Command {
 
     public function categoryList(): array {
         return [
-//            'Трубы г/д' => 'https://mc.ru/metalloprokat/truby_g_d',
-//            'Трубы х/д' => 'https://mc.ru/metalloprokat/truby_h_d',
-//            'ВГП, электросварные трубы' => 'https://mc.ru/metalloprokat/vgp_elektrosvarnye_truby',
-//            'Трубы электросварные низколегированные' => 'https://mc.ru/metalloprokat/truby_elektrosvarnye_nizkolegirovannye',
-//            'Трубы оцинкованные' => 'https://mc.ru/metalloprokat/truby_ocinkovannye',
-//            'Трубы нержавеющие' => 'https://mc.ru/metalloprokat/truby_nerzhavejka_a',
-//            'Сваи винтовые' => 'https://mc.ru/metalloprokat/svai_vintovye',
+            'Трубы г/д' => 'https://mc.ru/metalloprokat/truby_g_d',
+            'Трубы х/д' => 'https://mc.ru/metalloprokat/truby_h_d',
+            'ВГП, электросварные трубы' => 'https://mc.ru/metalloprokat/vgp_elektrosvarnye_truby',
+            'Трубы электросварные низколегированные' => 'https://mc.ru/metalloprokat/truby_elektrosvarnye_nizkolegirovannye',
+            'Трубы оцинкованные' => 'https://mc.ru/metalloprokat/truby_ocinkovannye',
+            'Трубы нержавеющие' => 'https://mc.ru/metalloprokat/truby_nerzhavejka_a',
+            'Сваи винтовые' => 'https://mc.ru/metalloprokat/svai_vintovye',
             'Трубы чугунные' => 'https://mc.ru/metalloprokat/truby_chugun_sml',
         ];
     }

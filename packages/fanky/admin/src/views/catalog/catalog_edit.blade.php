@@ -107,6 +107,7 @@
             <div class="tab-pane" id="tab_2">
                 {!! Form::groupRichtext('announce', $catalog->announce, 'Вводный текст', ['rows' => 3]) !!}
                 {!! Form::groupRichtext('text', $catalog->text, 'Основной текст', ['rows' => 3]) !!}
+                {!! Form::groupText('about_announce', $catalog->about_announce, 'Описание категории для страницы "О компании"') !!}
             </div>
 
 

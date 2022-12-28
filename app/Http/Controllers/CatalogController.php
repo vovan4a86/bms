@@ -8,7 +8,7 @@ use Fanky\Admin\Models\City;
 use Fanky\Admin\Models\MaterialImage;
 use Fanky\Admin\Models\Page;
 use Fanky\Admin\Models\Product;
-use Fanky\Admin\Models\ProductAddParam;
+use Fanky\Admin\Models\ProductFilters;
 use Fanky\Admin\Models\ProductIcon;
 use Fanky\Admin\Settings;
 use Illuminate\Database\Eloquent\Collection;
@@ -88,20 +88,20 @@ class CatalogController extends Controller
         $bread = $category->getBread();
         $category = $this->add_region_seo($category);
         $category->setSeo();
-        $updatedDate = $category->products->first()->updated_at ?? null;
-        if (!$updatedDate) {
-            foreach ($category->public_children as $child) {
-                $updatedDate = $child->products->first()->updated_at ?? null;
-                if (!$updatedDate) {
-                    foreach ($child->public_children as $grandchild) {
-                        $updatedDate = $grandchild->products->first()->updated_at ?? null;
-                        if ($updatedDate) break 2;
-                    }
-                } else {
-                    break;
-                }
-            }
-        }
+//        $updatedDate = $category->products->first()->updated_at ?? null;
+//        if (!$updatedDate) {
+//            foreach ($category->public_children as $child) {
+//                $updatedDate = $child->products->first()->updated_at ?? null;
+//                if (!$updatedDate) {
+//                    foreach ($child->public_children as $grandchild) {
+//                        $updatedDate = $grandchild->products->first()->updated_at ?? null;
+//                        if ($updatedDate) break 2;
+//                    }
+//                } else {
+//                    break;
+//                }
+//            }
+//        }
 
         $children = $category->public_children;
 //        $catalog_sub_id = $category->catalog_sub_show()->pluck('catalog_sub_show_id')->all();
@@ -132,38 +132,7 @@ class CatalogController extends Controller
 
 
         $items = Product::public()->whereIn('catalog_id', $ids)
-            ->orderBy('catalog_id')->paginate(5); //$per_page
-//        dd($items);
-//        dd($items->pluck('name')->all());
-
-//        $filters = $root->filters()->get();
-
-//        $sort = [];
-//        foreach ($filters as $filter) {
-//            if($filter->cat_id === null) {
-//                if($ids) {
-//                    $sort[$filter->alias] = Product::public()->whereIn('catalog_id', $ids)
-//                        ->orderBy($filter->alias, 'asc')
-//                        ->groupBy($filter->alias)
-//                        ->distinct()
-//                        ->pluck($filter->alias)
-//                        ->all();
-//                } else {
-//                    $sort[$filter->alias] = Product::public()->where('catalog_id', $category->id)
-//                        ->orderBy($filter->alias, 'asc')
-//                        ->groupBy($filter->alias)
-//                        ->distinct()
-//                        ->pluck($filter->alias)
-//                        ->all();
-//                }
-//            } else {
-//                $catalog_params = CatalogParam::where('catalog_id', '=', $filter->catalog_id)
-//                    ->pluck('param_id')->all();
-//                $prods = ProductAddParam::whereIn('add_param_id', $catalog_params)
-//                    ->pluck('product_id')->all();
-//                $sort[$filter->alias] = Product::whereIn('id', $prods)->get();
-//            }
-//        }
+            ->orderBy('catalog_id')->paginate($per_page);
 
         $data = [
             'bread' => $bread,
@@ -171,7 +140,7 @@ class CatalogController extends Controller
             'categories' => $categories,
             'children' => $children,
             'h1' => $category->getH1(),
-            'updatedDate' => date_format($updatedDate, 'd.m.Y'),
+            'updatedDate' => date_format($category->updated_at, 'd.m.Y'),
             'items' => $items,
             'filterSizes' => $filterSizes,
             'filterNames' => $filterNames,
@@ -179,23 +148,9 @@ class CatalogController extends Controller
             'headerIsWhite' => true,
         ];
 
-//        $view = Session::get('catalog_view', 'list') == 'list' ?
-//            'catalog.views.list' :
-//            'catalog.views.grid';
-
-//        $data['items'] = view($view, [
-//            'items' => $items,
-//            'category' => $category,
-//            'sort' => $sort,
-//            'root' => $root,
-//            'filters' => $filters,
-//            'per_page' => $per_page
-//        ]);
-
         if (Request::ajax()) {
             $filter_name = Request::only('name');
             $filter_size = Request::only('size');
-//            \Debugbar::log($filter_size);
 
             $queries = [];
             if (count($filter_name)) {
@@ -213,21 +168,15 @@ class CatalogController extends Controller
                     }
                 }
             }
-//            \Debugbar::log($queries);
 
             if (count($queries)) {
                 $prods_id = []; //все найденные id продуктов
                 foreach ($queries as $name => $values) {
                     foreach ($values as $value) {
-//                        \Debugbar::log($name);
-//                        \Debugbar::log($value);
-                        \Debugbar::log($category->id);
                         $prods_id[] = Product::where('catalog_id', $category->id)
                             ->where($name, $value)->pluck('id');
                     }
                 }
-//                \Debugbar::log($prods_id);
-
 
                 $products_ids = [];
                 foreach ($prods_id as $items) {
@@ -236,10 +185,10 @@ class CatalogController extends Controller
                     }
                 }
                 $items = Product::whereIn('id', $products_ids)
-                    ->orderBy('name')->paginate(5);
+                    ->orderBy('name')->paginate($per_page);
             } else {
                 $items = Product::where('catalog_id', $category->id)
-                    ->orderBy('name')->paginate(5);
+                    ->orderBy('name')->paginate($per_page);
             }
 
             $view_items = [];

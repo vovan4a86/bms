@@ -41,62 +41,18 @@
                     </a>
                 </div>
                 <div class="s-trade__grid">
-                    <div class="s-trade__col s-trade__col--wide">
-                        <a class="card-link" href="javascript:void(0)" title="Трубы">
-                            <span class="card-link__title">Трубы</span>
-                            <span class="card-link__text">горяче- и холоднокатаные, квадратные и прямоугольные, ВГП, электросварные и любые другие</span>
-                            <img class="card-link__pic lazy" src="/" data-src="/static/images/common/p-cat-1.png"
+                    @foreach($categories as $cat)
+                    <div class="s-trade__col
+                        {{ $loop->iteration == 1 ? 's-trade__col--wide' : null }}
+                        {{ $loop->iteration == 2 ? 's-trade__col--medium' : null }}">
+                        <a class="card-link" href="{{ $cat->url }}" title="Трубы">
+                            <span class="card-link__title">{{ $cat->name }}</span>
+                            <span class="card-link__text">{{ $cat->about_announce }}</span>
+                            <img class="card-link__pic lazy" src="/" data-src="{{ $cat->getImageUrl() }}"
                                  width="305" height="270" alt=""/>
                         </a>
                     </div>
-                    <div class="s-trade__col s-trade__col--medium">
-                        <a class="card-link" href="javascript:void(0)" title="Сортовый прокат">
-                            <span class="card-link__title">Сортовый прокат</span>
-                            <span class="card-link__text">арматура, шестигранник, круг, квадрат</span>
-                            <img class="card-link__pic lazy" src="/" data-src="/static/images/common/p-cat-4.png"
-                                 width="318" height="256" alt=""/>
-                        </a>
-                    </div>
-                    <div class="s-trade__col">
-                        <a class="card-link" href="javascript:void(0)" title="Листовой прокат">
-                            <span class="card-link__title">Листовой прокат</span>
-                            <span class="card-link__text">ПВЛ, нержавеющие, оцинкованные и другие</span>
-                            <img class="card-link__pic lazy" src="/" data-src="/static/images/common/p-cat-9.png"
-                                 width="270" height="167" alt=""/>
-                        </a>
-                    </div>
-                    <div class="s-trade__col">
-                        <a class="card-link" href="javascript:void(0)" title="Фасонные изделия">
-                            <span class="card-link__title">Фасонные изделия</span>
-                            <span class="card-link__text"></span>
-                            <img class="card-link__pic lazy" src="/" data-src="/static/images/common/p-cat-12.png"
-                                 width="405" height="270" alt=""/>
-                        </a>
-                    </div>
-                    <div class="s-trade__col">
-                        <a class="card-link" href="javascript:void(0)" title="Сантехарматура">
-                            <span class="card-link__title">Сантехарматура</span>
-                            <span class="card-link__text"></span>
-                            <img class="card-link__pic lazy" src="/" data-src="/static/images/common/p-cat-5.png"
-                                 width="290" height="234" alt=""/>
-                        </a>
-                    </div>
-                    <div class="s-trade__col">
-                        <a class="card-link" href="javascript:void(0)" title="Цветной металлопрокат">
-                            <span class="card-link__title">Цветной металлопрокат</span>
-                            <span class="card-link__text">алюминий, медь, латунь и титан</span>
-                            <img class="card-link__pic lazy" src="/" data-src="/static/images/common/p-cat-13.png"
-                                 width="405" height="270" alt=""/>
-                        </a>
-                    </div>
-                    <div class="s-trade__col">
-                        <a class="card-link" href="javascript:void(0)" title="Метизы">
-                            <span class="card-link__title">Метизы</span>
-                            <span class="card-link__text"></span>
-                            <img class="card-link__pic lazy" src="/" data-src="/static/images/common/p-cat-10.png"
-                                 width="405" height="270" alt=""/>
-                        </a>
-                    </div>
+                    @endforeach
                 </div>
             </div>
         </section>

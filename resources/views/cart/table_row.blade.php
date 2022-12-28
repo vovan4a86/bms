@@ -12,10 +12,16 @@
     <div class="cart-table__col" data-caption="Цена">
         @if($item['measure'] == 'т')
             <div class="cart-table__value">{{ number_format($item['price'], 0, '', ' ') }}
-                руб./ {{ $item['measure'] }}</div>
+                руб./ т</div>
+        @elseif($item['measure'] == 'кг')
+            <div class="cart-table__value">{{ number_format($item['price_per_kilo'], 0, '', ' ') }}
+                руб./ кг</div>
+        @elseif($item['measure'] == 'м')
+            <div class="cart-table__value">{{ number_format($item['price_per_metr'], 0, '', ' ') }}
+                руб./ м</div>
         @else
             <div class="cart-table__value">{{ number_format($item['price_per_item'], 0, '', ' ') }}
-                руб./ {{ $item['measure'] }}</div>
+                руб./ шт</div>
         @endif
     </div>
     <div class="cart-table__col" data-caption="Кол-во">
@@ -27,7 +33,7 @@
                               stroke-linejoin="round"/>
                     </svg>
                 </button>
-                @if($item['measure'] == 'т')
+                @if($item['measure'] == 'т' || $item['measure'] == 'кг')
                     <input class="counter__input" type="number" name="count" value="{{ $item['weight'] }}" data-count>
                 @else
                     <input class="counter__input" type="number" name="count" value="{{ $item['count'] }}" data-count>
@@ -43,6 +49,7 @@
             </div>
         </div>
     </div>
+    <input type="hidden" name="hidweight">
     <div class="cart-table__col" data-id="{{ $item['id'] }}" data-caption="Сумма">
         @include('cart.table_row_summ')
     </div>

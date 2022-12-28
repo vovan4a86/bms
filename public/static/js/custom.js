@@ -309,7 +309,6 @@ function be(elem) {
     totalDiv.text(Math.round(weightInput.val() * buttonPrice));
 }
 
-
 function updateFilter(select, e) {
     e.preventDefault();
     let name = select.name;

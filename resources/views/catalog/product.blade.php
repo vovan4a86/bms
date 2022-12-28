@@ -56,6 +56,8 @@
                                     @include('catalog.blocks.product_order_tonn')
                                 @elseif($product->measure == 'шт' && $product->price_per_item)
                                     @include('catalog.blocks.product_order_item')
+                                @elseif($product->measure == 'м' && $product->price_per_metr)
+                                    @include('catalog.blocks.product_order_metr')
                                 @elseif($product->measure == 'кг' && $product->price_per_kilo)
                                     @include('catalog.blocks.product_order_kilo')
                                 @else

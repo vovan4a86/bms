@@ -2,12 +2,12 @@
     <div class="prod-order">
         <div class="prod-order__grid">
             <div class="prod-order__col">
-                <label class="prod-order__label">Количество, шт
+                <label class="prod-order__label">Количество, {{ $product->measure }}
                     <input class="prod-order__input" type="number" step="1" name="size" value="1" onkeyup="changeItem(this)">
                 </label>
             </div>
             <div class="prod-order__col">
-                <div class="prod-order__label">Цена, шт</div>
+                <div class="prod-order__label">Цена, {{ $product->measure }}</div>
                 <div class="prod-order__input" name="price">{{ number_format($product->price_per_item, 0, '', ' ') }}</div>
             </div>
             <div class="prod-order__col">

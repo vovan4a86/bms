@@ -6,7 +6,7 @@ use Fanky\Admin\Models\CatalogParam;
 use Fanky\Admin\Models\CatalogFilter;
 use Fanky\Admin\Models\CatalogSubShow;
 use Fanky\Admin\Models\Param;
-use Fanky\Admin\Models\ProductAddParam;
+use Fanky\Admin\Models\ProductFilters;
 use Fanky\Admin\Models\ProductIcon;
 use Fanky\Admin\Models\ProductParam;
 use Fanky\Admin\Models\ProductRelated;
@@ -273,14 +273,14 @@ class AdminCatalogController extends AdminController {
                 $arr['product_id'] = $product->id;
                 $arr['add_param_id'] = $param->param_id;
                 $arr['value'] = Request::get($param->alias);
-                ProductAddParam::create($arr);
+                ProductFilters::create($arr);
             }
 
         } else {
             $product->update($data);
             $arr = [];
             foreach ($add_params as  $param) {
-                $par = ProductAddParam::where('product_id', '=', $product->id)
+                $par = ProductFilters::where('product_id', '=', $product->id)
                     ->where('add_param_id', '=', $param->param_id)->first();
                 $arr['product_id'] = $product->id;
                 $arr['add_param_id'] = $param->param_id;

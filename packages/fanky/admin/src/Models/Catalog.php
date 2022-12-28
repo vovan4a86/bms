@@ -52,6 +52,7 @@ use URL;
  * @property bool               $on_drop_down
  * @mixin \Eloquent
  * @method static whereId(int|mixed $id)
+ * @method static whereName($value)
  * @method static whereParentId(int|mixed $id)
  */
 class Catalog extends Model {
@@ -68,6 +69,10 @@ class Catalog extends Model {
 		'settings'     => 'array',
 		'children_ids' => 'array',
 	];
+
+	public static $filter_type = [
+	    0 => [['name' => 'Марка', 'alias' => 'steel'], ['name' => 'Длина', 'alias' => 'length']],
+    ];
 
     const UPLOAD_URL = '/uploads/catalogs/';
 
