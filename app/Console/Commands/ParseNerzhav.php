@@ -65,7 +65,7 @@ class ParseNerzhav extends Command {
         'Уголок нержавеющий никельсодержащий' => ['steel', 'length', 'price_per_item', 'price_per_metr', 'price', 4, 'т', 1, 'м'],
 
         'Лист нержавеющий без никеля' => ['steel', 'length', '', 'price_per_item', 'price', 4, 'т', 0, 'шт'], //++
-        'Лист нержавеющий  никельсодержащий' => ['steel', 'length', '', 'price_per_item', 'price', 4, 'т', 0, 'шт'],//++
+        'Лист нержавеющий никельсодержащий' => ['steel', 'length', '', 'price_per_item', 'price', 4, 'т', 0, 'шт'],//++
         'Лист нержавеющий ПВЛ' => ['steel', 'length', '', 'price_per_item', 'price', 4, 'т', 0, 'шт'],//++
 
         'Электроды нержавеющие' => ['steel', 'length', '', 'price', '', 3, 'т', 0, 'кг'],//+
@@ -94,7 +94,6 @@ class ParseNerzhav extends Command {
         return [
             'Круг, квадрат, шестигранник' => 'https://mc.ru/metalloprokat/krug_kvadrat_shestigrannik_nerzhavejka',
             'Полоса, уголок' => 'https://mc.ru/metalloprokat/polosa_ugolok_nerzhavejka',
-//            'Трубы нержавейка' => 'https://mc.ru/metalloprokat/truby_nerzhavejka', //уже есть
             'Лист нержавеющий' => 'https://mc.ru/metalloprokat/list_nerzhavejka',
             'Нержавеющие метизы' => 'https://mc.ru/metalloprokat/nerzhaveyuschie_metizy',
 //            'Комплектующие для лестничных ограждений' => 'https://mc.ru/metalloprokat/kompl_lest_ogr', //нужно ????

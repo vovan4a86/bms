@@ -101,7 +101,6 @@ class PageController extends Controller {
             ]);
         }
 
-
         return view('search.index', [
             'items'       => $items,
             'title'       => 'Результат поиска «' . $q . '»',

@@ -30,7 +30,7 @@
                         <div class="p-catalog__update">
                             <div class="c-update">
                                 <div class="c-update__title">Каталог обновлён:</div>
-                                <div class="c-update__date">12.12.22</div>
+                                <div class="c-update__date">{{ $updated }}</div>
                             </div>
                         </div>
                         <div class="p-catalog__togglers">

@@ -20,6 +20,7 @@ class Kernel extends ConsoleKernel {
         'App\Console\Commands\ParseCvetnoj',
         'App\Console\Commands\ParseNerzhav',
         'App\Console\Commands\ParseSanteh',
+        'App\Console\Commands\ParsePokovka',
 		Commands\ImportOld::class,
 	];
 

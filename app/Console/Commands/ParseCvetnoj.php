@@ -39,7 +39,7 @@ class ParseCvetnoj extends Command {
         'Круг дюралевый (пруток)' => ['steel', 'length', 'price_per_item', 'price_per_metr', 'price_per_kilo', 4, 'кг', 0, 'м'],//+
         'Лента алюминиевая' => ['steel', 'length', '', 'price_per_kilo', 'price', 4, 'т', 0, 'кг'], //++
         'Лист алюминиевый' => ['steel', 'length', 'price_per_m2', 'price_per_item', 'price_per_kilo', 4, 'кг', 0, 'шт'],//++
-        'Лист алюминиевый рифленый' => ['steel', 'riffl', 'price_per_m2', 'price_per_item', 'price_per_kilo', 4, 'кг', 0, 'шт'], //++
+        'Лист алюминиевый рифленый' => ['steel', 'comment', 'price_per_m2', 'price_per_item', 'price_per_kilo', 4, 'кг', 0, 'шт'], //++
         'Лист дюралевый' => ['steel', 'length', 'price_per_m2', 'price_per_item', 'price_per_kilo', 4, 'кг', 0, 'шт'],//+
         'Плита алюминиевая' => ['steel', 'length', 'price_per_item', 'price_per_m2', 'price_per_kilo', 4, 'кг', 0, 'м2'], //+m2
         'Плита дюралевая' => ['steel', 'length', 'price_per_item', 'price_per_m2', 'price_per_kilo', 4, 'кг', 0, 'м2'],//+m2

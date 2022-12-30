@@ -5,6 +5,7 @@ use Fanky\Admin\Models\AddParam;
 use Fanky\Admin\Models\CatalogParam;
 use Fanky\Admin\Models\CatalogFilter;
 use Fanky\Admin\Models\CatalogSubShow;
+use Fanky\Admin\Models\MenuAction;
 use Fanky\Admin\Models\Param;
 use Fanky\Admin\Models\ProductFilters;
 use Fanky\Admin\Models\ProductIcon;
@@ -67,16 +68,16 @@ class AdminCatalogController extends AdminController {
             ->join('params', 'catalog_params.param_id', '=', 'params.id')
             ->get();
 
-        $filters_used = $catalog->filters()->pluck('param_id')->all();
+        $catalogProducts = $catalog->getRecurseProducts()->orderBy('name')->pluck('id', 'name')->all();
 
-        $show_catalogs = $catalog->catalog_sub_show()->pluck('catalog_sub_show_id')->all();
+        $menuActions = $catalog->menu_actions()->get();
 
         return view('admin::catalog.catalog_edit', [
-            'filters_used' => $filters_used,
             'filters' => $filters,
             'catalog'  => $catalog,
             'catalogs' => $catalogs,
-            'show_catalogs' => $show_catalogs,
+            'catalogProducts' => $catalogProducts,
+            'menuActions' => $menuActions
         ]);
     }
 
@@ -205,16 +206,15 @@ class AdminCatalogController extends AdminController {
 //        $add_params = $root->add_params()->get();
 //        dd($add_params);
 
-        $add_params = Param::where('cat_id', '=', $root->id)
-            ->where('product_id', '=', $product->id)
-            ->join('product_add_params', 'params.id', '=', 'product_add_params.add_param_id')
-            ->get();
+//        $add_params = Param::where('cat_id', '=', $root->id)
+//            ->where('product_id', '=', $product->id)
+//            ->join('product_add_params', 'params.id', '=', 'product_add_params.add_param_id')
+//            ->get();
 
         $data = [
             'product'  => $product,
             'catalogs' => $catalogs,
             'product_list' => $product_list,
-            'add_params' => $add_params,
         ];
         return view('admin::catalog.product_edit', $data);
     }
@@ -435,6 +435,61 @@ class AdminCatalogController extends AdminController {
 
             return ['row' => $row];
         }
+    }
+
+    public function postAddMenuAction($catalog_id) {
+        $data = Request::except(['file']);
+        $file = Request::file('file');
+        \Debugbar::log($data);
+
+        $valid = Validator::make($data, [
+            'title'  => 'required',
+        ]);
+
+        if($file) {
+            $file_name = Catalog::uploadImage($file);
+            $data['image'] = $file_name;
+        }
+
+        if($valid->fails()) {
+            return ['errors' => $valid->messages()];
+        } else {
+            $product = Product::find($data['product_id']);
+            $data['url'] = $product->url;
+            $data['catalog_id'] = $catalog_id;
+            $action = MenuAction::create($data);
+
+            $row = view('admin::catalog.tabs.menu_action_item', ['action' => $action])->render();
+
+            return ['row' => $row];
+        }
+    }
+
+    public function postUpdateMenuAction($action_id) {
+        $data = Request::all();
+
+        $valid = Validator::make($data, [
+            'title'  => 'required',
+        ]);
+
+        if($valid->fails()) {
+            return ['errors' => $valid->messages()];
+        } else {
+            $action = MenuAction::find($action_id);
+            $action->update($data);
+            $action->save();
+
+            $row = view('admin::catalog.tabs.menu_action_span', ['action' => $action])->render();
+
+            return ['row' => $row, 'id' => $action_id];
+        }
+    }
+
+    public function postDeleteMenuAction($action_id) {
+        $action = MenuAction::findOrFail($action_id);
+        $action->delete();
+
+        return ['success' => true];
     }
 
     public function postDelParam($param_id) {

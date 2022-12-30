@@ -335,3 +335,30 @@ function updateFilter(select, e) {
         }
     });
 }
+
+function catalogSearch(select, e) {
+    e.preventDefault();
+    let name = select.name;
+    let list = $('.catalog-list');
+    let products = $('.t-catalog__grid.t-catalog__grid--body');
+    let container = $('.t-catalog');
+    let paginate = $('.pagination');
+
+    let data = $('.b-search').serialize();
+    let url = $('.b-search').attr('action')
+
+    sendAjax(url, data, function (json) {
+        if(json.list !== 'undefined') {
+            // list.remove();
+            // container.append(json.list);
+            products.remove();
+            paginate.remove();
+            for (let elem in json.list) {
+                container.append(json.list[elem]);
+            }
+        }
+        if(json.paginate !== 'undefined') {
+            container.append(json.paginate);
+        }
+    });
+}

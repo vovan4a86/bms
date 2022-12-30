@@ -19,10 +19,10 @@
                     <section class="s-subcatalog">
                         <div class="s-subcatalog__head">
                             <div class="s-subcatalog__search">
-                                <form class="b-search" action="#">
+                                <form class="b-search" action="{{ $category->url }}">
                                     <input class="b-search__input" type="text" name="search-catalog"
-                                           placeholder="Поиск по каталогу" autocomplete="off" required>
-                                    <button class="b-search__button">
+                                           placeholder="Поиск по каталогу" autocomplete="off">
+                                    <button class="b-search__button" onclick="catalogSearch(this, event)">
                                         <svg class="svg-sprite-icon icon-search">
                                             <use xlink:href="/static/images/sprite/symbol/sprite.svg#search"></use>
                                         </svg>
@@ -39,7 +39,9 @@
                         </div>
                         <div class="t-catalog">
                             @include('catalog.blocks.catalog_grid_head')
-                            @each('catalog.product_item', $items, 'item')
+                            @foreach($items as $item)
+                                @include('catalog.product_item', compact($item))
+                            @endforeach
                             @include('paginations.with_pages', ['paginator' => $items])
                         </div>
                         <div class="s-subcatalog__content text-block">

@@ -11,17 +11,17 @@
                         <div class="product__head">
                             <div class="product__title">{{ $product->h1 }}</div>
                             <div class="p-status in-stock">
-                                @if($product->in_stock)
+                                @if(!$product->in_stock || !$product->getMeasurePrice())
+                                    <div class="p-status out-stock">
+                                        <span>Под заказ</span>
+                                    </div>
+                                @else
                                     <span>В наличии</span>
                                     <svg width="15" height="16" viewBox="0 0 15 16" fill="none"
                                          xmlns="http://www.w3.org/2000/svg">
                                         <path d="M12.6562 4.71875L6.09375 11.281L2.8125 8" stroke="currentColor"
                                               stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                     </svg>
-                                @else
-                                    <div class="p-status out-stock">
-                                        <span>Под заказ</span>
-                                    </div>
                                 @endif
                             </div>
                         </div>
@@ -75,7 +75,7 @@
                                             <div class="related-list__data">{{ $item->steel }}</div>
                                             <div class="related-list__data">{{ $item->length }}</div>
                                             <div class="related-list__action">
-                                                <button class="cart-btn btn-reset {{ $item->getAnyPrice() ?? 'disabled' }}"
+                                                <button class="cart-btn btn-reset {{ $item->getMeasurePrice() ?? 'disabled' }}"
                                                         type="button"
                                                         aria-label="Добавить в корзину">
                                                     <svg class="svg-sprite-icon icon-cart">
@@ -98,7 +98,7 @@
                                     @foreach($related as $item)
                                         <div class="b-related__item">
                                             <a class="b-related__link" href="{{ $item->url }}">{{ $item->name }}</a>
-                                            <div class="b-related__value">{{ $item->getAnyPrice() }} ₽</div>
+                                            <div class="b-related__value">{{ $item->getMeasurePrice() }} ₽</div>
                                         </div>
                                     @endforeach
                                 </div>

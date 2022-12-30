@@ -114,7 +114,7 @@ class Product extends Model {
     const UPLOAD_PATH = '/public/uploads/products/';
     const UPLOAD_URL = '/uploads/products/';
 
-    const NO_IMAGE = "/static/images/common/no_image.png";
+    const NO_IMAGE = "/adminlte/no_image.png";
 
     public function catalog() {
         return $this->belongsTo(Catalog::class);

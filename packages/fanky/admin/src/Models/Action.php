@@ -56,7 +56,7 @@ class Action extends Model {
 			}
 			if($category->isDirty('published') && $category->published == 0){
 				if (!$category->_disableEventUpdatePublished){
-					self::updateDisablePublisedhRecurse($category);
+					self::updateDisablePublishedRecurse($category);
 				}
 			}
 		});
@@ -312,7 +312,7 @@ class Action extends Model {
 		}
 	}
 
-	public static function updateDisablePublisedhRecurse(self $category) {
+	public static function updateDisablePublishedRecurse(self $category) {
 		//чтобы событие на обновление не сработало
 		$category->_disableEventUpdatePublished = true;
 		$category->update(['published' => 0]);

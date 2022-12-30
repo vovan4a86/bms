@@ -5,7 +5,7 @@
         @include('blocks.page_head')
         <section class="services">
             <div class="services__container container">
-                {{ $text }}
+                {!! $text  !!}
             </div>
         </section>
     </main>

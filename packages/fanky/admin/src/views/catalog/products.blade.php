@@ -29,11 +29,11 @@
                     <th>Размер</th>
                     <th>Стенка</th>
                     <th>Сталь</th>
-                    <th width="120">Цена за шт.</th>
-                    <th width="120">Цена за м.</th>
-                    <th width="120">Цена за кг.</th>
-                    <th width="120">Цена за м2.</th>
-                    <th width="120">Цена за т.</th>
+                    <th width="60" style="text-align: center;">/шт.</th>
+                    <th width="60" style="text-align: center;">/м.</th>
+                    <th width="60" style="text-align: center;">/кг.</th>
+                    <th width="60" style="text-align: center;">/м2.</th>
+                    <th width="60" style="text-align: center;">/т.</th>
                     <th width="130">Сортировка</th>
                     <th width="50"></th>
                 </tr>
@@ -46,6 +46,8 @@
                                 <img src="{{ $item->image()->first()->image }}" height="100" width="100">
                             @elseif(!$catalog->image && $catalog->section_image)
                                 <img class="img-polaroid" src="{{ $catalog->section_image }}" height="100">
+                            @else
+                                <img class="img-polaroid" src="{{ \Fanky\Admin\Models\Product::NO_IMAGE }}" height="100">
                             @endif
                         </td>
                         <td><a href="{{ route('admin.catalog.productEdit', [$item->id]) }}" onclick="return catalogContent(this)" style="{{ $item->published != 1 ? 'text-decoration:line-through;' : '' }}">{{ $item->name }}</a></td>

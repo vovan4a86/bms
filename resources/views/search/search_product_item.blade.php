@@ -5,13 +5,11 @@
     <div class="t-catalog__col" data-caption="Размер">
         <div class="t-catalog__value">{{ $item->size }}</div>
     </div>
-    <div class="t-catalog__col t-catalog__col--wide" data-caption="{{ $filters[0]['name'] }}">
-        @php $alias = $filters[0]['alias'] @endphp
-        <div class="t-catalog__value">{{ $item->$alias }}</div>
+    <div class="t-catalog__col t-catalog__col--wide" data-caption="Марка">
+        <div class="t-catalog__value">{{ $item->steel }}</div>
     </div>
-    <div class="t-catalog__col" data-caption="{{ $filters[1]['name'] }}">
-        @php $alias = $filters[1]['alias'] @endphp
-        <div class="t-catalog__value">{{ $item->$alias }}</div>
+    <div class="t-catalog__col" data-caption="Длина">
+        <div class="t-catalog__value">{{ $item->length }}</div>
     </div>
     <div class="t-catalog__col t-catalog__col--wide" data-caption="Цена, руб">
         <div class="t-catalog__row">

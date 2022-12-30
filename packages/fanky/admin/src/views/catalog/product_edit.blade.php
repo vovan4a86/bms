@@ -10,7 +10,7 @@
 @stop
 @section('page_name')
     <h1>Каталог
-        <small>{{ $product->id ? $product->name : 'Новый товар' }}</small>
+        <small style="max-width: 350px;">{{ $product->id ? $product->name : 'Новый товар' }}</small>
     </h1>
 @stop
 
@@ -47,10 +47,19 @@
                 <h4>Характеристики:</h4>
                 <div style="display: flex; flex-shrink: 1;">
                     {!! Form::groupText('size', $product->size, 'Размер') !!}
-                    <div style="margin: 0 10px;">
-                        {!! Form::groupText('wall', $product->wall, 'Стенка') !!}
-                    </div>
+                    {!! Form::groupText('wall', $product->wall, 'Стенка') !!}
                     {!! Form::groupText('steel', $product->steel, 'Марка стали') !!}
+                    {!! Form::groupText('length', $product->length, 'Длина') !!}
+                </div>
+                <div style="display: flex; flex-shrink: 1;">
+                    {!! Form::groupText('type', $product->type, 'Тип') !!}
+                    {!! Form::groupText('py', $product->py, 'Py') !!}
+                    {!! Form::groupText('comment', $product->comment, 'Пояснение') !!}
+                    {!! Form::groupText('measure', $product->measure, 'Измерение') !!}
+                </div>
+                <div style="display: flex; flex-shrink: 1;">
+                    {!! Form::groupText('brand', $product->brand, 'Бренд') !!}
+                    {!! Form::groupText('model', $product->model, 'Модель') !!}
                 </div>
 
                 <hr>
@@ -59,20 +68,16 @@
                 <div style="display: flex; flex-shrink: 1;">
                     {!! Form::groupText('raw_price', $product->raw_price, 'Парсинг-цена за т.', ['disabled']) !!}
                     {!! Form::groupNumber('price', $product->price, 'Цена за т.', ['step' => 1])!!}
-                    <div style="margin: 0 10px;">
+{{--                    <div style="margin: 0 10px;">--}}
                         {!! Form::groupNumber('price_per_item', $product->price_per_item, 'Цена за шт.', ['step' => 1])!!}
-                    </div>
-                    {!! Form::groupNumber('price_per_metr', $product->price_per_metr, 'Цена за м.', ['step' => 1])!!}
+                        {!! Form::groupNumber('price_per_metr', $product->price_per_metr, 'Цена за м.', ['step' => 1])!!}
+                        {!! Form::groupNumber('price_per_kilo', $product->price_per_kilo, 'Цена за кг.', ['step' => 1])!!}
+                        {!! Form::groupNumber('price_per_m2', $product->price_per_m2, 'Цена за м2.', ['step' => 1])!!}
+{{--                    </div>--}}
                 </div>
 
 
-                {!! Form::groupText('measure', $product->measure, 'Измерение') !!}
 
-                @if(count($add_params))
-                    @foreach($add_params as $param)
-                        {!! Form::groupText($param->alias, $param->value, $param->name) !!}
-                    @endforeach
-                @endif
                 <hr>
                 {{--                {!! Form::groupSelect('in_stock', [0 => 'Временно отсутствует', 1 => 'В наличии', 2 => 'Под заказ' ], $product->in_stock, 'Наличие') !!}--}}
                 {!! Form::hidden('in_stock', 0) !!}

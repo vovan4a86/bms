@@ -170,28 +170,22 @@
                                         </ul>
                                     @endforeach
                                 </div>
+                                @if($menuActions = $item->menu_actions)
                                 <div class="overlay-nav__actions">
-                                    <a class="action-link action-link--green" href="javascript:void(0)"
-                                       title="Латунный квадрат">
+                                    @foreach($menuActions as $action)
+                                    <a class="action-link {{$action->style}}" href="{{$action->url}}"
+                                       title="{{$action->title}}">
                                         <img class="action-link__picture lazy" src="/"
-                                             data-src="/static/images/common/action-1.png" alt="" width="153"
+                                             data-src="{{ \Fanky\Admin\Models\Catalog::UPLOAD_URL . $action->image }}" alt="" width="153"
                                              height="161"/>
-                                        <span class="action-link__title">Латунный квадрат</span>
-                                        <span class="action-link__subtitle">ЛС59-1 КВ 14 L=3000</span>
+                                        <span class="action-link__title">{{ $action->title }}</span>
+                                        <span class="action-link__subtitle">{{ $action->text }}</span>
                                         <span class="action-link__price">от&nbsp;
-												<span class="action-link__current">587</span>&nbsp;₽/кг</span>
+												<span class="action-link__current">{{$action->price}}</span>&nbsp;₽/{{$action->measure}}</span>
                                     </a>
-                                    <a class="action-link action-link--blue" href="javascript:void(0)"
-                                       title="Лист медный">
-                                        <img class="action-link__picture lazy" src="/"
-                                             data-src="/static/images/common/action-2.png" alt="" width="166"
-                                             height="174"/>
-                                        <span class="action-link__title">Лист медный</span>
-                                        <span class="action-link__subtitle">10х600х1500 М1 мягкий</span>
-                                        <span class="action-link__price">от&nbsp;
-												<span class="action-link__current">882</span>&nbsp;₽/кг</span>
-                                    </a>
+                                    @endforeach
                                 </div>
+                                @endif
                             </div>
                         @endforeach
                     </div>

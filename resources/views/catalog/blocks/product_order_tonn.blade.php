@@ -7,7 +7,7 @@
                            name="weight" value="0" onkeyup="ae(this)">
                 </label>
             </div>
-            @if($product->measure2 != 'шт')
+            @if($product->measure2 && $product->measure2 != 'шт')
                 <div class="prod-order__col">
                     <label class="prod-order__label">Количество, {{ $product->measure2 }}
                         <input class="prod-order__input" type="number"
@@ -29,7 +29,7 @@
             <!-- дальше modules/popup.js-->
             <button class="button button--primary" type="button"
                     data-id="{{ $product->id }}"
-                    data-create-order data-src="{{ $product->measure2 != 'шт' ? '#order_tonn' : '#order_tonn_item'}}"
+                    data-create-order data-src="{{ $product->measure2 && $product->measure2 != 'шт' ? '#order_tonn' : '#order_tonn_item'}}"
                     data-title="{{ $product->name }}"
                     data-weight="1"
                     data-size=""

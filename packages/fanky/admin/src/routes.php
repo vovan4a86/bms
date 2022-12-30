@@ -137,6 +137,20 @@ Route::group(['namespace' => 'Fanky\Admin\Controllers', 'prefix' => 'admin', 'as
             'as'   => '.update-filter-title',
             'uses' => $controller . 'postUpdateFilterTitle'
         ]);
+
+        Route::post('add-menu-action/{id}', [
+            'as'   => '.addMenuAction',
+            'uses' => $controller . 'postAddMenuAction'
+        ]);
+
+        Route::post('delete-menu-action/{id}', [
+            'as'   => '.deleteMenuAction',
+            'uses' => $controller . 'postDeleteMenuAction'
+        ]);
+        Route::post('update-menu-action/{id}', [
+            'as'   => '.updateMenuAction',
+            'uses' => $controller . 'postUpdateMenuAction'
+        ]);
 	});
 
     Route::group(['as' => '.product-icons', 'prefix' => 'product-icons'], function () {

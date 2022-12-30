@@ -5,6 +5,7 @@ use Fanky\Admin\Models\AddParam;
 use Fanky\Admin\Models\Catalog;
 use Fanky\Admin\Models\CatalogParam;
 use Fanky\Admin\Models\City;
+use Fanky\Admin\Models\Filter;
 use Fanky\Admin\Models\MaterialImage;
 use Fanky\Admin\Models\Page;
 use Fanky\Admin\Models\Product;
@@ -36,8 +37,7 @@ class CatalogController extends Controller
         return $this->view($alias);
     }
 
-    public function index()
-    {
+    public function index() {
         $page = Page::getByPath(['catalog']);
         if (!$page) return abort(404);
         $bread = $page->getBread();
@@ -45,9 +45,7 @@ class CatalogController extends Controller
         $page = $this->add_region_seo($page);
         $page->setSeo();
         $categories = Catalog::getTopLevelOnList();
-
-//        $cat = Catalog::find(1)->getRecurseProductsCount();
-//        dd($cat);
+        $updated = Catalog::getUpdatedAt()->updated_at;
 
         return view('catalog.index', [
             'h1' => $page->h1,
@@ -56,6 +54,7 @@ class CatalogController extends Controller
             'bread' => $bread,
             'categories' => $categories,
             'headerIsWhite' => true,
+            'updated' =>  date_format($updated, 'd.m.Y'),
         ]);
     }
 
@@ -80,33 +79,15 @@ class CatalogController extends Controller
         }
     }
 
-    public function category($path)
-    {
+    public function category($path)  {
         /** @var Catalog $category */
         $category = Catalog::getByPath($path);
         if (!$category || !$category->published) abort(404, 'Страница не найдена');
         $bread = $category->getBread();
         $category = $this->add_region_seo($category);
         $category->setSeo();
-//        $updatedDate = $category->products->first()->updated_at ?? null;
-//        if (!$updatedDate) {
-//            foreach ($category->public_children as $child) {
-//                $updatedDate = $child->products->first()->updated_at ?? null;
-//                if (!$updatedDate) {
-//                    foreach ($child->public_children as $grandchild) {
-//                        $updatedDate = $grandchild->products->first()->updated_at ?? null;
-//                        if ($updatedDate) break 2;
-//                    }
-//                } else {
-//                    break;
-//                }
-//            }
-//        }
 
         $children = $category->public_children;
-//        $catalog_sub_id = $category->catalog_sub_show()->pluck('catalog_sub_show_id')->all();
-//        $catalog_sub = Catalog::whereIn('id', $catalog_sub_id)->orderBy('order')->get();
-
         $categories = Catalog::getTopLevelOnList();
 
         $root = $category;
@@ -118,9 +99,6 @@ class CatalogController extends Controller
         $per_page = is_numeric($per_page) ? $per_page : \Settings::get('product_per_page');
         $data['per_page'] = $per_page;
 
-//        $parentIds = Catalog::where('parent_id', '=', '0')->pluck('id')->all();
-
-        $ids = [];
         if (count($children)) {
             $ids = $category->getRecurseChildrenIds();
         } else {
@@ -130,8 +108,20 @@ class CatalogController extends Controller
         $filterNames = Product::public()->whereIn('catalog_id', $ids)->distinct()->pluck('name')->all();
         $filterSizes = Product::public()->whereIn('catalog_id', $ids)->distinct()->pluck('size')->all();
 
-        [$col1, $col2] = explode('/', $category->filters);
-//        dd($col1);
+        if($category->filters) {
+            [$filter1, $filter2] = explode('/', $category->filters);
+            if(isset($filter1) && isset($filter2)) {
+                foreach ([$filter1, $filter2] as $i => $filter) {
+                    $filters[$i]['alias'] = $filter;
+                    $filters[$i]['name'] = Filter::whereAlias($filter)->first()->name ?? 'noname';
+                }
+            }
+        } else {
+            $filters = [
+                ['alias' => 'steel', 'name' => 'Марка'],
+                ['alias' => 'length', 'name' => 'Длина']
+            ];
+        }
 
         $items = Product::public()->whereIn('catalog_id', $ids)
             ->orderBy('catalog_id')->paginate($per_page);
@@ -146,15 +136,16 @@ class CatalogController extends Controller
             'items' => $items,
             'filterSizes' => $filterSizes,
             'filterNames' => $filterNames,
-            'col1' =>$col1,
-            'col2' =>$col2,
+            'filters' => $filters ?? null,
             'root' => $root ?? null,
             'headerIsWhite' => true,
         ];
 
         if (Request::ajax()) {
-            $filter_name = Request::only('name');
+            $filter_name = Request::only('name'); //only = array
             $filter_size = Request::only('size');
+
+            $searchCatalog = Request::get('search-catalog'); //get = string
 
             $queries = [];
             if (count($filter_name)) {
@@ -188,11 +179,24 @@ class CatalogController extends Controller
                         $products_ids[] = $item;
                     }
                 }
-                $items = Product::whereIn('id', $products_ids)
-                    ->orderBy('name')->paginate($per_page);
+                if(isset($searchCatalog)) {
+                    $items = Product::whereIn('id', $products_ids)
+                        ->orWhere('name', 'like', '%'.$searchCatalog.'%')
+                        ->orderBy('name')->paginate($per_page);
+                } else {
+                    $items = Product::whereIn('id', $products_ids)
+                        ->orderBy('name')->paginate($per_page);
+                }
+
             } else {
-                $items = Product::where('catalog_id', $category->id)
-                    ->orderBy('name')->paginate($per_page);
+                if(isset($searchCatalog)) {
+                    $items = Product::where('catalog_id', $category->id)
+                        ->orWhere('name', 'like', '%'.$searchCatalog.'%')
+                        ->orderBy('name')->paginate($per_page);
+                } else {
+                    $items = Product::where('catalog_id', $category->id)
+                        ->orderBy('name')->paginate($per_page);
+                }
             }
 
             $view_items = [];

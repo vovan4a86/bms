@@ -88,9 +88,8 @@
                                                                        href="{{ $file->fileSrc }}"
                                                                        data-fancybox="data-fancybox" data-type="pdf"
                                                                        title="{{ $file->file_name }}">
-                                                                <span class="document__icon lazy entered loaded"
+                                                                <span class="document__icon lazy"
                                                                       data-bg="/static/images/common/ico_pdf.svg"
-                                                                      data-ll-status="loaded"
                                                                       style="background-image: url('/static/images/common/ico_pdf.svg');">
 
                                                                 </span>

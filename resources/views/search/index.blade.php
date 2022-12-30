@@ -12,9 +12,9 @@
                 @if(count($items))
                     <div class="search-page__output">
                         <div class="t-catalog">
-                            @include('catalog.blocks.catalog_grid_head')
+                            @include('search.search_grid_head')
                             @foreach($items as $item)
-                                @include('catalog.product_item', [compact($item)])
+                                @include('search.search_product_item', compact($item))
                             @endforeach
                         </div>
                     </div>

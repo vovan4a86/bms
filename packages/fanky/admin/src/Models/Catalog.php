@@ -92,7 +92,7 @@ class Catalog extends Model {
 			}
 			if($category->isDirty('published') && $category->published == 0){
 				if (!$category->_disableEventUpdatePublished){
-					self::updateDisablePublisedhRecurse($category);
+					self::updateDisablePublishedRecurse($category);
 				}
 			}
 		});
@@ -123,6 +123,10 @@ class Catalog extends Model {
 	public function parent() {
 		return $this->belongsTo('Fanky\Admin\Models\Catalog', 'parent_id');
 	}
+
+    public function menu_actions(): HasMany {
+        return $this->hasMany(MenuAction::class);
+    }
 
 	public function children(): HasMany {
 		return $this->hasMany('Fanky\Admin\Models\Catalog', 'parent_id');
@@ -392,7 +396,7 @@ class Catalog extends Model {
 		}
 	}
 
-	public static function updateDisablePublisedhRecurse(self $category) {
+	public static function updateDisablePublishedRecurse(self $category) {
 		//чтобы событие на обновление не сработало
 		$category->_disableEventUpdatePublished = true;
 		$category->update(['published' => 0]);
@@ -407,6 +411,10 @@ class Catalog extends Model {
 
     public static function getTopLevelOnList() {
         return self::public()->whereParentId(0)->whereOnMainList(1)->orderBy('order')->get();
+    }
+
+    public static function getUpdatedAt() {
+        return self::public()->whereParentId(0)->orderBy('updated_at', 'desc' )->first();
     }
 
     public static function getTopOnMain() {
@@ -437,23 +445,5 @@ class Catalog extends Model {
     public function getActionImage(): string {
 	    return  self::UPLOAD_URL . $this->action_image;
     }
-
-//    public function getSectionText($id = null) {
-//	    if($id === null) $id = $this->id;
-//        $cat = Catalog::find($id);
-//	    if($cat->text == '' && $cat->parent_id !== 0) {
-//	        $this->getSectionText($cat->parent_id);
-//        } else {
-//            return $cat->text;
-//        }
-//    }
-
-//    public function getSectionText() {
-//        if($this->text == null) {
-//            $cat = $this->findRootCategory($this->id);
-//            return $cat->text;
-//        }
-//        return $this->text;
-//    }
 
 }

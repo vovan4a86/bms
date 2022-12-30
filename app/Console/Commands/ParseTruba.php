@@ -84,7 +84,6 @@ class ParseTruba extends Command {
 
         'Сваи винтовые' => ['steel', 'length', '', '', 'price_per_item', 4, 'шт', 1],//+
         'Трубы чугунные' => ['steel', 'length', '', '', 'price_per_item', 4, 'шт', 0],//+
-
     ];
 
     /**
@@ -93,29 +92,6 @@ class ParseTruba extends Command {
      * @return mixed
      */
     public function handle() {
-//        $this->test();
-//        $this->parseCategory('Трубы электросварные квадратные', 'https://mc.ru/metalloprokat/truby_ehlektrosvarnye_kvadratnye');
-//        $this->parseCategory('Трубы электросварные низколегированные круглые', 'https://mc.ru/metalloprokat/truby_elektrosvarnye_nizkolegirovannye_kruglye');
-//        exit();
-
-//        $name = 'Трубы прямоугольные оцинкованные 30х20х0.8';
-//        $size = '30';
-//        $res = $this->parseProductWallFromString($name, $size, true);
-//        $this->info($res);
-//        exit();
-
-//        $this->parseCategory('Трубы нержавеющие бесшовные', 'https://mc.ru/metalloprokat/truby_nerzhaveyushchie_besshovnye_a');
-//        $this->parseCategory('Трубы нержавеющие электросварные AISI прямоугольные', 'https://mc.ru/metalloprokat/truby_nerzhaveyushchie_ehlektrosvarnye_aisi_pryamougolnye_a');
-//        $this->parseCategory('Трубы нержавеющие электросварные', 'https://mc.ru/metalloprokat/truby_nerzhaveyushchie_ehlektrosvarnye_a');
-//        exit();
-//        foreach ($this->categoryList() as $categoryName => $categoryUrl) {
-//            if ($categoryName == 'Трубы чугунные' || $categoryName == 'Сваи винтовые') {
-//                $this->parseChugunCat($categoryName, $categoryUrl);
-//            } else {
-//                $this->parseCategory($categoryName, $categoryUrl);
-//            }
-//        }
-
         foreach ($this->categoryList() as $categoryName => $categoryUrl) {
             $this->parseCategory($categoryName, $categoryUrl, 1);
         }
@@ -124,12 +100,12 @@ class ParseTruba extends Command {
 
     public function categoryList(): array {
         return [
-            'Трубы г/д' => 'https://mc.ru/metalloprokat/truby_g_d',
-            'Трубы х/д' => 'https://mc.ru/metalloprokat/truby_h_d',
-            'ВГП, электросварные трубы' => 'https://mc.ru/metalloprokat/vgp_elektrosvarnye_truby',
-            'Трубы электросварные низколегированные' => 'https://mc.ru/metalloprokat/truby_elektrosvarnye_nizkolegirovannye',
-            'Трубы оцинкованные' => 'https://mc.ru/metalloprokat/truby_ocinkovannye',
-            'Трубы нержавеющие' => 'https://mc.ru/metalloprokat/truby_nerzhavejka_a',
+//            'Трубы г/д' => 'https://mc.ru/metalloprokat/truby_g_d',
+//            'Трубы х/д' => 'https://mc.ru/metalloprokat/truby_h_d',
+//            'ВГП, электросварные трубы' => 'https://mc.ru/metalloprokat/vgp_elektrosvarnye_truby',
+//            'Трубы электросварные низколегированные' => 'https://mc.ru/metalloprokat/truby_elektrosvarnye_nizkolegirovannye',
+//            'Трубы оцинкованные' => 'https://mc.ru/metalloprokat/truby_ocinkovannye',
+//            'Трубы нержавеющие' => 'https://mc.ru/metalloprokat/truby_nerzhavejka_a',
             'Сваи винтовые' => 'https://mc.ru/metalloprokat/svai_vintovye',
             'Трубы чугунные' => 'https://mc.ru/metalloprokat/truby_chugun_sml',
         ];
