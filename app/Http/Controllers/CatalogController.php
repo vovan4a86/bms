@@ -37,7 +37,8 @@ class CatalogController extends Controller
         return $this->view($alias);
     }
 
-    public function index() {
+    public function index()
+    {
         $page = Page::getByPath(['catalog']);
         if (!$page) return abort(404);
         $bread = $page->getBread();
@@ -54,7 +55,7 @@ class CatalogController extends Controller
             'bread' => $bread,
             'categories' => $categories,
             'headerIsWhite' => true,
-            'updated' =>  date_format($updated, 'd.m.Y'),
+            'updated' => date_format($updated, 'd.m.Y'),
         ]);
     }
 
@@ -79,7 +80,8 @@ class CatalogController extends Controller
         }
     }
 
-    public function category($path)  {
+    public function category($path)
+    {
         /** @var Catalog $category */
         $category = Catalog::getByPath($path);
         if (!$category || !$category->published) abort(404, 'Страница не найдена');
@@ -106,11 +108,11 @@ class CatalogController extends Controller
         }
 
         $filterNames = Product::public()->whereIn('catalog_id', $ids)->distinct()->pluck('name')->all();
-        $filterSizes = Product::public()->whereIn('catalog_id', $ids)->distinct()->pluck('size')->all();
+        $filterSizes = Product::public()->whereIn('catalog_id', $ids)->distinct()->orderBy('size')->pluck('size')->all();
 
-        if($category->filters) {
+        if ($category->filters) {
             [$filter1, $filter2] = explode('/', $category->filters);
-            if(isset($filter1) && isset($filter2)) {
+            if (isset($filter1) && isset($filter2)) {
                 foreach ([$filter1, $filter2] as $i => $filter) {
                     $filters[$i]['alias'] = $filter;
                     $filters[$i]['name'] = Filter::whereAlias($filter)->first()->name ?? 'noname';
@@ -166,22 +168,33 @@ class CatalogController extends Controller
 
             if (count($queries)) {
                 $prods_id = []; //все найденные id продуктов
-                foreach ($queries as $name => $values) {
-                    foreach ($values as $value) {
-                        $prods_id[] = Product::where('catalog_id', $category->id)
-                            ->where($name, $value)->pluck('id');
+                if ($category->parent_id !== 0) {
+                    foreach ($queries as $name => $values) {
+                        foreach ($values as $value) {
+                            $prods_id[] = Product::where('catalog_id', $category->id)
+                                ->where($name, $value)->pluck('id');
+                        }
+                    }
+                } else {
+                    foreach ($queries as $name => $values) {
+                        foreach ($values as $value) {
+                            $prods_id[] = Product::whereIn('catalog_id', $ids)
+                                ->where($name, $value)->pluck('id');
+                        }
                     }
                 }
 
-                $products_ids = [];
+
+                $products_ids = [];//более удобный массив
                 foreach ($prods_id as $items) {
                     foreach ($items as $item) {
                         $products_ids[] = $item;
                     }
                 }
-                if(isset($searchCatalog)) {
+
+                if (isset($searchCatalog)) {
                     $items = Product::whereIn('id', $products_ids)
-                        ->orWhere('name', 'like', '%'.$searchCatalog.'%')
+                        ->where('name', 'like', '%' . $searchCatalog . '%')
                         ->orderBy('name')->paginate($per_page);
                 } else {
                     $items = Product::whereIn('id', $products_ids)
@@ -189,13 +202,18 @@ class CatalogController extends Controller
                 }
 
             } else {
-                if(isset($searchCatalog)) {
+                if (isset($searchCatalog)) {
                     $items = Product::where('catalog_id', $category->id)
-                        ->orWhere('name', 'like', '%'.$searchCatalog.'%')
+                        ->where('name', 'like', '%' . $searchCatalog . '%')
                         ->orderBy('name')->paginate($per_page);
                 } else {
-                    $items = Product::where('catalog_id', $category->id)
-                        ->orderBy('name')->paginate($per_page);
+                    if ($category->parent_id !== 0) {
+                        $items = Product::where('catalog_id', $category->id)
+                            ->orderBy('name')->paginate($per_page);
+                    } else {
+                        $items = Product::whereIn('catalog_id', $ids)
+                            ->orderBy('name')->paginate($per_page);
+                    }
                 }
             }
 
@@ -204,6 +222,7 @@ class CatalogController extends Controller
                 $view_items[] = view('catalog.product_item', [
                     'item' => $item,
                     'category' => $category,
+                    'filters' => $filters ?? null,
                     'root' => $root,
                     'per_page' => $per_page
                 ])->render();

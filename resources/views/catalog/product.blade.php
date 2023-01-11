@@ -35,22 +35,72 @@
                             </div>
                             <div class="product__data">
                                 <div class="product__data-list">
-                                    <dl>
-                                        <dt>Размер</dt>
-                                        <dd>{{ $product->size }}</dd>
-                                    </dl>
-                                    <dl>
-                                        <dt>Толщина</dt>
-                                        <dd>{{ $product->wall }}</dd>
-                                    </dl>
-                                    <dl>
-                                        <dt>ГОСТ</dt>
-                                        <dd>{{ $product->gost }}</dd>
-                                    </dl>
-                                    <dl>
-                                        <dt>Сталь</dt>
-                                        <dd>{{ $product->steel }}</dd>
-                                    </dl>
+                                    @if($product->size)
+                                        <dl>
+                                            <dt>Размер</dt>
+                                            <dd>{{ $product->size }}</dd>
+                                        </dl>
+                                    @endif
+                                    @if($product->wall)
+                                        <dl>
+                                            <dt>Толщина</dt>
+                                            <dd>{{ $product->wall }}</dd>
+                                        </dl>
+                                    @endif
+                                    @if($product->gost)
+                                        <dl>
+                                            <dt>ГОСТ</dt>
+                                            <dd>{{ $product->gost }}</dd>
+                                        </dl>
+                                    @endif
+                                    @if($product->steel)
+                                        <dl>
+                                            <dt>Сталь</dt>
+                                            <dd>{{ $product->steel }}</dd>
+                                        </dl>
+                                    @endif
+                                    @if($product->length)
+                                        <dl>
+                                            <dt>Длина</dt>
+                                            <dd>{{ $product->length }}</dd>
+                                        </dl>
+                                    @endif
+                                    @if($product->type)
+                                        <dl>
+                                            <dt>Тип</dt>
+                                            <dd>{{ $product->type }}</dd>
+                                        </dl>
+                                    @endif
+                                    @if($product->diameter)
+                                        <dl>
+                                            <dt>Диаметр</dt>
+                                            <dd>{{ $product->diameter }}</dd>
+                                        </dl>
+                                    @endif
+                                    @if($product->py)
+                                        <dl>
+                                            <dt>Py</dt>
+                                            <dd>{{ $product->py }}</dd>
+                                        </dl>
+                                    @endif
+                                    @if($product->brand)
+                                        <dl>
+                                            <dt>Бренд</dt>
+                                            <dd>{{ $product->brand }}</dd>
+                                        </dl>
+                                    @endif
+                                    @if($product->model)
+                                        <dl>
+                                            <dt>Модель</dt>
+                                            <dd>{{ $product->model }}</dd>
+                                        </dl>
+                                    @endif
+                                    @if($product->comment )
+                                        <dl>
+                                            <dt>Пояснение</dt>
+                                            <dd>{{ $product->comment }}</dd>
+                                        </dl>
+                                    @endif
                                 </div>
                                 @if($product->measure == 'т' && $product->price)
                                     @include('catalog.blocks.product_order_tonn')

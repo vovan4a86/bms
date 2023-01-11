@@ -311,8 +311,6 @@ function be(elem) {
 
 function updateFilter(select, e) {
     e.preventDefault();
-    let name = select.name;
-    let list = $('.catalog-list');
     let products = $('.t-catalog__grid.t-catalog__grid--body');
     let container = $('.t-catalog');
     let paginate = $('.pagination');
@@ -322,8 +320,6 @@ function updateFilter(select, e) {
 
     sendAjax(url, data, function (json) {
         if(json.list !== 'undefined') {
-            // list.remove();
-            // container.append(json.list);
             products.remove();
             paginate.remove();
             for (let elem in json.list) {
